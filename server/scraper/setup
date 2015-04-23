@@ -1,0 +1,10 @@
+mysql> CREATE DATABASE IF NOT EXISTS al_legals;
+Query OK, 1 row affected (0.00 sec)
+
+mysql> CREATE USER 'al_user'@'localhost' IDENTIFIED BY 'fACviAxbd9fme7u';
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> GRANT ALL PRIVILEGES ON al_legals.* TO 'al_user'@'localhost';
+Query OK, 0 rows affected (0.00 sec)
+
+$ mysql al_legals -u al_user --password=$HUD_DB_PW < ./server/scraper/schema

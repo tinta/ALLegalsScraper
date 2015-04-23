@@ -1,0 +1,110 @@
+doctype html
+html
+    head
+        meta(http-equiv='content-type', content='text/html; charset=utf-8')
+
+        link(rel="stylesheet" type="text/css" href="/bootstrap/dist/css/bootstrap.min.css")
+        link(rel="stylesheet" type="text/css" href="/ng-table/dist/ng-table.min.css")
+        link(rel="stylesheet" type="text/css" href="/resources/css/index.css")
+
+        script(type='text/javascript', src="/lodash/index.js")
+        script(type='text/javascript', src="/moment/moment.js")
+        script(type='text/javascript', src="/angular/angular.js")
+        script(type='text/javascript', src="/ng-table/dist/ng-table.js")
+        script(type='text/javascript', src="/resources/js/listings.js")
+        script(type='text/javascript').
+            window.listings = !{ foreclosures };
+
+    body.text-center(
+        ng-app="ControllerListings"
+        ng-controller="ControllerListings"
+    )
+        div.container
+            div.row
+                div.col-xs-12
+                    h1 AL Legals Foreclosures
+                div.col-xs-12
+                    table.table.table-striped.table-bordered.table-hover(ng-table="tableParams")
+                        tr(
+                            ng-repeat="listing in $data"
+                            ng-click="modal.open(listing)"
+                        )
+                            td(
+                                data-title="'ID'"
+                                sortable="'case_id'"
+                            ) [[ listing.case_id ]]
+                            td(
+                                data-title="'County'"
+                                sortable="'county'"
+                            ) [[ listing.county ]]
+                            //- td(data-title="'Source'") [[ listing.source ]]
+                            td(
+                                data-title="'Publish Date'"
+                                sortable="'pub_date'"
+                            ) [[ listing.pub_date ]]
+                            td(
+                                data-title="'Sale Date'"
+                                sortable="'sale_date'"
+                            ) [[ listing.sale_date ]]
+                            td(
+                                data-title="'Address'"
+                                sortable="'street_addr'"
+                            ) [[ listing.street_addr ]]
+                            td(
+                                data-title="'City'"
+                                sortable="'city'"
+                            ) [[ listing.city ]]
+                            td(
+                                data-title="'Zip'"
+                                sortable="'zip'"
+                            ) [[ listing.zip ]]
+
+        div.modal-wrapper(
+            ng-if="modal.isOpen == true"
+        )
+            div.modal-bg(
+              ng-click="modal.close()"
+            )
+
+            div.modal.container
+                div.row
+                    div.col-xs-12
+                        table.table.table-bordered
+                            thead
+                                tr
+                                    td ID
+                                    td Pub. Date
+                                    td Date Scraped
+                                    td Source
+                                    td Sale Date
+                                    td Sale Location
+                            tbody
+                                tr
+                                    td [[ modal.data.case_id ]]
+                                    td [[ modal.data.pub_date ]]
+                                    td [[ modal.data.timestamp ]]
+                                    td [[ modal.data.source ]]
+                                    td [[ modal.data.sale_date ]]
+                                    td [[ modal.data.sale_location ]]
+
+                        table.table.table-bordered
+                            thead
+                                tr
+                                    td County
+                                    td City
+                                    td Zip
+                                    td Address
+                                    td Bed
+                                    td Bath
+                            tbody
+                                tr
+                                    td [[ modal.data.county ]]
+                                    td [[ modal.data.city ]]
+                                    td [[ modal.data.zip ]]
+                                    td [[ modal.data.street_addr ]]
+                                    td [[ modal.data.bed ]]
+                                    td [[ modal.data.bath ]]
+
+
+                    div.col-xs-12
+                        h5 [[ modal.data.body ]]
