@@ -13,7 +13,11 @@ app.use("/moment", Express.static(process.cwd() + '/node_modules/moment'));
 app.use("/bootstrap", Express.static(process.cwd() + '/node_modules/bootstrap'));
 app.locals.pretty = true;
 
-app.listen(3000);
+var port = 3000;
+
+app.listen(port);
+
+console.log('Now watching connections to port ' + port + '...');
 
 var db = require('./../db-connect.js')();
 

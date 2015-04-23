@@ -9,7 +9,7 @@
 ## Usage
 
 `npm start`
+Allows access to data interface on port 3000
 
-or
-
-`node index.js`
+`npm run scraper`
+Runs scraper (takes a couple of minutes)
