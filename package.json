@@ -1,7 +1,7 @@
 {
-  "name": "hudScraper",
+  "name": "ALLegalsScraper",
   "version": "1.0.0",
-  "description": "Scrape HUD homes",
+  "description": "Scrape Public Notices from AlabamaLegals.com",
   "main": "index.js",
   "scripts": {
     "start": "node server/app/index.js",
