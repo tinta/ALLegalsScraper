@@ -1,4 +1,4 @@
-# HUD Scraper
+# Alabama Legals Scraper
 
 ## Install
 
