@@ -12,6 +12,8 @@ app.use("/ng-table",    addStaticAssetsPath('/node_modules/ng-table'));
 app.use("/lodash",      addStaticAssetsPath('/node_modules/lodash'));
 app.use("/moment",      addStaticAssetsPath('/node_modules/moment'));
 app.use("/bootstrap",   addStaticAssetsPath('/node_modules/bootstrap'));
+app.use("/font-awesome",   addStaticAssetsPath('/node_modules/font-awesome'));
+app.use("/jquery",   addStaticAssetsPath('/node_modules/jquery'));
 app.locals.pretty = true;
 
 app.listen(port);
@@ -44,8 +46,16 @@ app.get('/', function (req, res) {
 
 app.post('/update', function(req, res) {
     var uid = req.body.uid;
+    var err;
+    console.log(Array(30).join('-'))
+    console.log(req.body)
 
-    if (!uid) return new Error('`uid` must be defined when attempting to update a row');
+    if (!uid) {
+        err = '`uid` must be defined when attempting to update a row';
+        res.status(500).send(err)
+        throw err;
+        return;
+    }
 
     var editableFields = [
         'street_addr',
@@ -66,17 +76,23 @@ app.post('/update', function(req, res) {
 
         editableFields.forEach(function(field) {
             if (req.body[field] != undefined) {
+                if (util.isPresent(req.body[field])) {
+                    req.body[field] = util.encaseInQuotes(req.body[field])
+                } else {
+                    req.body[field] = null;
+                }
                 var colUpdate = util.encaseInTicks(field) + '=' + req.body[field];
                 _list.push(colUpdate)
             }
         });
 
-        return _list.join(', ');
+        return _list;
     })();
 
+    if (sqlColumnUpdateList.length === 0) return new Error('no editable fields were passed to endpoint')
+
     var sqlWhereUID = [
-        'WHERE',
-        util.encaseInTicks('uid'),
+        'WHERE `uid`',
         '=',
         uid
     ].join(' ');
@@ -85,12 +101,16 @@ app.post('/update', function(req, res) {
         'UPDATE',
         table,
         'SET',
-        sqlColumnUpdateList,
+        sqlColumnUpdateList.join(', '),
         sqlWhereUID
     ].join(' ');
 
+    console.log(sqlUpdate)
+
     db.query(sqlUpdate, function (err) {
         if (err) throw err;
+
+        console.log('UPDATED!')
 
         var sqlSelect = [
             'SELECT *',

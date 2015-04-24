@@ -32,7 +32,7 @@ angular
             _.extend(this, model);
 
             function set (property) {
-                return Util.isPresent(this.model[property]) ? this.model[property] : ""
+                return Util.isPresent(this.model[property]) ? this.model[property] : "";
             }
 
             var initInfo = {};
@@ -45,12 +45,9 @@ angular
             _.extend(this.model, initInfo)
 
             this._editForm();
-            this.initiateEdit();
         };
 
         RowModel.prototype.initiateEdit = function () {
-            // this.collection.abortEdits();
-
             this.model.isBeingEdited = true;
 
             var toSet = {};
@@ -72,18 +69,15 @@ angular
             saveInfo.isBeingEdited = false;
 
             _.each(editableFields, function(field) {
-                saveInfo[field] = this.model[field];
+                saveInfo[field] = Util.isPresent(this.editForm[field].value) ? this.editForm[field].value : null;
             }.bind(this));
 
             _.extend(this.model, saveInfo);
-
-            // this.collection.save();
 
             return this;
         };
 
         RowModel.prototype.abortEdit = function () {
-            // this.collection.abortEdits();
             this.editForm.reset();
 
             return this;

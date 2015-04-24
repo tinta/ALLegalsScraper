@@ -18,11 +18,35 @@ label,
     background-color: #D14D3B;
 }
 
+.bg-orange {
+    background-color: #D19452;
+}
+
+.bg-blue {
+    background-color: #416873;
+}
+
 .text-white {
     color: #FFFFFF;
 }
 
+.text-green {
+    color: #5E9E55;
+}
+
+.text-red {
+    color: #D14D3B;
+}
+
+.text-orange {
+    color: #D19452;
+}
+
+.text-blue {
+    color: #416873;
+}
+
 .text-thin {
-    font-weight: 100;
-    letter-spacing: 0.02em;
+    font-weight: 200;
+    letter-spacing: 0.025em;
 }

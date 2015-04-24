@@ -13,6 +13,7 @@ angular.module('ControllerListings', [
     $timeout,
     $window,
     $filter,
+    $http,
     ngTableParams,
     RowModel
 ){
@@ -60,14 +61,44 @@ angular.module('ControllerListings', [
     $scope.modal = {
         data: null,
         isOpen: false,
+        saveSucceeded: null,
         open: function (listing) {
             console.log(listing)
             this.data = new RowModel(listing);
+            this.data.initiateEdit();
             this.isOpen = true;
         },
         close: function () {
             this.data = null;
+            this.saveSucceeded = null;
             this.isOpen = false;
+        },
+        abortEdit: function () {
+            this.data.abortEdit();
+            this.saveSucceeded = null;
+            this.data.initiateEdit();
+        },
+        save: function () {
+            var This = this;
+            this.data.attemptEdit();
+
+            var postBody = this.data.model;
+
+            // Angular's $http directive isnt allowing us to post data to the express server for some reason...
+            $.ajax({
+                method: 'POST',
+                url: '/update',
+                data: postBody,
+                success: function (data) {
+                    This.open(data);
+                    This.saveSucceeded = true;
+                    $scope.$apply();
+                },
+                error: function (err) {
+                    This.saveSucceeded = false;
+                    console.log(err);
+                }
+            });
         }
     };
 
