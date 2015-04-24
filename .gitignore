@@ -1,2 +1,3 @@
 node_modules
 .my.cnf
+npm-debug.log
