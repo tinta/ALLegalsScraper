@@ -73,24 +73,17 @@ page.goto(scrapeUrl)
 
         return foreclosures;
     }, function(scrapedForeclosures) {
-        var tableName = 'foreclosures';
 
         var uids = {};
         uids.scraped = _.keys(scrapedForeclosures);
         uids.present = [];
         uids.absent = [];
+        uids.scraped.forEach(function(uid) {
+		uid = db.escape(uid);
+        });
         uids.sql = uids.scraped.join(', ');
 
-        var SQLFindListing = [
-            'SELECT *',
-            'FROM',
-            tableName,
-            'WHERE',
-            'case_id',
-            'IN',
-            '(', uids.sql, ')'
-        ].join(' ');
-
+        var SQLFindListing = "SELECT * FROM foreclosures WHERE case_id IN (" + uids.sql + ");";
         var query = db.query(SQLFindListing);
 
         query.on('result', function(result) {
@@ -107,13 +100,7 @@ page.goto(scrapeUrl)
                     var insertKeysList, insertValuesList, SQLInsertListing;
                     var pubDate = moment(absentForeclosure.pubDate, 'MM-DD-YYYY').format('YYYY-MM-DD');
 
-                    insertKeysList = [
-                        // Cannot be `null`
-                        util.encaseInTicks('case_id'),
-                        util.encaseInTicks('county'),
-                        util.encaseInTicks('body'),
-                        util.encaseInTicks('source'),
-                        util.encaseInTicks('pub_date'),
+                    insertKeysList =["case_id", "county", "body", "source", "pub_date",
                         // Optional
                         // util.encaseInTicks('street_addr'),
                         // util.encaseInTicks('city'),
@@ -123,37 +110,29 @@ page.goto(scrapeUrl)
                         // util.encaseInTicks('price'),
                         // util.encaseInTicks('bed')
                         // util.encaseInTicks('bath')
-                    ].join(', ')
-
-                    insertValuesList = [
-                        util.encaseInQuotes(absentForeclosure.caseId),
-                        util.encaseInQuotes(absentForeclosure.county),
-                        util.encaseInQuotes(absentForeclosure.body),
-                        util.encaseInQuotes(absentForeclosure.source),
-                        util.encaseInQuotes(pubDate)
                     ].join(', ');
 
-                    SQLInsertListing = [
-                        'INSERT',
-                        'INTO',
-                        tableName,
-                        '(', insertKeysList, ')',
-                        'VALUES',
-                        '(', insertValuesList, ')'
-                    ].join(' ');
+                    insertValuesList = [
+                        db.escape(absentForeclosure.caseId),
+                        db.escape(absentForeclosure.county),
+                        db.escape(absentForeclosure.body),
+                        db.escape(absentForeclosure.source),
+                        db.escape(pubDate)
+                    ].join(', ');
+
+                    SQLInsertListing = "INSERT INTO foreclosures (" + insertKeysList + ") VALUES (" + insertValuesList + ");";
 
                     db.query(SQLInsertListing, function(err) {
                         if (err) {
-                            throw err;
                             db.end();
-                            return;
+                            throw err;
                         }
 
                         insertedRows++;
 
                         if (uids.absent.length === insertedRows) {
                             db.end();
-                            console.log('WOOOOOOOOOO!')
+                            console.log('WOOOOOOOOOO!');
                         }
                     });
                 });

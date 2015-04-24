@@ -12,6 +12,7 @@ Util.encaseInTicks = function (text) {
     return encase('`', text);
 };
 
+<<<<<<< HEAD
 Util.isDefined = function (val) {
     return (
         typeof(val) !== 'undefined' &&
