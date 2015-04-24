@@ -1,0 +1,19 @@
+.pad-t, .pad-tb, .pad, .pad-r, .pad-lr, .pad-b, .pad-l {
+  display: inline-block;
+}
+
+.pad-t, .pad-tb, .pad {
+  padding-top: 0.5em;
+}
+
+.pad-r, .pad-lr, .pad {
+  padding-right: 0.5em;
+}
+
+.pad-b, .pad-tb, .pad {
+  padding-bottom: 0.5em;
+}
+
+.pad-l, .pad-lr, .pad {
+  padding-left: 0.5em;
+}

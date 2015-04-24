@@ -101,6 +101,14 @@ div.page-column.modal-wrapper(
                                         ng-model="modal.data.editForm.indoor_area.value"
                                         ng-change="modal.data.editForm.all.validate()"
                                     )
+            div.col-xs-12
+                h4.text-thin.bg-red.text-white.pad(
+                    ng-if="!modal.data.editForm.all.isUnchanged()"
+                ) Clear
+                div.pad &nbsp;&nbsp;
+                h4.text-thin.bg-green.text-white.pad(
+                    ng-if="modal.data.editForm.all.errors.length == 0 && !modal.data.editForm.all.isUnchanged()"
+                ) Save
 
             div.col-xs-12
                 h5 [[ modal.data.model.body ]]

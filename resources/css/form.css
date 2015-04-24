@@ -1,0 +1,44 @@
+form {
+    position: relative;
+}
+
+input[type=radio][ng-model],
+input[type=checkbox][ng-model] {
+    display: none;
+}
+
+input[type=text],
+input[type=email] {
+    -webkit-transition: all 0.30s ease-in-out;
+    -moz-transition: all 0.30s ease-in-out;
+    -ms-transition: all 0.30s ease-in-out;
+    -o-transition: all 0.30s ease-in-out;
+    outline: none;
+    overflow: hidden;
+    padding: 5px 10px;
+    color: inherit;
+    border: 1px solid #414141;
+    width: 120px;
+}
+
+input[type=text]:focus,
+input[type=email]:focus {
+    box-shadow: 0 0 5px rgba(81, 203, 238, 1);
+    border: 1px solid rgba(81, 203, 238, 1);
+}
+
+input[type=text].invis,
+input[type=email].invis {
+    background: transparent;
+    border: none;
+    padding: 0;
+    box-shadow: none;
+}
+
+input.input-small {
+    width: 60px;
+}
+
+input.input-large {
+    width: 180px;
+}

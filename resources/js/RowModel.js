@@ -154,57 +154,57 @@ angular
 
             this.editForm.sale_location = new FieldModel("Sale Location");
             this.editForm.sale_location.validate = function () {
-                return validateStr.bind(this)(3, 100);
+                return validateStr.bind(this)(0, 100);
             };
 
             this.editForm.sale_date = new FieldModel("Sale Date");
             this.editForm.sale_date.validate = function () {
-                return validateStr.bind(this)(3, 100);
+                return validateStr.bind(this)(0, 100);
             };
 
             this.editForm.city = new FieldModel("City");
             this.editForm.city.validate = function () {
-                return validateStr.bind(this)(3, 100);
+                return validateStr.bind(this)(0, 100);
             };
 
             this.editForm.zip = new FieldModel("Zip");
             this.editForm.zip.validate = function () {
-                return validateStr.bind(this)(3, 100);
+                return validateStr.bind(this)(0, 100);
             };
 
             this.editForm.street_addr = new FieldModel("Address");
             this.editForm.street_addr.validate = function () {
-                return validateStr.bind(this)(3, 100);
+                return validateStr.bind(this)(0, 100);
             };
 
             this.editForm.bed = new FieldModel("Bed");
             this.editForm.bed.validate = function () {
-                return validateStr.bind(this)(3, 100);
+                return validateStr.bind(this)(0, 100);
             };
 
             this.editForm.bath = new FieldModel("Bath");
             this.editForm.bath.validate = function () {
-                return validateStr.bind(this)(3, 100);
+                return validateStr.bind(this)(0, 100);
             };
 
             this.editForm.price = new FieldModel("Price");
             this.editForm.price.validate = function () {
-                return validateStr.bind(this)(3, 100);
+                return validateStr.bind(this)(0, 100);
             };
 
             this.editForm.lot_area = new FieldModel("Lot Area");
             this.editForm.lot_area.validate = function () {
-                return validateStr.bind(this)(3, 100);
+                return validateStr.bind(this)(0, 100);
             };
 
             this.editForm.indoor_area = new FieldModel("Indoor Area");
             this.editForm.indoor_area.validate = function () {
-                return validateStr.bind(this)(3, 100);
+                return validateStr.bind(this)(0, 100);
             };
 
             this.editForm.build_year = new FieldModel("Build Year");
             this.editForm.build_year.validate = function () {
-                return validateStr.bind(this)(3, 100);
+                return validateStr.bind(this)(0, 100);
             };
 
             this.editForm.all = {
@@ -215,7 +215,7 @@ angular
                     this.errors = (function() {
                         var allErrors = [];
                         editableFields.forEach(function(field) {
-                            This.editForm[field].errors;
+                            allErrors.push(This.editForm[field].errors);
                         });
                         return _.flatten(allErrors, true);
                     })();
@@ -245,7 +245,6 @@ angular
                 set: function (properties) {
                     editableFields.forEach(function(field) {
                         var val = properties[field];
-                        console.log(field)
                         This.editForm[field].set(val);
                     });
 
