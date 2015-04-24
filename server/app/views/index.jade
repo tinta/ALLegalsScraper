@@ -23,21 +23,22 @@ html
                                 data-title="'ID'"
                                 sortable="'case_id'"
                                 filter="{ 'case_id': 'text' }"
+                                placeholder="fooo"
                             ) [[ listing.case_id ]]
                             td(
                                 data-title="'County'"
                                 sortable="'county'"
-                                filter="{ 'county': 'text' }"
+                                filter="{ 'county': 'county' }"
                             ) [[ listing.county ]]
                             td(
                                 data-title="'Pub. Date'"
                                 sortable="'pub_date'"
-                                filter="{ 'pub_date': 'text' }"
+                                filter="{ 'pub_date': 'date' }"
                             ) [[ listing.pub_date ]]
                             td(
                                 data-title="'Sale Date'"
                                 sortable="'sale_date'"
-                                filter="{ 'sale_date': 'text' }"
+                                filter="{ 'sale_date': 'date' }"
                             ) [[ listing.sale_date ]]
                             td(
                                 data-title="'Address'"
@@ -54,5 +55,21 @@ html
                                 sortable="'zip'"
                                 filter="{ 'zip': 'text' }"
                             ) [[ listing.zip ]]
+
+        script(type="text/ng-template" id="ng-table/filters/county.html")
+            input(
+                type="text"
+                name="[[ name ]]"
+                placeholder="ex. Madison"
+                ng-model="params.filter()[name]"
+            )
+
+        script(type="text/ng-template" id="ng-table/filters/date.html")
+            input(
+                type="text"
+                name="[[ name ]]"
+                placeholder="MM/Day/Year"
+                ng-model="params.filter()[name]"
+            )
 
         include detail-modal

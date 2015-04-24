@@ -1,11 +1,11 @@
 form {
     position: relative;
 }
-
+/*
 input[type=radio][ng-model],
 input[type=checkbox][ng-model] {
     display: none;
-}
+}*/
 
 input[type=text],
 input[type=email] {

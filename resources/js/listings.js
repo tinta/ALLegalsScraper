@@ -116,8 +116,13 @@ angular.module('ControllerListings', [
         saveSucceeded: null,
         open: function (listing) {
             console.log(listing)
-            this.data = new RowModel(listing);
+
+            // Work-around for text-highlighting in `body`
+            var edit = _.omit(listing, ['body']);
+            this.data = new RowModel(edit);
             this.data.initiateEdit();
+
+            this.data.body = listing.body;
             this.isOpen = true;
         },
         close: function () {
