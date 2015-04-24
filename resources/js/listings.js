@@ -27,19 +27,29 @@ angular.module('ControllerListings', [
     initTableOptions.sorting = {    // Initial sorting settings
         'pub_date': 'desc'
     };
+    initTableOptions.filter = {};
 
     $scope.tableParams = new ngTableParams(initTableOptions, {
         counts: [],
         total: $scope.listings.length, // length of data
         getData: function($defer, params) {
-            var orderedData = params.sorting() ?
-                $filter('orderBy')($scope.listings, params.orderBy()) :
+            var filteredData = params.filter() ?
+                $filter('filter')($scope.listings, params.filter()) :
                 $scope.listings;
+
+            var orderedData = params.sorting() ?
+                $filter('orderBy')(filteredData, params.orderBy()) :
+                filteredData;
+
+            params.total(orderedData.length); // set total for recalc pagination
 
             var data = orderedData.slice(
                 (params.page() - 1) * params.count(),
                 params.page() * params.count()
             );
+
+            $scope.page = data;
+
 
             $defer.resolve(data);
         }

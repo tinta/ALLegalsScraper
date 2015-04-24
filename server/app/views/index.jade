@@ -24,7 +24,10 @@ html
                 div.col-xs-12
                     h1 AL Legals Foreclosures
                 div.col-xs-12
-                    table.table.table-striped.table-bordered.table-hover(ng-table="tableParams")
+                    table.table.table-striped.table-bordered.table-hover(
+                        ng-table="tableParams"
+                        show-filter="true"
+                    )
                         tr(
                             ng-repeat="listing in $data"
                             ng-click="modal.open(listing)"
@@ -32,31 +35,38 @@ html
                             td(
                                 data-title="'ID'"
                                 sortable="'case_id'"
+                                filter="{ 'case_id': 'text' }"
                             ) [[ listing.case_id ]]
                             td(
                                 data-title="'County'"
                                 sortable="'county'"
+                                filter="{ 'county': 'text' }"
                             ) [[ listing.county ]]
                             //- td(data-title="'Source'") [[ listing.source ]]
                             td(
-                                data-title="'Publish Date'"
+                                data-title="'Pub. Date'"
                                 sortable="'pub_date'"
+                                filter="{ 'pub_date': 'text' }"
                             ) [[ listing.pub_date ]]
                             td(
                                 data-title="'Sale Date'"
                                 sortable="'sale_date'"
+                                filter="{ 'sale_date': 'text' }"
                             ) [[ listing.sale_date ]]
                             td(
                                 data-title="'Address'"
                                 sortable="'street_addr'"
+                                filter="{ 'street_addr': 'text' }"
                             ) [[ listing.street_addr ]]
                             td(
                                 data-title="'City'"
                                 sortable="'city'"
+                                filter="{ 'city': 'text' }"
                             ) [[ listing.city ]]
                             td(
                                 data-title="'Zip'"
                                 sortable="'zip'"
+                                filter="{ 'zip': 'text' }"
                             ) [[ listing.zip ]]
 
         div.modal-wrapper(
