@@ -5,7 +5,7 @@ var port = 3000;
 
 app.set('views', './server/app/views');
 app.set('view engine',  'jade');
-app.use( bodyParser.json() );       // to support JSON-encoded bodies
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use("/resources",   addStaticAssetsPath('/resources') );
 app.use("/angular",     addStaticAssetsPath('/node_modules/angular'));
 app.use("/ng-table",    addStaticAssetsPath('/node_modules/ng-table'));
@@ -34,7 +34,7 @@ app.get('/', function (req, res) {
     ].join(' ');
 
     db.query(sqlGetForeclosures, function(err, foreclosures) {
-        if (err) console.log(err)
+        if (err) throw err;
         foreclosures = foreclosures || {};
         var scope = {};
         scope.foreclosures = JSON.stringify(foreclosures);
@@ -43,7 +43,6 @@ app.get('/', function (req, res) {
 });
 
 app.post('/update', function(req, res) {
-    console.log(req.body)
     var uid = req.body.uid;
 
     if (!uid) return new Error('`uid` must be defined when attempting to update a row');
@@ -66,30 +65,43 @@ app.post('/update', function(req, res) {
         var _list = [];
 
         editableFields.forEach(function(field) {
-            if (req.body[field]) {
-                var colUpdate = util.encaseInTicks(field) + '=' + util.encaseInQuotes(req.body[field] );
-                sqlColumnUpdateList.push(colUpdate)
+            if (req.body[field] != undefined) {
+                var colUpdate = util.encaseInTicks(field) + '=' + req.body[field];
+                _list.push(colUpdate)
             }
         });
 
         return _list.join(', ');
     })();
 
+    var sqlWhereUID = [
+        'WHERE',
+        util.encaseInTicks('uid'),
+        '=',
+        uid
+    ].join(' ');
+
     var sqlUpdate = [
         'UPDATE',
         table,
         'SET',
         sqlColumnUpdateList,
-        'WHERE',
-        util.encaseInTicks('uid'), '=', uid
+        sqlWhereUID
     ].join(' ');
 
-
     db.query(sqlUpdate, function (err) {
-        if (err) {
-            throw err;
-        }
+        if (err) throw err;
 
-        console.log('WOO!')
+        var sqlSelect = [
+            'SELECT *',
+            'FROM', table,
+            sqlWhereUID
+        ].join(' ');
+
+        db.query(sqlSelect, function(err, results) {
+            if (err) throw err;
+            if (!results[0]) throw 'Could not find updated row';
+            res.send(results[0]);
+        });
     });
 });

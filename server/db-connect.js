@@ -5,7 +5,7 @@ var connect = function () {
     options.host = 'localhost';
     options.database = 'alabamalegals';
     options.user = 'scraper';
-    options.password = process.env.HUD_DB_PW;
+    options.password = process.env.SCRAPERPASS;
 
     return mysql.createConnection(options);
 };

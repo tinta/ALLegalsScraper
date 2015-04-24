@@ -14,8 +14,8 @@ options.state = 'AL';
 options.county = 'madison';
 
 var foreclosures = {};
-var startDate = moment().add(-7, 'day').format('MM-DD-YYYY');
-var endDate = moment().add(7, 'day').format('MM-DD-YYYY');
+var startDate = moment().add(-1, 'day').format('MM-DD-YYYY');
+var endDate = moment().add(1, 'day').format('MM-DD-YYYY');
 var scrapeUrl = 'http://www.alabamalegals.com/index.cfm?fuseaction=home';
 
 page.goto(scrapeUrl)
