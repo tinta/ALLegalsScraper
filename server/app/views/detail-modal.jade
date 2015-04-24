@@ -139,7 +139,7 @@ div.page-column.modal-wrapper(
                         i.fa.fa-stack-1x.fa-exclamation.text-green
 
             div.col-xs-12
-                h5 [[ modal.data.model.body ]]
+                div(ng-bind-html="modal.data.model.body")
 
             div.col-xs-12
                 table.table.table-bordered

@@ -1,7 +1,8 @@
 angular.module('ControllerListings', [
 // Dependencies
     'ngTable',
-    'RowModel'
+    'RowModel',
+    'ngSanitize'
 ], function($interpolateProvider) {
     $interpolateProvider.startSymbol('[[');
     $interpolateProvider.endSymbol(']]');
@@ -14,14 +15,65 @@ angular.module('ControllerListings', [
     $window,
     $filter,
     $http,
+    $sce,
     ngTableParams,
     RowModel
 ){
     $scope.listings = $window.listings;
 
+    function highlight (className) {
+        return [
+            '<span class="pad-lr text-white', className ,'">',
+             '$&',
+             '</span>'
+        ].join(' ');
+    }
+
     _.each($scope.listings, function(listing) {
         listing.pub_date = moment(listing.pub_date).format('MM/DD/YYYY');
         listing.timestamp = moment(listing.timestamp).format('MM/DD/YYYY');
+
+        listing.body = (function() {
+            var body = listing.body;
+            var highlightMap = {
+                'bg-red': [
+                    'alabama',
+                    '\sal\s',
+                    'county',
+                ],
+                'bg-orange': [
+                    'January',
+                    'February',
+                    'March',
+                    'April',
+                    'May',
+                    'June',
+                    'July',
+                    'August',
+                    'September',
+                    'October',
+                    'November',
+                    'December',
+                    '20\\d\\d'
+                ],
+                'bg-blue': [
+                    "attorney(\\'?)(s?)",
+                    'courthouse'
+                ],
+                'bg-green': [
+                    "3(\\d{4})(?:\\s)"
+                ]
+            };
+            _.each(highlightMap, function(highlightList, key) {
+                _.each(highlightList, function(text) {
+                    var re = new RegExp(text, 'gi');
+                    var match
+                    body = body.replace(re, highlight(key));
+                });
+            });
+
+            return $sce.trustAsHtml(body);
+        })();
     });
 
     var initTableOptions = {};

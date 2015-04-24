@@ -8,6 +8,7 @@ app.set('view engine',  'jade');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use("/resources",   addStaticAssetsPath('/resources') );
 app.use("/angular",     addStaticAssetsPath('/node_modules/angular'));
+app.use("/angular-sanitize",     addStaticAssetsPath('/node_modules/angular-sanitize'));
 app.use("/ng-table",    addStaticAssetsPath('/node_modules/ng-table'));
 app.use("/lodash",      addStaticAssetsPath('/node_modules/lodash'));
 app.use("/moment",      addStaticAssetsPath('/node_modules/moment'));
