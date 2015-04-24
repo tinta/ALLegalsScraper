@@ -1,0 +1,121 @@
+div.page-column.modal-wrapper(
+    ng-if="modal.isOpen == true"
+)
+    div.modal-bg(
+      ng-click="modal.close()"
+    )
+
+    div.modal.container
+        div.row
+            div.col-xs-12
+                form
+                    table.table.table-bordered
+                        thead
+                            tr
+                                td County
+                                td City
+                                td Zip
+                                td Address
+
+                        tbody
+                            tr
+                                td [[ modal.data.model.county ]]
+
+                                td
+                                    input.invis(
+                                        type="text"
+                                        ng-model="modal.data.editForm.city.value"
+                                        ng-change="modal.data.editForm.all.validate()"
+                                    )
+                                td
+                                    input.invis.input-small(
+                                        type="text"
+                                        ng-model="modal.data.editForm.zip.value"
+                                        ng-change="modal.data.editForm.all.validate()"
+                                    )
+                                td
+                                    input.invis(
+                                        type="text"
+                                        ng-model="modal.data.editForm.street_addr.value"
+                                        ng-change="modal.data.editForm.all.validate()"
+                                    )
+
+                    table.table.table-bordered
+                        thead
+                            tr
+                                td Sale Date
+                                td Sale Location
+                                td Price
+                        tbody
+                            tr
+                                td
+                                    input.invis.input-small(
+                                        type="text"
+                                        ng-model="modal.data.editForm.sale_date.value"
+                                        ng-change="modal.data.editForm.all.validate()"
+                                    )
+                                td
+                                    input.invis(
+                                        type="text"
+                                        ng-model="modal.data.editForm.sale_location.value"
+                                        ng-change="modal.data.editForm.all.validate()"
+                                    )
+                                td
+                                    input.invis.input-small(
+                                        type="text"
+                                        ng-model="modal.data.editForm.price.value"
+                                        ng-change="modal.data.editForm.all.validate()"
+                                    )
+
+                    table.table.table-bordered
+                        thead
+                            tr
+                                td Bed
+                                td Bath
+                                td Lot Area (acres)
+                                td Indoor Area (sqft)
+
+                        tbody
+                            tr
+                                td
+                                    input.invis.input-small(
+                                        type="text"
+                                        ng-model="modal.data.editForm.bed.value"
+                                        ng-change="modal.data.editForm.all.validate()"
+                                    )
+                                td
+                                    input.invis.input-small(
+                                        type="text"
+                                        ng-model="modal.data.editForm.bath.value"
+                                        ng-change="modal.data.editForm.all.validate()"
+                                    )
+                                td
+                                    input.invis.input-small(
+                                        type="text"
+                                        ng-model="modal.data.editForm.lot_area.value"
+                                        ng-change="modal.data.editForm.all.validate()"
+                                    )
+                                td
+                                    input.invis.input-small(
+                                        type="text"
+                                        ng-model="modal.data.editForm.indoor_area.value"
+                                        ng-change="modal.data.editForm.all.validate()"
+                                    )
+
+            div.col-xs-12
+                h5 [[ modal.data.model.body ]]
+
+            div.col-xs-12
+                table.table.table-bordered
+                    thead
+                        tr
+                            td ID
+                            td Pub. Date
+                            td Date Scraped
+                            td Source
+                    tbody
+                        tr
+                            td [[ modal.data.model.case_id ]]
+                            td [[ modal.data.model.pub_date ]]
+                            td [[ modal.data.model.timestamp ]]
+                            td [[ modal.data.model.source ]]

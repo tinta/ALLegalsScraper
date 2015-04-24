@@ -1,26 +1,12 @@
 doctype html
 html
-    head
-        meta(http-equiv='content-type', content='text/html; charset=utf-8')
-
-        link(rel="stylesheet" type="text/css" href="/bootstrap/dist/css/bootstrap.min.css")
-        link(rel="stylesheet" type="text/css" href="/ng-table/dist/ng-table.min.css")
-        link(rel="stylesheet" type="text/css" href="/resources/css/index.css")
-
-        script(type='text/javascript', src="/lodash/index.js")
-        script(type='text/javascript', src="/moment/moment.js")
-        script(type='text/javascript', src="/angular/angular.js")
-        script(type='text/javascript', src="/ng-table/dist/ng-table.js")
-        script(type='text/javascript', src="/resources/js/listings.js")
-        script(type='text/javascript', src="https://code.jquery.com/jquery-2.1.3.min.js")
-        script(type='text/javascript').
-            window.listings = !{ foreclosures };
+    include head
 
     body.text-center(
         ng-app="ControllerListings"
         ng-controller="ControllerListings"
     )
-        div.container
+        div.page-column.container
             div.row
                 div.col-xs-12
                     h1 AL Legals Foreclosures
@@ -43,7 +29,6 @@ html
                                 sortable="'county'"
                                 filter="{ 'county': 'text' }"
                             ) [[ listing.county ]]
-                            //- td(data-title="'Source'") [[ listing.source ]]
                             td(
                                 data-title="'Pub. Date'"
                                 sortable="'pub_date'"
@@ -70,52 +55,4 @@ html
                                 filter="{ 'zip': 'text' }"
                             ) [[ listing.zip ]]
 
-        div.modal-wrapper(
-            ng-if="modal.isOpen == true"
-        )
-            div.modal-bg(
-              ng-click="modal.close()"
-            )
-
-            div.modal.container
-                div.row
-                    div.col-xs-12
-                        table.table.table-bordered
-                            thead
-                                tr
-                                    td ID
-                                    td Pub. Date
-                                    td Date Scraped
-                                    td Source
-                                    td Sale Date
-                                    td Sale Location
-                            tbody
-                                tr
-                                    td [[ modal.data.case_id ]]
-                                    td [[ modal.data.pub_date ]]
-                                    td [[ modal.data.timestamp ]]
-                                    td [[ modal.data.source ]]
-                                    td [[ modal.data.sale_date ]]
-                                    td [[ modal.data.sale_location ]]
-
-                        table.table.table-bordered
-                            thead
-                                tr
-                                    td County
-                                    td City
-                                    td Zip
-                                    td Address
-                                    td Bed
-                                    td Bath
-                            tbody
-                                tr
-                                    td [[ modal.data.county ]]
-                                    td [[ modal.data.city ]]
-                                    td [[ modal.data.zip ]]
-                                    td [[ modal.data.street_addr ]]
-                                    td [[ modal.data.bed ]]
-                                    td [[ modal.data.bath ]]
-
-
-                    div.col-xs-12
-                        h5 [[ modal.data.body ]]
+        include detail-modal

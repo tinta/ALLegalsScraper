@@ -1,6 +1,7 @@
 angular.module('ControllerListings', [
 // Dependencies
-    'ngTable'
+    'ngTable',
+    'RowModel'
 ], function($interpolateProvider) {
     $interpolateProvider.startSymbol('[[');
     $interpolateProvider.endSymbol(']]');
@@ -12,7 +13,8 @@ angular.module('ControllerListings', [
     $timeout,
     $window,
     $filter,
-    ngTableParams
+    ngTableParams,
+    RowModel
 ){
     $scope.listings = $window.listings;
 
@@ -33,23 +35,23 @@ angular.module('ControllerListings', [
         counts: [],
         total: $scope.listings.length, // length of data
         getData: function($defer, params) {
+            // Filter through the rows
             var filteredData = params.filter() ?
                 $filter('filter')($scope.listings, params.filter()) :
                 $scope.listings;
 
+            // Let pagination know what the new number of rows are
+            params.total(filteredData.length);
+
+            // Then sort the rows
             var orderedData = params.sorting() ?
                 $filter('orderBy')(filteredData, params.orderBy()) :
                 filteredData;
-
-            params.total(orderedData.length); // set total for recalc pagination
 
             var data = orderedData.slice(
                 (params.page() - 1) * params.count(),
                 params.page() * params.count()
             );
-
-            $scope.page = data;
-
 
             $defer.resolve(data);
         }
@@ -60,7 +62,7 @@ angular.module('ControllerListings', [
         isOpen: false,
         open: function (listing) {
             console.log(listing)
-            this.data = listing;
+            this.data = new RowModel(listing);
             this.isOpen = true;
         },
         close: function () {
@@ -68,6 +70,7 @@ angular.module('ControllerListings', [
             this.isOpen = false;
         }
     };
+
 
     // Dev
     $window.logScope = function () {
