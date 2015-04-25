@@ -19,21 +19,6 @@ table.table.table-bordered
         tr
             td [[ modal.data.model.county ]]
 
-            td
-                input#city.invis(
-                    type="text"
-                    ng-model="modal.data.editForm.city.value"
-                    ng-change="modal.data.editForm.all.validate()"
-                )
-            td
-                input#zip.invis.input-small(
-                    type="text"
-                    ng-model="modal.data.editForm.zip.value"
-                    ng-change="modal.data.editForm.all.validate()"
-                )
-            td
-                input#street_addr.invis(
-                    type="text"
-                    ng-model="modal.data.editForm.street_addr.value"
-                    ng-change="modal.data.editForm.all.validate()"
-                )
+            +editableTD('city', 1)
+            +editableTD('zip', 2)
+            +editableTD('street_addr', 3)

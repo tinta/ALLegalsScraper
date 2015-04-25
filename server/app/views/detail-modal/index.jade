@@ -1,3 +1,5 @@
+include editableTD
+
 div.page-column.modal-wrapper(
     ng-if="modal.isOpen == true"
 )
@@ -19,7 +21,7 @@ div.page-column.modal-wrapper(
             div.col-xs-12
                 div(ng-bind-html=":: modal.data.body")
 
-                div.spacer-md
+                div.spacer-xl
 
             div.col-xs-12
                 table.table.table-bordered

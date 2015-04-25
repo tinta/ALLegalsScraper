@@ -23,27 +23,7 @@ table.table.table-bordered
 
     tbody
         tr
-            td
-                input#bed.invis.input-small(
-                    type="text"
-                    ng-model="modal.data.editForm.bed.value"
-                    ng-change="modal.data.editForm.all.validate()"
-                )
-            td
-                input#bath.invis.input-small(
-                    type="text"
-                    ng-model="modal.data.editForm.bath.value"
-                    ng-change="modal.data.editForm.all.validate()"
-                )
-            td
-                input#lot_area.invis.input-small(
-                    type="text"
-                    ng-model="modal.data.editForm.lot_area.value"
-                    ng-change="modal.data.editForm.all.validate()"
-                )
-            td
-                input#indoor_area.invis.input-small(
-                    type="text"
-                    ng-model="modal.data.editForm.indoor_area.value"
-                    ng-change="modal.data.editForm.all.validate()"
-                )
+            +editableTD('bed', 1)
+            +editableTD('bath', 2)
+            +editableTD('lot_area', 3)
+            +editableTD('indoor_area', 4)

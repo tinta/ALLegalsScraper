@@ -22,7 +22,7 @@ angular
 
         Field.prototype.change = function () {
             this.isUnchanged = String(this.value) == String(this.initial);
-            this.validate();
+            this.isValid = this.validate();
 
             if (!$rootScope.$$phase) $rootScope.$apply();
         };

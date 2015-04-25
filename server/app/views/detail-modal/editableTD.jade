@@ -1,0 +1,14 @@
+mixin editableTD (NAME, INDEX)
+    td(
+        ng-class="{\
+            'bg-green text-white': !modal.data.editForm.#{NAME}.isUnchanged && modal.data.editForm.#{NAME}.isValid,\
+            'bg-red text-white': !modal.data.editForm.#{NAME}.isUnchanged && !modal.data.editForm.#{NAME}.isValid\
+        }"
+    )
+        input.invis(
+            id="#{NAME}"
+            tabindex="#{INDEX}"
+            type="text"
+            ng-model="modal.data.editForm.#{NAME}.value"
+            ng-change="modal.data.editForm.all.validate()"
+        )

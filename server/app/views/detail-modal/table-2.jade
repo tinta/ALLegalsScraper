@@ -15,21 +15,6 @@ table.table.table-bordered
                     i.fa.fa-pencil
     tbody
         tr
-            td
-                input#sale_date.invis.input-small(
-                    type="text"
-                    ng-model="modal.data.editForm.sale_date.value"
-                    ng-change="modal.data.editForm.all.validate()"
-                )
-            td
-                input#sale_location.invis(
-                    type="text"
-                    ng-model="modal.data.editForm.sale_location.value"
-                    ng-change="modal.data.editForm.all.validate()"
-                )
-            td
-                input#price.invis.input-small(
-                    type="text"
-                    ng-model="modal.data.editForm.price.value"
-                    ng-change="modal.data.editForm.all.validate()"
-                )
+            +editableTD('sale_date', 1)
+            +editableTD('sale_location', 2)
+            +editableTD('price', 3)

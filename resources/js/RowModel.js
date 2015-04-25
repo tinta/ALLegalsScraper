@@ -87,23 +87,18 @@ angular
             var This = this;
             this.editForm = {};
 
-            function validateInt (minVal, maxVal) {
+            function validateNum (minVal, maxVal) {
                 var value = this.value;
                 this.errors = [];
 
-                if (!Util.isDefined(value)) {
-                    this.errors.push(this.title + " must be defined.")
-                    return false;
-                }
+                if (!Util.isDefined(value)) { return true; }
 
                 var isValid = true;
-                value = String(value);
-                var isInteger = parseInt(value) == value;
                 var isGTMinVal = value >= minVal;
                 var isLTMaxVal = value <= maxVal
 
-                if (!isInteger) {
-                    this.errors.push(this.title + " must be a valid integer.")
+                if (!Util.isNumber(value)) {
+                    this.errors.push(this.title + " must be a valid number.")
                     return false;
                 }
 
@@ -163,7 +158,7 @@ angular
 
             this.editForm.zip = new FieldModel("Zip");
             this.editForm.zip.validate = function () {
-                return validateInt.bind(this)(0, 100000);
+                return validateNum.bind(this)(0, 100000);
             };
 
             this.editForm.street_addr = new FieldModel("Address");
@@ -173,17 +168,17 @@ angular
 
             this.editForm.bed = new FieldModel("Bed");
             this.editForm.bed.validate = function () {
-                return validateStr.bind(this)(0, 100);
+                return validateNum.bind(this)(0, 10);
             };
 
             this.editForm.bath = new FieldModel("Bath");
             this.editForm.bath.validate = function () {
-                return validateStr.bind(this)(0, 100);
+                return validateNum.bind(this)(0, 10);
             };
 
             this.editForm.price = new FieldModel("Price");
             this.editForm.price.validate = function () {
-                return validateStr.bind(this)(0, 100);
+                return validateNum.bind(this)(1000, 1000000);
             };
 
             this.editForm.lot_area = new FieldModel("Lot Area");
