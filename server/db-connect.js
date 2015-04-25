@@ -7,9 +7,6 @@ var connect = function () {
     options.user = 'scraper';
     options.password = process.env.SCRAPERPASS;
 
-
-    console.log(options.password)
-
     return mysql.createConnection(options);
 };
 
