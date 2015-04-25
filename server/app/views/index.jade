@@ -6,12 +6,20 @@ html
         ng-app="ControllerListings"
         ng-controller="ControllerListings"
     )
+        div.spacer-md
+
+        div.bg-red
+            div.page-column
+                div.spacer-xxs
+                h1.text-thin.text-white AL Legals Foreclosures
+                div.spacer-xs
+
+        div.spacer-md
+
         div.page-column.container
             div.row
                 div.col-xs-12
-                    h1 AL Legals Foreclosures
-                div.col-xs-12
-                    table.table.table-striped.table-bordered.table-hover(
+                    table.table.table-striped.table-bordered.table-hover.bg-white(
                         ng-table="tableParams"
                         show-filter="true"
                     )
@@ -57,7 +65,7 @@ html
                             ) [[ listing.zip ]]
 
         script(type="text/ng-template" id="ng-table/filters/county.html")
-            input(
+            input.input-filter.form-control(
                 type="text"
                 name="[[ name ]]"
                 placeholder="ex. Madison"
@@ -65,11 +73,11 @@ html
             )
 
         script(type="text/ng-template" id="ng-table/filters/date.html")
-            input(
+            input.input-filter.form-control(
                 type="text"
                 name="[[ name ]]"
-                placeholder="MM/Day/Year"
+                placeholder="mm/dd/yyyy"
                 ng-model="params.filter()[name]"
             )
 
-        include detail-modal
+        include detail-modal/index

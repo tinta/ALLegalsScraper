@@ -1,0 +1,39 @@
+table.table.table-bordered
+    thead
+        tr
+            td County
+            td
+                label.editable(for="city")
+                    span City
+                    i.fa.fa-pencil
+            td
+                label.editable(for="zip")
+                    span Zip
+                    i.fa.fa-pencil
+            td
+                label.editable(for="street_addr")
+                    span Address
+                    i.fa.fa-pencil
+
+    tbody
+        tr
+            td [[ modal.data.model.county ]]
+
+            td
+                input#city.invis(
+                    type="text"
+                    ng-model="modal.data.editForm.city.value"
+                    ng-change="modal.data.editForm.all.validate()"
+                )
+            td
+                input#zip.invis.input-small(
+                    type="text"
+                    ng-model="modal.data.editForm.zip.value"
+                    ng-change="modal.data.editForm.all.validate()"
+                )
+            td
+                input#street_addr.invis(
+                    type="text"
+                    ng-model="modal.data.editForm.street_addr.value"
+                    ng-change="modal.data.editForm.all.validate()"
+                )

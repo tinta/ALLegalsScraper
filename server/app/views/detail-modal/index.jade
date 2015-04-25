@@ -1,0 +1,37 @@
+div.page-column.modal-wrapper(
+    ng-if="modal.isOpen == true"
+)
+    div.modal-bg(
+      ng-click="modal.close()"
+    )
+
+    div.modal.container
+        div.row
+            div.col-xs-12
+                form
+                    include table-1
+                    include table-2
+                    include table-3
+
+            div.col-xs-12
+                include action-buttons
+
+            div.col-xs-12
+                div(ng-bind-html=":: modal.data.body")
+
+                div.spacer-md
+
+            div.col-xs-12
+                table.table.table-bordered
+                    thead
+                        tr
+                            td ID
+                            td Pub. Date
+                            td Date Scraped
+                            td Source
+                    tbody
+                        tr
+                            td [[ modal.data.model.case_id ]]
+                            td [[ modal.data.model.pub_date ]]
+                            td [[ modal.data.model.timestamp ]]
+                            td [[ modal.data.model.source ]]

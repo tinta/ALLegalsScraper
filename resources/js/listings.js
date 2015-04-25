@@ -23,7 +23,7 @@ angular.module('ControllerListings', [
 
     function highlight (className) {
         return [
-            '<span class="pad-lr text-white', className ,'">',
+            '<span class="pad-lr text-white text-thin', className ,'">',
              '$&',
              '</span>'
         ].join(' ');
@@ -38,8 +38,8 @@ angular.module('ControllerListings', [
             var highlightMap = {
                 'bg-red': [
                     'alabama',
-                    '\sal\s',
-                    'county',
+                    '\\sal\\s',
+                    '(?:\\w*\\s)county',
                 ],
                 'bg-orange': [
                     'January',
@@ -78,7 +78,7 @@ angular.module('ControllerListings', [
 
     var initTableOptions = {};
     initTableOptions.page = 1;      // Show first page
-    initTableOptions.count = 20;    // Amount of rows per page
+    initTableOptions.count = 10;    // Amount of rows per page
     initTableOptions.sorting = {    // Initial sorting settings
         'pub_date': 'desc'
     };
@@ -115,10 +115,9 @@ angular.module('ControllerListings', [
         isOpen: false,
         saveSucceeded: null,
         open: function (listing) {
-            console.log(listing)
-
             // Work-around for text-highlighting in `body`
             var edit = _.omit(listing, ['body']);
+
             this.data = new RowModel(edit);
             this.data.initiateEdit();
 
@@ -141,7 +140,7 @@ angular.module('ControllerListings', [
 
             var postBody = this.data.model;
 
-            // Angular's $http directive isnt allowing us to post data to the express server for some reason...
+            // Angular's `$http` service isnt allowing us to post data to the express server for some reason...
             $.ajax({
                 method: 'POST',
                 url: '/update',

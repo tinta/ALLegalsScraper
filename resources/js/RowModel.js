@@ -91,8 +91,8 @@ angular
                 var value = this.value;
                 this.errors = [];
 
-                if (Util.isDefined(value)) {
-                    this.errors.push(name + " must be defined.")
+                if (!Util.isDefined(value)) {
+                    this.errors.push(this.title + " must be defined.")
                     return false;
                 }
 
@@ -163,7 +163,7 @@ angular
 
             this.editForm.zip = new FieldModel("Zip");
             this.editForm.zip.validate = function () {
-                return validateStr.bind(this)(0, 100);
+                return validateInt.bind(this)(0, 100000);
             };
 
             this.editForm.street_addr = new FieldModel("Address");

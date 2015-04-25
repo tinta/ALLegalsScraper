@@ -10,6 +10,10 @@ label,
     cursor: pointer;
 }
 
+.bg-white {
+    background-color: #ffffff;
+}
+
 .bg-green {
     background-color: #5E9E55;
 }

@@ -1,0 +1,35 @@
+table.table.table-bordered
+    thead
+        tr
+            td
+                label.editable(for="sale_date")
+                    span Sale Date
+                    i.fa.fa-pencil
+            td
+                label.editable(for="sale_location")
+                    span Sale Location
+                    i.fa.fa-pencil
+            td
+                label.editable(for="price")
+                    span Price
+                    i.fa.fa-pencil
+    tbody
+        tr
+            td
+                input#sale_date.invis.input-small(
+                    type="text"
+                    ng-model="modal.data.editForm.sale_date.value"
+                    ng-change="modal.data.editForm.all.validate()"
+                )
+            td
+                input#sale_location.invis(
+                    type="text"
+                    ng-model="modal.data.editForm.sale_location.value"
+                    ng-change="modal.data.editForm.all.validate()"
+                )
+            td
+                input#price.invis.input-small(
+                    type="text"
+                    ng-model="modal.data.editForm.price.value"
+                    ng-change="modal.data.editForm.all.validate()"
+                )

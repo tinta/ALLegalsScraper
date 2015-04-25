@@ -1,0 +1,42 @@
+[class*="-spacer-"] {
+  margin: 0;
+}
+[class*="-spacer-"] + * {
+  clear: both;
+}
+
+.spacer-none {
+  height: 0px;
+}
+
+.spacer-1 {
+  height: 1px;
+}
+
+.spacer-xxs {
+  height: 4px;
+}
+
+.spacer-xs {
+  height: 8px;
+}
+
+.spacer-sm {
+  height: 12px;
+}
+
+.spacer-md {
+  height: 16px;
+}
+
+.spacer-lg {
+  height: 24px;
+}
+
+.spacer-xl {
+  height: 32px;
+}
+
+.spacer-xxl {
+  height: 48px;
+}

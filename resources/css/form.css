@@ -1,11 +1,6 @@
 form {
     position: relative;
 }
-/*
-input[type=radio][ng-model],
-input[type=checkbox][ng-model] {
-    display: none;
-}*/
 
 input[type=text],
 input[type=email] {
@@ -18,7 +13,7 @@ input[type=email] {
     padding: 5px 10px;
     color: inherit;
     border: 1px solid #414141;
-    width: 120px;
+    width: 100%;
 }
 
 input[type=text]:focus,
@@ -35,10 +30,18 @@ input[type=email].invis {
     box-shadow: none;
 }
 
-input.input-small {
-    width: 60px;
+.editable {
+    position: relative;
+    width: 100%;
+    font-weight: 400;
 }
 
-input.input-large {
-    width: 180px;
+.editable i.fa {
+    right: 4px;
+    top: 2px;
+    position: absolute;
+}
+
+::-webkit-input-placeholder { /* WebKit browsers */
+    font-weight: 400;
 }
