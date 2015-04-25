@@ -2,6 +2,7 @@
 var Nightmare = require('nightmare');
 var _ = require('lodash');
 var moment = require('moment');
+var squel = require("squel").useFlavour('mysql');
 
 // Instantiations
 var db = require('./../db-connect.js')();
@@ -13,6 +14,7 @@ var options = {};
 options.state = 'AL';
 options.county = 'madison';
 
+var table = "foreclosures";
 var foreclosures = {};
 var startDate = moment().add(-1, 'day').format('MM-DD-YYYY');
 var endDate = moment().add(1, 'day').format('MM-DD-YYYY');
@@ -51,8 +53,7 @@ page.goto(scrapeUrl)
         function defineForeclosure (res) {
             var foreclosure = {};
             var body = res.DATA.BODY
-                .join(' || ')
-                .replace('\n', ' ');
+                .join(' || ');
             foreclosure.body = body;
             foreclosure.caseId = res.DATA.REC_NUM[0];
             foreclosure.heading = res.DATA.HEADING[0];
@@ -83,7 +84,8 @@ page.goto(scrapeUrl)
         });
         uids.sql = uids.scraped.join(', ');
 
-        var SQLFindListing = "SELECT * FROM foreclosures WHERE case_id IN (" + uids.sql + ");";
+        var SQLFindListing = squel.select().from(table).where("case_id IN (" + uids.sql + ")").toString();
+        console.log("1. " + SQLFindListing);
         var query = db.query(SQLFindListing);
 
         query.on('result', function(result) {
@@ -97,31 +99,27 @@ page.goto(scrapeUrl)
             if (uids.absent.length > 0) {
                 uids.absent.forEach(function(absentUid) {
                     var absentForeclosure = scrapedForeclosures[absentUid];
-                    var insertKeysList, insertValuesList, SQLInsertListing;
                     var pubDate = moment(absentForeclosure.pubDate, 'MM-DD-YYYY').format('YYYY-MM-DD');
 
-                    insertKeysList =["case_id", "county", "body", "source", "pub_date",
-                        // Optional
-                        // util.encaseInTicks('street_addr'),
-                        // util.encaseInTicks('city'),
-                        // util.encaseInTicks('sale_location'),
-                        // util.encaseInTicks('sale_date'),
-                        // util.encaseInTicks('zip'),
-                        // util.encaseInTicks('price'),
-                        // util.encaseInTicks('bed')
-                        // util.encaseInTicks('bath')
-                    ].join(', ');
+                    insertMap = {};
+                    insertMap["case_id"] = db.escape(absentForeclosure.caseId);
+                    insertMap["county"] = db.escape(absentForeclosure.county);
+                    insertMap["body"] = db.escape(absentForeclosure.body);
+                    insertMap["source"] = db.escape(absentForeclosure.source);
+                    insertMap["pub_date"] = db.escape(pubDate);
 
-                    insertValuesList = [
-                        db.escape(absentForeclosure.caseId),
-                        db.escape(absentForeclosure.county),
-                        db.escape(absentForeclosure.body),
-                        db.escape(absentForeclosure.source),
-                        db.escape(pubDate)
-                    ].join(', ');
+                    // Optional
+                    // util.encaseInTicks('street_addr'),
+                    // util.encaseInTicks('city'),
+                    // util.encaseInTicks('sale_location'),
+                    // util.encaseInTicks('sale_date'),
+                    // util.encaseInTicks('zip'),
+                    // util.encaseInTicks('price'),
+                    // util.encaseInTicks('bed')
+                    // util.encaseInTicks('bath')
 
-                    SQLInsertListing = "INSERT INTO foreclosures (" + insertKeysList + ") VALUES (" + insertValuesList + ");";
-
+                    SQLInsertListing = squel.insert().into(table).setFields(insertMap).toString();
+                    console.log("2. " + SQLInsertListing);
                     db.query(SQLInsertListing, function(err) {
                         if (err) {
                             db.end();
