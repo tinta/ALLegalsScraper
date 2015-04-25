@@ -32,48 +32,6 @@ angular.module('ControllerListings', [
     _.each($scope.listings, function(listing) {
         listing.pub_date = moment(listing.pub_date).format('MM/DD/YYYY');
         listing.timestamp = moment(listing.timestamp).format('MM/DD/YYYY');
-
-        listing.body = (function() {
-            var body = listing.body;
-            var highlightMap = {
-                'bg-red': [
-                    'alabama',
-                    '\\sal\\s',
-                    '(?:\\w*\\s)county',
-                ],
-                'bg-orange': [
-                    'January',
-                    'February',
-                    'March',
-                    'April',
-                    'May',
-                    'June',
-                    'July',
-                    'August',
-                    'September',
-                    'October',
-                    'November',
-                    'December',
-                    '20\\d\\d'
-                ],
-                'bg-blue': [
-                    "attorney(\\'?)(s?)",
-                    'courthouse'
-                ],
-                'bg-green': [
-                    "3(\\d{4})(?:\\s)"
-                ]
-            };
-            _.each(highlightMap, function(highlightList, key) {
-                _.each(highlightList, function(text) {
-                    var re = new RegExp(text, 'gi');
-                    var match
-                    body = body.replace(re, highlight(key));
-                });
-            });
-
-            return $sce.trustAsHtml(body);
-        })();
     });
 
     var initTableOptions = {};
@@ -117,12 +75,52 @@ angular.module('ControllerListings', [
         open: function (listing) {
             // Work-around for text-highlighting in `body`
             var edit = _.omit(listing, ['body']);
-
             this.data = new RowModel(edit);
-            this.data.initiateEdit();
 
-            this.data.body = listing.body;
+            this.data.initiateEdit();
             this.isOpen = true;
+
+            this.data.body = (function() {
+                var body = listing.body;
+                var highlightMap = {
+                    'bg-red': [
+                        'alabama',
+                        '\\sal\\s',
+                        '(?:\\w*\\s)county',
+                    ],
+                    'bg-orange': [
+                        'January',
+                        'February',
+                        'March',
+                        'April',
+                        'May',
+                        'June',
+                        'July',
+                        'August',
+                        'September',
+                        'October',
+                        'November',
+                        'December',
+                        '20\\d\\d'
+                    ],
+                    'bg-blue': [
+                        "attorney(\\'?)(s?)",
+                        'courthouse'
+                    ],
+                    'bg-green': [
+                        "3(\\d{4})(?:\\s)"
+                    ]
+                };
+                _.each(highlightMap, function(highlightList, key) {
+                    _.each(highlightList, function(text) {
+                        var re = new RegExp(text, 'gi');
+                        var match
+                        body = body.replace(re, highlight(key));
+                    });
+                });
+
+                return $sce.trustAsHtml(body);
+            })();
         },
         close: function () {
             this.data = null;
