@@ -85,7 +85,7 @@ app.post('/update', function(req, res) {
 
     if (Object.keys(sqlColumnUpdateMap).length === 0) return new Error('no editable fields were passed to endpoint')
 
-    var sqlUpdate = squel.update().table(table).setFields(sqlColumnUpdateMap).where("uid = " + db.escape(uid)).toString();
+    var sqlUpdate = squel.update({replaceSingleQuotes: true}).table(table).setFields(sqlColumnUpdateMap).where("uid = " + db.escape(uid)).toString();
     console.log("2. "  + sqlUpdate);
 
     db.query(sqlUpdate, function (err) {

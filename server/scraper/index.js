@@ -2,6 +2,7 @@
 var Nightmare = require('nightmare');
 var _ = require('lodash');
 var moment = require('moment');
+var squel = require("squel").useFlavour('mysql');
 
 // Instantiations
 var db = require('./../db-connect.js')();
@@ -16,7 +17,7 @@ options.county = 'madison';
 var table = "foreclosures";
 var foreclosures = {};
 var startDate = moment().add(-1, 'day').format('MM-DD-YYYY');
-var endDate = moment().add(0, 'day').format('MM-DD-YYYY');
+var endDate = moment().add(1, 'day').format('MM-DD-YYYY');
 var scrapeUrl = 'http://www.alabamalegals.com/index.cfm?fuseaction=home';
 
 page.goto(scrapeUrl)
@@ -76,25 +77,19 @@ page.goto(scrapeUrl)
 
         return foreclosures;
     }, function(scrapedForeclosures) {
+
         var uids = {};
         uids.scraped = _.keys(scrapedForeclosures);
         uids.present = [];
         uids.absent = [];
         uids.sql = [];
-
         uids.scraped.forEach(function(uid, index) {
-    		uids.scraped[index] = db.escape(parseInt(uid));
+            uids.scraped[index] = db.escape(parseInt(uid));
             uids.sql.push('case_id = ' + uids.scraped[index]);
         });
 
-        var SQLFindListing = [
-            'SELECT *',
-            'FROM',
-            table,
-            'WHERE',
-            uids.sql.join(' OR ')
-        ].join(' ');
-
+        var SQLFindListing = squel.select().from(table).where(uids.sql.join(" OR ")).toString();
+        console.log("1. " + SQLFindListing);
         var query = db.query(SQLFindListing);
 
         query.on('result', function(result) {
@@ -128,13 +123,9 @@ page.goto(scrapeUrl)
                         // util.encaseInTicks('bed')
                         // util.encaseInTicks('bath')
 
-                        var SQLInsertListing = [
-                            'INSERT INTO',
-                            table,
-                            'SET ?'
-                        ].join(' ');
-
-                        db.query(SQLInsertListing, insertMap, function(err) {
+                        SQLInsertListing = squel.insert({replaceSingleQuotes: true}).into(table).setFields(insertMap).toString();
+                        console.log("2. " + SQLInsertListing);
+                        db.query(SQLInsertListing, function(err) {
                             if (err) {
                                 db.end();
                                 throw err;
@@ -144,6 +135,7 @@ page.goto(scrapeUrl)
 
                             if (uids.absent.length === insertedRows) {
                                 db.end();
+                                console.log('WOOOOOOOOOO!');
                             }
                         });
                     }
