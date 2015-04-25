@@ -1,1 +1,0 @@
-mysql -u al_user --password=$HUD_DB_PW 'al_legals'

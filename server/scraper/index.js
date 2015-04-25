@@ -2,7 +2,6 @@
 var Nightmare = require('nightmare');
 var _ = require('lodash');
 var moment = require('moment');
-var squel = require("squel").useFlavour('mysql');
 
 // Instantiations
 var db = require('./../db-connect.js')();
@@ -17,7 +16,7 @@ options.county = 'madison';
 var table = "foreclosures";
 var foreclosures = {};
 var startDate = moment().add(-1, 'day').format('MM-DD-YYYY');
-var endDate = moment().add(1, 'day').format('MM-DD-YYYY');
+var endDate = moment().add(0, 'day').format('MM-DD-YYYY');
 var scrapeUrl = 'http://www.alabamalegals.com/index.cfm?fuseaction=home';
 
 page.goto(scrapeUrl)
@@ -40,12 +39,15 @@ page.goto(scrapeUrl)
         postOptions.data = {};
         postOptions.async = false;
         postOptions.success = function (res) {
-            var body, isForeclosure;
+            var body, isForeclosure, foreclosure;
             if (res.DATA) {
                 body = res.DATA.BODY[0];
                 isForeclosure = body.toLowerCase().indexOf('foreclosure') > -1;
                 if (isForeclosure) {
-                    foreclosures[postOptions.data.id] = defineForeclosure(res);
+                    foreclosure = defineForeclosure(res);
+                    if (foreclosure) {
+                        foreclosures[postOptions.data.id] = foreclosure;
+                    }
                 }
             }
         };
@@ -74,22 +76,29 @@ page.goto(scrapeUrl)
 
         return foreclosures;
     }, function(scrapedForeclosures) {
-
         var uids = {};
         uids.scraped = _.keys(scrapedForeclosures);
         uids.present = [];
         uids.absent = [];
-        uids.scraped.forEach(function(uid) {
-		uid = db.escape(uid);
-        });
-        uids.sql = uids.scraped.join(', ');
+        uids.sql = [];
 
-        var SQLFindListing = squel.select().from(table).where("case_id IN (" + uids.sql + ")").toString();
-        console.log("1. " + SQLFindListing);
+        uids.scraped.forEach(function(uid, index) {
+    		uids.scraped[index] = db.escape(parseInt(uid));
+            uids.sql.push('case_id = ' + uids.scraped[index]);
+        });
+
+        var SQLFindListing = [
+            'SELECT *',
+            'FROM',
+            table,
+            'WHERE',
+            uids.sql.join(' OR ')
+        ].join(' ');
+
         var query = db.query(SQLFindListing);
 
         query.on('result', function(result) {
-            uids.present.push(result.propertyCase);
+            uids.present.push(result.case_id);
         });
 
         query.on('end', function() {
@@ -99,41 +108,48 @@ page.goto(scrapeUrl)
             if (uids.absent.length > 0) {
                 uids.absent.forEach(function(absentUid) {
                     var absentForeclosure = scrapedForeclosures[absentUid];
-                    var pubDate = moment(absentForeclosure.pubDate, 'MM-DD-YYYY').format('YYYY-MM-DD');
+                    if (absentForeclosure) {
+                        var pubDate = moment(absentForeclosure.pubDate, 'MM-DD-YYYY').format('YYYY-MM-DD');
 
-                    insertMap = {};
-                    insertMap["case_id"] = db.escape(absentForeclosure.caseId);
-                    insertMap["county"] = db.escape(absentForeclosure.county);
-                    insertMap["body"] = db.escape(absentForeclosure.body);
-                    insertMap["source"] = db.escape(absentForeclosure.source);
-                    insertMap["pub_date"] = db.escape(pubDate);
+                        var insertMap = {};
+                        insertMap["case_id"] = parseInt(absentForeclosure.caseId);
+                        insertMap["county"] = absentForeclosure.county;
+                        insertMap["body"] = absentForeclosure.body;
+                        insertMap["source"] = absentForeclosure.source;
+                        insertMap["pub_date"] = pubDate;
 
-                    // Optional
-                    // util.encaseInTicks('street_addr'),
-                    // util.encaseInTicks('city'),
-                    // util.encaseInTicks('sale_location'),
-                    // util.encaseInTicks('sale_date'),
-                    // util.encaseInTicks('zip'),
-                    // util.encaseInTicks('price'),
-                    // util.encaseInTicks('bed')
-                    // util.encaseInTicks('bath')
+                        // Optional
+                        // util.encaseInTicks('street_addr'),
+                        // util.encaseInTicks('city'),
+                        // util.encaseInTicks('sale_location'),
+                        // util.encaseInTicks('sale_date'),
+                        // util.encaseInTicks('zip'),
+                        // util.encaseInTicks('price'),
+                        // util.encaseInTicks('bed')
+                        // util.encaseInTicks('bath')
 
-                    SQLInsertListing = squel.insert().into(table).setFields(insertMap).toString();
-                    console.log("2. " + SQLInsertListing);
-                    db.query(SQLInsertListing, function(err) {
-                        if (err) {
-                            db.end();
-                            throw err;
-                        }
+                        var SQLInsertListing = [
+                            'INSERT INTO',
+                            table,
+                            'SET ?'
+                        ].join(' ');
 
-                        insertedRows++;
+                        db.query(SQLInsertListing, insertMap, function(err) {
+                            if (err) {
+                                db.end();
+                                throw err;
+                            }
 
-                        if (uids.absent.length === insertedRows) {
-                            db.end();
-                            console.log('WOOOOOOOOOO!');
-                        }
-                    });
+                            insertedRows++;
+
+                            if (uids.absent.length === insertedRows) {
+                                db.end();
+                            }
+                        });
+                    }
                 });
+            } else {
+                db.end();
             }
         });
     })
