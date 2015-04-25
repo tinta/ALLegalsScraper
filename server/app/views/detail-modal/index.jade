@@ -15,10 +15,31 @@ div.page-column.modal-wrapper(
                     include table-2
                     include table-3
 
-            div.col-xs-12
-                include action-buttons
+            div.col-xs-12(
+                ng-if="modal.data.editForm.all.errors.length > 0"
+            )
+                span.text-red.lead Errors
+                div.spacer-1.bg-red
+                div(
+                    ng-repeat="error in modal.data.editForm.all.errors"
+                )
+                    div.spacer-xs
+                    div
+                        div.pad-lr
+                            div.fa-stack
+                                i.fa.fa-circle.fa-stack-2x.text-red
+                                i.fa.text-white.fa-stack-1x [[ $index + 1 ]]
+                        div.pad-lr
+                            div.spacer-xs
+                            div [[ error ]]
 
             div.col-xs-12
+                div.spacer-sm
+                div
+                    include action-buttons
+
+            div.col-xs-12
+                div.spacer-sm
                 div(ng-bind-html=":: modal.data.body")
 
                 div.spacer-xl

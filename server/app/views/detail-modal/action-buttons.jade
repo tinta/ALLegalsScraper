@@ -1,35 +1,35 @@
-div.pad
-    h4.bg-blue.text-white.pad(
-        ng-if="!modal.data.editForm.all.isUnchanged()"
-        ng-click="modal.abortEdit()"
-    )
+div.pad(
+    ng-if="!modal.data.editForm.all.isUnchanged()"
+    ng-click="modal.abortEdit()"
+)
+    h4.bg-blue.text-white.pad
         span.pad-lr.text-thin Clear
         div.fa-stack
             i.fa.fa-stack-2x.fa-circle
             i.fa.fa-stack-1x.fa-undo.text-blue
-div.pad
-    h4.bg-orange.text-white.pad(
-        ng-if="modal.saveSucceeded == true && modal.data.editForm.all.isUnchanged()"
-    )
+div.pad(
+    ng-if="modal.saveSucceeded == true && modal.data.editForm.all.isUnchanged()"
+)
+    h4.bg-orange.text-white.pad
         span.pad-lr.text-thin Save Was Successful
         div.fa-stack
             i.fa.fa-stack-2x.fa-circle
             i.fa.fa-stack-1x.fa-check.text-orange
 
-div.pad
-    h4.text-thin.bg-red.text-white.pad(
-        ng-if="modal.saveSucceeded == false"
-    )
+div.pad(
+    ng-if="modal.saveSucceeded == false"
+)
+    h4.text-thin.bg-red.text-white.pad
         span.pad-lr.text-thin Save Did Not Succeed
         div.fa-stack
             i.fa.fa-stack-2x.fa-circle
             i.fa.fa-stack-1x.fa-exclamation.text-red
 
-div.pad
-    h4.text-thin.bg-green.text-white.pad(
-        ng-if="modal.data.editForm.all.errors.length == 0 && !modal.data.editForm.all.isUnchanged()"
-        ng-click="modal.save()"
-    )
+div.pad(
+    ng-if="modal.data.editForm.all.errors.length == 0 && !modal.data.editForm.all.isUnchanged()"
+    ng-click="modal.save()"
+)
+    h4.text-thin.bg-green.text-white.pad
         span.pad-lr.text-thin Save
         div.fa-stack
             i.fa.fa-stack-2x.fa-circle

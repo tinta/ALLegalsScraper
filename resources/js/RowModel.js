@@ -91,7 +91,7 @@ angular
                 var value = this.value;
                 this.errors = [];
 
-                if (!Util.isDefined(value)) { return true; }
+                if (!Util.isPresent(value)) { return true; }
 
                 var isValid = true;
                 var isGTMinVal = value >= minVal;
