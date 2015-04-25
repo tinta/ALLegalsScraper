@@ -23,6 +23,7 @@
     "moment": "2.10.2",
     "mysql": "2.6.2",
     "ng-table": "0.5.4",
-    "nightmare": "1.8.0"
+    "nightmare": "1.8.0",
+    "squel": "3.10.0"
   }
 }
