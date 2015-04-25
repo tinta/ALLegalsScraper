@@ -46,8 +46,6 @@ app.get('/', function (req, res) {
 app.post('/update', function(req, res) {
     var uid = req.body.uid;
     var err;
-    console.log(Array(30).join('-'))
-    console.log(req.body)
 
     if (!uid) {
         err = '`uid` must be defined when attempting to update a row';
@@ -78,7 +76,7 @@ app.post('/update', function(req, res) {
                 if (!util.isPresent(req.body[field])) {
                     req.body[field] = null;
                 }
-                _list[field] = db.escape(req.body[field]);
+                _list[field] = req.body[field];
             }
         });
 
