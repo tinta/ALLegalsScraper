@@ -1,5 +1,6 @@
 var express = require('express');
 var bodyParser = require('body-parser');
+var squel = require("squel").useFlavour('mysql');
 var app = express();
 var port = 3000;
 
@@ -22,7 +23,7 @@ console.log('Now watching connections to port ' + port + '...');
 
 var db = require('./../db-connect.js')();
 var util = require('./../util.js');
-var table = 'foreclosures';
+var table = "foreclosures";
 
 function addStaticAssetsPath (path) {
     return express.static(process.cwd() + path)
@@ -30,11 +31,8 @@ function addStaticAssetsPath (path) {
 
 app.get('/', function (req, res) {
 
-    var sqlGetForeclosures = [
-        'SELECT *',
-        'FROM',
-        table
-    ].join(' ');
+    var sqlGetForeclosures = squel.select().from(table).toString();
+    console.log("1. " + sqlGetForeclosures);
 
     db.query(sqlGetForeclosures, function(err, foreclosures) {
         if (err) throw err;
@@ -72,52 +70,33 @@ app.post('/update', function(req, res) {
         'build_year'
     ];
 
-    var sqlColumnUpdateList = (function() {
-        var _list = [];
+    var sqlColumnUpdateMap = (function() {
+        var _list = {};
 
         editableFields.forEach(function(field) {
             if (req.body[field] != undefined) {
-                if (util.isPresent(req.body[field])) {
-                    req.body[field] = util.encaseInQuotes(req.body[field])
-                } else {
+                if (!util.isPresent(req.body[field])) {
                     req.body[field] = null;
                 }
-                var colUpdate = util.encaseInTicks(field) + '=' + req.body[field];
-                _list.push(colUpdate)
+                _list[field] = db.escape(req.body[field]);
             }
         });
 
         return _list;
     })();
 
-    if (sqlColumnUpdateList.length === 0) return new Error('no editable fields were passed to endpoint')
+    if (Object.keys(sqlColumnUpdateMap).length === 0) return new Error('no editable fields were passed to endpoint')
 
-    var sqlWhereUID = [
-        'WHERE `uid`',
-        '=',
-        uid
-    ].join(' ');
-
-    var sqlUpdate = [
-        'UPDATE',
-        table,
-        'SET',
-        sqlColumnUpdateList.join(', '),
-        sqlWhereUID
-    ].join(' ');
-
-    console.log(sqlUpdate)
+    var sqlUpdate = squel.update().table(table).setFields(sqlColumnUpdateMap).where("uid = " + db.escape(uid)).toString();
+    console.log("2. "  + sqlUpdate);
 
     db.query(sqlUpdate, function (err) {
         if (err) throw err;
 
         console.log('UPDATED!')
 
-        var sqlSelect = [
-            'SELECT *',
-            'FROM', table,
-            sqlWhereUID
-        ].join(' ');
+        var sqlSelect = squel.select().from(table).where("uid = " + db.escape(uid)).toString();
+        console.log("3. " + sqlSelect)
 
         db.query(sqlSelect, function(err, results) {
             if (err) throw err;

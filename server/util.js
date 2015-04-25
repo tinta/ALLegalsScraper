@@ -4,14 +4,6 @@ function encase (casing, text) {
     return casing + text + casing;
 }
 
-Util.encaseInQuotes = function (text) {
-    return encase('"', text);
-};
-
-Util.encaseInTicks = function (text) {
-    return encase('`', text);
-};
-
 Util.isDefined = function (val) {
     return (
         typeof(val) !== 'undefined' &&
