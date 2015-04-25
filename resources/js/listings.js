@@ -85,7 +85,7 @@ angular.module('ControllerListings', [
                 var highlightMap = {
                     'bg-red': [
                         'alabama',
-                        '\\sal\\s',
+                        '(?:\\s)al(?:\\s)',
                         '(?:\\w*\\s)county',
                     ],
                     'bg-orange': [
@@ -109,6 +109,20 @@ angular.module('ControllerListings', [
                     ],
                     'bg-green': [
                         "3(\\d{4})(?:\\s)"
+                    ],
+                    'bg-purple': [
+                        '(?:\\s)circle(?:\\s)',
+                        '(?:\\s)cir(?:\\s)',
+                        '(?:\\s)drive(?:\\s)',
+                        '(?:\\s)dr(?:\\s)',
+                        '(?:\\s)road(?:\\s)',
+                        '(?:\\s)rd(?:\\s)',
+                        '(?:\\s)avenue(?:\\s)',
+                        '(?:\\s)ave(?:\\s)',
+                        '(?:\\s)highway(?:\\s)',
+                        '(?:\\s)street(?:\\s)',
+                        '(?:\\s)st(?:\\s)',
+                        '(?:\\s)trail(?:\\s)',
                     ]
                 };
                 _.each(highlightMap, function(highlightList, key) {
