@@ -18,7 +18,6 @@ label,
     background-color: #888;
 }
 
-
 .bg-purple {
     background-color: #88728C;
 }
@@ -43,7 +42,11 @@ label,
     color: #FFFFFF;
 }
 
-.text-gray-dark {
+.text-gray {
+    color: #888;
+}
+
+.text-gray-dark-hover:hover {
     color: #414141;
 }
 

@@ -14,9 +14,10 @@ div.page-column.modal-wrapper(
                 h3 Case \#[[ modal.data.model.case_id ]]
                 div.spacer-md
             div.col-xs-6
-                h2.fa-stack.pull-right(ng-click="modal.close()")
-                    i.fa.fa-circle.fa-stack-2x.text-gray-dark
-                    i.fa.fa-times.fa-stack-1x.text-white
+                h2.pad-lr.pull-right.text-gray.text-gray-dark-hover(
+                    ng-click="modal.close()"
+                )
+                    i.fa.fa-times
 
             div.col-xs-12
                 form
@@ -41,6 +42,7 @@ div.page-column.modal-wrapper(
                         div.pad-lr
                             div.spacer-xs
                             div [[ error ]]
+                div.spacer-lg
 
             div.col-xs-12
                 div
