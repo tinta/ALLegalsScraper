@@ -30,8 +30,9 @@ angular.module('ControllerListings', [
     }
 
     _.each($scope.listings, function(listing) {
-        listing.pub_date = moment(listing.pub_date).format('MM/DD/YYYY');
-        listing.timestamp = moment(listing.timestamp).format('MM/DD/YYYY');
+        listing.pub_date = moment(listing.pub_date).format('YYYY/MM/DD');
+        listing.sale_date = moment(listing.sale_date).format('YYYY/MM/DD');
+        listing.timestamp = moment(listing.timestamp).format('YYYY/MM/DD');
     });
 
     var initTableOptions = {};

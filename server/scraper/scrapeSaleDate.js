@@ -1,6 +1,9 @@
+var moment = require('moment');
+
 function scrapeSaleDate (bodyText) {
     var postponedMatch = scrapePostponedDateText(bodyText);
     var regularMatch = scrapeDateText(bodyText);
+    var maxFutureMoment = moment().add(12, 'months');
     var match = false;
 
     if (postponedMatch && postponedMatch[1]) {
@@ -12,11 +15,13 @@ function scrapeSaleDate (bodyText) {
     if (match) {
         match = match
             .replace(/(the)|(day\sof)|(the)/gi, '')
-            .replace(/(^\s)|(,)|(tuesday)/gi, '')
+            .replace(/(^\s)|(,)|(monday|tuesday|wednesday|thursday|friday)/gi, '')
             .replace(/\s\s/gi, ' ')
             .replace(/(^\s)/gi, '')
 
         saleDateMoment = momentize(match);
+
+        if (maxFutureMoment)
 
         if (saleDateMoment && saleDateMoment.isValid()) {
             return saleDateMoment.format('YYYY-MM-DD');
@@ -64,12 +69,18 @@ function scrapePostponedDateText (str) {
 }
 
 function momentize (str) {
+    // 1st January 2016
     var re1 = new RegExp('^\\d{1,2}..\\s(' + regexMonths + ')', 'gi');
-    var re2 = new RegExp('^(' + regexMonths + ')', 'gi');
-    var re3 = new RegExp('^([01]\\d\\/[0123]\\d\\/\\d\\d)', 'gi');
+    // January 01 2016 and January 1 2016
+    var re2 = new RegExp('^(' + regexMonths + ')\\s(\\d{1,2})\\s\\d\\d\\d', 'gi');
+    // MM/DD/YY
+    var re3 = new RegExp('^([01]\\d\\/[0123]\\d\\/\\d\\d)$', 'gi');
+    // MM/DD/YYYY
+    var re4 = new RegExp('^([01]\\d\\/[0123]\\d\\/\\d\\d\\d\\d)$', 'gi');
     if (re1.test(str)) return moment(str, 'Do MMMM, YYYY');
     if (re2.test(str)) return moment(str, 'MMMM D, YYYY');
     if (re3.test(str)) return moment(str, 'MM/DD/YY');
+    if (re4.test(str)) return moment(str, 'MM/DD/YYYY');
     return false;
 }
 

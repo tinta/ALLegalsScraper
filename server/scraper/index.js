@@ -108,6 +108,7 @@ page.goto(scrapeUrl)
                     var absentForeclosure = scrapedForeclosures[absentUid];
                     if (absentForeclosure) {
                         var pubDate = moment(absentForeclosure.pubDate, 'MM-DD-YYYY').format('YYYY-MM-DD');
+                        var saleDate = scrapeSaleDate(absentForeclosure.body);
 
                         var insertMap = {};
                         insertMap["case_id"] = parseInt(absentForeclosure.caseId);
@@ -115,6 +116,7 @@ page.goto(scrapeUrl)
                         insertMap["body"] = absentForeclosure.body;
                         insertMap["source"] = absentForeclosure.source;
                         insertMap["pub_date"] = pubDate;
+                        insertMap["sale_date"] = saleDate;
 
                         // Optional
                         // util.encaseInTicks('street_addr'),

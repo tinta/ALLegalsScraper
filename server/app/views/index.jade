@@ -8,14 +8,13 @@ html
     )
         div.spacer-md
 
-        div.bg-red
-            div.page-column
-                div.spacer-xxs
-                div
-                    h2.text-white
-                        i.fa.fa-home
-                        span.text-thin.pad-l Foreclosures in Alabama
-                div.spacer-xs
+        div.bg-red.page-column
+            div.spacer-xxs
+            div
+                h2.text-white
+                    i.fa.fa-home
+                    span.text-thin.pad-l Foreclosures in Alabama
+            div.spacer-xs
 
         div.spacer-md
 
@@ -79,7 +78,7 @@ html
             input.input-filter.form-control(
                 type="text"
                 name="[[ name ]]"
-                placeholder="mm/dd/yyyy"
+                placeholder="yyyy/mm/dd"
                 ng-model="params.filter()[name]"
             )
 
