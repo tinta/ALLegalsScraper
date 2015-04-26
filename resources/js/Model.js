@@ -8,10 +8,7 @@ angular
     var Model = (function() {
         var Model = function (properties) {
             this.model = _.extend({}, properties);
-            if (this.init) this.init();
         };
-
-        Model.prototype.init = function() {};
 
         Model.prototype.edit = function (properties) {
             _.extend(this.model, properties);

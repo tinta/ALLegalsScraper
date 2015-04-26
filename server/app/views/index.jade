@@ -5,6 +5,7 @@ html
     body.text-center(
         ng-app="ControllerListings"
         ng-controller="ControllerListings"
+        ng-cloak
     )
         div.spacer-md
 
@@ -21,6 +22,9 @@ html
         div.page-column.container
             div.row
                 div.col-xs-12
+                    div Displaying [[tableParams.data.length]] of [[listings.length]] Listings
+                    div.spacer-sm
+                div.col-xs-12
                     table.table.table-striped.table-bordered.table-hover.bg-white(
                         ng-table="tableParams"
                         show-filter="true"
@@ -36,11 +40,6 @@ html
                                 placeholder="fooo"
                             ) [[ listing.case_id ]]
                             td(
-                                data-title="'County'"
-                                sortable="'county'"
-                                filter="{ 'county': 'county' }"
-                            ) [[ listing.county ]]
-                            td(
                                 data-title="'Pub. Date'"
                                 sortable="'pub_date'"
                                 filter="{ 'pub_date': 'date' }"
@@ -51,15 +50,20 @@ html
                                 filter="{ 'sale_date': 'date' }"
                             ) [[ listing.sale_date ]]
                             td(
-                                data-title="'Address'"
-                                sortable="'street_addr'"
-                                filter="{ 'street_addr': 'text' }"
-                            ) [[ listing.street_addr ]]
+                                data-title="'County'"
+                                sortable="'county'"
+                                filter="{ 'county': 'county' }"
+                            ) [[ listing.county ]]
                             td(
                                 data-title="'City'"
                                 sortable="'city'"
                                 filter="{ 'city': 'text' }"
                             ) [[ listing.city ]]
+                            td(
+                                data-title="'Address'"
+                                sortable="'street_addr'"
+                                filter="{ 'street_addr': 'text' }"
+                            ) [[ listing.street_addr ]]
                             td(
                                 data-title="'Zip'"
                                 sortable="'zip'"

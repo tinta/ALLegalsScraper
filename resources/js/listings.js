@@ -149,28 +149,31 @@ angular.module('ControllerListings', [
         },
         save: function () {
             var This = this;
-            this.data.attemptEdit();
+            var postBody;
 
-            var postBody = this.data.model;
+            if (!this.data.editForm.all.isUnchanged()) {
+                this.data.attemptEdit();
 
-            // Angular's `$http` service isnt allowing us to post data to the express server for some reason...
-            $.ajax({
-                method: 'POST',
-                url: '/update',
-                data: postBody,
-                success: function (data) {
-                    This.open(data);
-                    This.saveSucceeded = true;
-                    $scope.$apply();
-                },
-                error: function (err) {
-                    This.saveSucceeded = false;
-                    console.log(err);
-                }
-            });
+                postBody = this.data.model;
+
+                // Angular's `$http` service isnt allowing us to post data to the express server for some reason...
+                $.ajax({
+                    method: 'POST',
+                    url: '/update',
+                    data: postBody,
+                    success: function (data) {
+                        This.open(data);
+                        This.saveSucceeded = true;
+                        $scope.$apply();
+                    },
+                    error: function (err) {
+                        This.saveSucceeded = false;
+                        console.log(err);
+                    }
+                });
+            }
         }
     };
-
 
     // Dev
     $window.logScope = function () {

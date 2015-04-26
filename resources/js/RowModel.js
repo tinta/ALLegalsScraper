@@ -158,7 +158,7 @@ angular
 
             this.editForm.zip = new FieldModel("Zip");
             this.editForm.zip.validate = function () {
-                return validateNum.bind(this)(0, 100000);
+                return validateNum.bind(this)(30000, 40000);
             };
 
             this.editForm.street_addr = new FieldModel("Address");
