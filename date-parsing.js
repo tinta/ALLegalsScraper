@@ -1,108 +1,66 @@
-var parse = {};
+var re = {};
+re.yyyy = '\\d\\d\\d\\d';
+re.mmmm = 'January|February|March|April|May|June|July|August|September|October|November|December';
+re.dd = '[0123]\\d';
+re.mm = '[01]\\d';
 
-parse.date = {};
+var regexi = [
+    {
+        // 1st January 2016
+        re: new RegExp('\\d{1,2}..\\s(' + re.mmmm + ')\\s' + re.yyyy, 'gi'),
+        momentFormat: 'Do MMMM, YYYY',
+    },
+    {
+        // January 01 2016 and January 1 2016
+        re: new RegExp('((' + re.mmmm + ')\\s(\\d{1,2})\\s)' + re.yyyy, 'gi'),
+        momentFormat: 'MMMM D, YYYY',
+    },
+    {
+        // MM/DD/YYYY
+        re: new RegExp('(' + re.mm + '\\/' + re.dd + '\\/' + re.yyyy + ')', 'gi'),
+        momentFormat: 'MMMM D, YYYY',
+    },
+    {
+        // MM/DD/YY
+        re: new RegExp('(' + re.mm + '\\/' + re.dd + '\\/\\d\\d)(?:\\s)', 'gi'),
+        momentFormat: 'MMMM D, YYYY',
+    },
+];
 
-parse.date.months = 'January|February|March|April|May|June|July|August|September|October|November|December';
-parse.date.finderLong = ".{0,30}\\s20\\d\\d";
-parse.date.finderShort = "\\d\\d\\/\\d\\d\\/\\d\\d";
-parse.date.finderLongOrShort = [
-    '(', parse.date.finderLong, '|', parse.date.finderShort, ')'
-].join('');
-
-scrapeDateText = function (str) {
-    var re1 = new RegExp("(?:Alabama(?:,)?(?:.{0,30})?\\son\\s)(" + parse.date.finderLong + ')',"gi");
-    var re2 = new RegExp("(?:of\\ssale(?:,?\\son\\s(?:the\\s)?)?)" + '(' + parse.date.finderShort + '|' + parse.date.finderLong + ')', "gi");
-    var re3 = new RegExp("(?:sale\\scontained\\sin\\sthe\\ssaid\\smortgage\\swill,\\son\\s)(" + parse.date.finderLong + ')', "gi");
-    var re4 = new RegExp("(?:between\\s11\\:00\\sA\\.M\\.\\sand\\s3\\:00\\sP\\.M\\.\\son\\s)(" + parse.date.finderLong + ')', "gi");
-
-    return (
-        re1.exec(str) ||
-        re2.exec(str) ||
-        re3.exec(str) ||
-        re4.exec(str)
-    );
-};
-
-scrapePostponedDateText = function (str) {
-    var re1 = /(?:The\sabove\smortgage\sforeclosure\ssale\shas\sbeen\spostponed\suntil\s)((January|February|March|April|May|June|July|August|September|October|November|December).{0,10}\s20\d\d)/gi;
-    var re2 = /(?:The\sabove\smortgage\sforeclosure\ssale\shas\sbeen\spostponed\suntil\s)(\d\d\/\d\d\/20\d\d)/gi;
-    var re3 = /(?:THIS\sFORECLOSURE\sSALE\sHAS\sBEEN\sCONTINUED\sTO\s)((January|February|March|April|May|June|July|August|September|October|November|December).{0,10}\s20\d\d)/gi;
-    var re4 = /(?:THIS\sFORECLOSURE\sSALE\sHAS\sBEEN\sCONTINUED\sTO\s)(\d\d\/\d\d\/20\d\d)/gi;
-    var re5 = /(?:THE\sREFERENCED\sFORECLOSURE\sSALE\sABOVE\sIS\sCONTINUED\sTO\s)((January|February|March|April|May|June|July|August|September|October|November|December).{0,10}\s20\d\d)/gi;
-
-    return (
-        re1.exec(str) ||
-        re2.exec(str) ||
-        re3.exec(str) ||
-        re4.exec(str) ||
-        re5.exec(str)
-    );
-};
-
-var tally = {};
-tally.failures = 0;
-tally.postponed = 0;
-tally.nonpostponed = 0;
-
-listings.forEach(function (listing) {
-    var postponedMatch = scrapePostponedDateText(listing.body);
-    var regularMatch = scrapeDateText(listing.body);
-    // var maxFutureMoment = moment().add(12, 'months');
-    var match = false;
-
-    if (postponedMatch && postponedMatch[1]) {
-        match = postponedMatch[1];
-    } else if (regularMatch && regularMatch[1]) {
-        match = regularMatch[1]
-    }
-
-    if (match) {
-        match = match
-            .replace(/(the)|(day\sof)|(the)/gi, '')
-            .replace(/(^\s)|(,)|(tuesday)/gi, '')
+listings.forEach(function(listing) {
+    var parsedText = listing.body
+            .replace(/(the(?:\s))|(day\sof)|(the)/gi, '')
+            .replace(/(^\s)|(,)|(monday|tuesday|wednesday|thursday|friday)/gi, '')
             .replace(/\s\s/gi, ' ')
             .replace(/(^\s)/gi, '')
 
+    var moments = [];
 
-        saleDateMoment = momentize(match);
+    regexi.forEach(function(regex) {
+        var matches = parsedText.match(regex.re);
+        var _moments = castToMoments(matches, regex.momentFormat);
+        moments = _.union(moments, _moments);
+    });
 
-        if (saleDateMoment && saleDateMoment.isValid()) {
-            console.log(saleDateMoment.format('YYYY-MM-DD'), '<', listing.case_id, 'match', match)
-            return saleDateMoment.format('YYYY-MM-DD');
+    function castToMoments (list, format) {
+        var _moments = [];
+        if (list) {
+            list.forEach(function(result) {
+                _moments.push(moment(result, format));
+            });
         }
+        return _moments;
     }
 
-    tally.failures++;
-    var foo = regularMatch[1]
-        .replace(/(the)|(day\sof)|(the)/gi, '')
-        .replace(/(^\s)|(,)|(monday|tuesday|wednesday|thursday|friday)/gi, '')
-        .replace(/\s\s/gi, ' ')
-        .replace(/(^\s)/gi, '')
+    // Moment that is most in future will be first item in array
+    var moments = moments.sort(function (a, b) {
+        return parseInt(b.format('X')) - parseInt(a.format('X'));
+    });
 
-    var bar = momentize(foo);
+    var saleMoment = moments[0];
+    var maxFutureMoment = moment().add('4', 'months');
 
-    console.log(listing.case_id, foo, bar)
-    return null;
+    if (maxFutureMoment.isBefore(saleMoment)) saleMoment = moments[1];
+
+    console.log(saleMoment.format('YYYY-MM-DD'))
 });
-
-function momentize (str) {
-    // 1st January 2016
-    var re1 = new RegExp('^\\d{1,2}..\\s(' + parse.date.months + ')', 'gi');
-    // January 01 2016 and January 1 2016
-    var re2 = new RegExp('^(' + parse.date.months + ')\\s(\\d{1,2})\\s\\d\\d\\d', 'gi');
-    // MM/DD/YY
-    var re3 = new RegExp('^([01]\\d\\/[0123]\\d\\/\\d\\d)$', 'gi');
-    // MM/DD/YYYY
-    var re4 = new RegExp('^([01]\\d\\/[0123]\\d\\/\\d\\d\\d\\d)$', 'gi');
-    if (re1.test(str)) return moment(str, 'Do MMMM, YYYY');
-    if (re2.test(str)) return moment(str, 'MMMM D, YYYY');
-    if (re3.test(str)) return moment(str, 'MM/DD/YY');
-    if (re4.test(str)) return moment(str, 'MM/DD/YYYY');
-    return false;
-}
-
-var successes = tally.postponed + tally.nonpostponed;
-console.log('successes:', successes);
-console.log('postponed:', tally.postponed);
-console.log('nonpostponed:', tally.nonpostponed);
-console.log('failures:', tally.failures);
