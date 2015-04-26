@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS `foreclosures` (
   `timestamp` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `case_id` varchar(31) NOT NULL,
   `county` varchar(31) NOT NULL,
-  `body` varchar(30000) NOT NULL,
+  `body` text NOT NULL,
   `source` varchar(31) NOT NULL,
   `pub_date` date NOT NULL,
 
@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS `foreclosures` (
   `lot_area` double,
   `indoor_area` double,
   `build_year` date,
-  `notes` varchar(30000),
+  `notes` text,
   PRIMARY KEY (`uid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
