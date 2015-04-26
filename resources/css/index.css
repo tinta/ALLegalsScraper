@@ -43,6 +43,10 @@ label,
     color: #FFFFFF;
 }
 
+.text-gray-dark {
+    color: #414141;
+}
+
 .text-green {
     color: #5E9E55;
 }
@@ -62,4 +66,14 @@ label,
 .text-thin {
     font-weight: 200;
     letter-spacing: 0.03em;
+}
+
+.lead,
+label,
+h1,
+h2,
+h3,
+h4,
+h5 {
+    margin: 0;
 }

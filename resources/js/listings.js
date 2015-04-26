@@ -19,22 +19,37 @@ angular.module('ControllerListings', [
     ngTableParams,
     RowModel
 ){
-    $scope.listings = $window.listings;
+    var listings = $window.listings;
 
-    function highlight (className) {
-        return [
-            '<span class="pad-lr text-white text-thin', className ,'">',
-             '$&',
-             '</span>'
-        ].join(' ');
-    }
-
-    _.each($scope.listings, function(listing) {
+    // Format dates
+    _.each(listings, function(listing) {
         listing.pub_date = moment(listing.pub_date).format('YYYY/MM/DD');
         listing.sale_date = moment(listing.sale_date).format('YYYY/MM/DD');
         listing.timestamp = moment(listing.timestamp).format('YYYY/MM/DD');
     });
 
+    // Slim down `listings` to improve performance
+    $scope.listings = (function() {
+        var _listings = [];
+        _.each(listings, function(listing, index) {
+            var cleansedListing = _.omit(
+                listing,
+                'body',
+                'bed',
+                'bath',
+                'lot_area',
+                'indoor_area',
+                'source',
+                'sale_location'
+            );
+            cleansedListing.index = index;
+            _listings.push(cleansedListing)
+        });
+
+        return _listings;
+    })();
+
+    // `ng-table` stuff
     var initTableOptions = {};
     initTableOptions.page = 1;      // Show first page
     initTableOptions.count = 10;    // Amount of rows per page
@@ -69,11 +84,13 @@ angular.module('ControllerListings', [
         }
     });
 
+    // Detail modal stuff
     $scope.modal = {
         data: null,
         isOpen: false,
         saveSucceeded: null,
-        open: function (listing) {
+        open: function (listingIndex) {
+            var listing = listings[listingIndex]
             // Work-around for text-highlighting in `body`
             var edit = _.omit(listing, ['body']);
             this.data = new RowModel(edit);
@@ -126,6 +143,15 @@ angular.module('ControllerListings', [
                         '(?:\\s)trail(?:\\s)',
                     ]
                 };
+
+                function highlight (className) {
+                    return [
+                        '<span class="pad-lr text-white text-thin', className ,'">',
+                         '$&',
+                         '</span>'
+                    ].join(' ');
+                }
+
                 _.each(highlightMap, function(highlightList, key) {
                     _.each(highlightList, function(text) {
                         var re = new RegExp(text, 'gi');

@@ -9,6 +9,15 @@ div.page-column.modal-wrapper(
 
     div.modal.container
         div.row
+            div.col-xs-6.text-left
+                div.spacer-sm
+                h3 Case \#[[ modal.data.model.case_id ]]
+                div.spacer-md
+            div.col-xs-6
+                h2.fa-stack.pull-right(ng-click="modal.close()")
+                    i.fa.fa-circle.fa-stack-2x.text-gray-dark
+                    i.fa.fa-times.fa-stack-1x.text-white
+
             div.col-xs-12
                 form
                     include table-1
@@ -47,13 +56,11 @@ div.page-column.modal-wrapper(
                 table.table.table-bordered
                     thead
                         tr
-                            td ID
                             td Pub. Date
                             td Date Scraped
                             td Source
                     tbody
                         tr
-                            td [[ modal.data.model.case_id ]]
                             td [[ modal.data.model.pub_date ]]
                             td [[ modal.data.model.timestamp ]]
                             td [[ modal.data.model.source ]]

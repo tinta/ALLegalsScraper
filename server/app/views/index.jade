@@ -31,7 +31,7 @@ html
                     )
                         tr(
                             ng-repeat="listing in $data"
-                            ng-click="modal.open(listing)"
+                            ng-click="modal.open(listing.index)"
                         )
                             td(
                                 data-title="'ID'"
