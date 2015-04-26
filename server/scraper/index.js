@@ -105,6 +105,8 @@ page.goto(scrapeUrl)
                     var absentForeclosure = scrapedForeclosures[absentUid];
                     if (absentForeclosure) {
                         var pubDate = moment(absentForeclosure.pubDate, 'MM-DD-YYYY').format('YYYY-MM-DD');
+                        var addrRe = /(?:for\sinformational\spurposes.*\:|property is commonly known as)\s?(.*?)\,\s*(.*?)\,\s*(?:Alabama|AL)\s*(3\d{4})/ig;
+                        var addressParts = addrRe.exec(absentForeclosure.body);
 
                         var insertMap = {};
                         insertMap["case_id"] = parseInt(absentForeclosure.caseId);
@@ -112,6 +114,12 @@ page.goto(scrapeUrl)
                         insertMap["body"] = absentForeclosure.body;
                         insertMap["source"] = absentForeclosure.source;
                         insertMap["pub_date"] = pubDate;
+
+                        if ((addressParts != null) && (addressParts.length === 4)) {
+                            insertMap["street_addr"] = addressParts[1];
+                            insertMap["city"] = addressParts[2];
+                            insertMap["zip"] = addressParts[3];
+                        }
 
                         // Optional
                         // util.encaseInTicks('street_addr'),
