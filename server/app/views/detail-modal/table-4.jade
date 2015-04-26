@@ -1,0 +1,33 @@
+div.spacer-sm
+h3.text-left &nbsp;Home Stats
+div.spacer-sm
+
+table.table.table-bordered
+    thead
+        tr
+            td
+                label.editable(for="bed")
+                    span Bed
+                    i.fa.fa-pencil
+
+            td
+                label.editable(for="bath")
+                    span Bath
+                    i.fa.fa-pencil
+
+            td
+                label.editable(for="lot_area")
+                    span Lot Area (acres)
+                    i.fa.fa-pencil
+
+            td
+                label.editable(for="indoor_area")
+                    span Indoor Area (sqft)
+                    i.fa.fa-pencil
+
+    tbody
+        tr
+            +editableTD('bed', 1)
+            +editableTD('bath', 2)
+            +editableTD('lot_area', 3)
+            +editableTD('indoor_area', 4)

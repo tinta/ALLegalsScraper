@@ -1,29 +1,31 @@
+div.spacer-sm
+h3.text-left &nbsp;Home History
+div.spacer-sm
+
 table.table.table-bordered
     thead
         tr
             td
-                label.editable(for="bed")
-                    span Bed
+                label.editable(for="name1")
+                    span Name 1
                     i.fa.fa-pencil
 
             td
-                label.editable(for="bath")
-                    span Bath
+                label.editable(for="name2")
+                    span Name 2
                     i.fa.fa-pencil
 
             td
-                label.editable(for="lot_area")
-                    span Lot Area (acres)
+                label.editable(for="last_sold_price")
+                    span Last Sold Price
                     i.fa.fa-pencil
-
             td
-                label.editable(for="indoor_area")
-                    span Indoor Area (sqft)
+                label.editable(for="last_sold_year")
+                    span Last Sold Year
                     i.fa.fa-pencil
-
     tbody
         tr
-            +editableTD('bed', 1)
-            +editableTD('bath', 2)
-            +editableTD('lot_area', 3)
-            +editableTD('indoor_area', 4)
+            +editableTD('name1', 1)
+            +editableTD('name2', 1)
+            +editableTD('last_sold_price', 2)
+            +editableTD('last_sold_year', 3)

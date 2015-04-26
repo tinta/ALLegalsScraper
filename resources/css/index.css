@@ -2,6 +2,10 @@
     min-width: 850px;
 }
 
+.width-full {
+    width: 100%;
+}
+
 a,
 label,
 [ng-click],

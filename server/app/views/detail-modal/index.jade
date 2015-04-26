@@ -11,7 +11,7 @@ div.page-column.modal-wrapper(
         div.row
             div.col-xs-6.text-left
                 div.spacer-sm
-                h3 Case \#[[ modal.data.model.case_id ]]
+                h3 &nbsp;Case \#[[ modal.data.model.case_id ]]
                 div.spacer-md
             div.col-xs-6
                 h2.pad-lr.pull-right.text-gray.text-gray-dark-hover(
@@ -24,6 +24,20 @@ div.page-column.modal-wrapper(
                     include table-1
                     include table-2
                     include table-3
+                    include table-4
+
+                    div.spacer-md
+                    h3.text-left &nbsp;Notes
+                    div.spacer-xxs
+                    div.spacer-1.bg-gray
+                    div.spacer-xs
+
+                    textarea.pad.width-full(
+                        ng-model="modal.data.editForm.notes.value"
+                        placeholder="Type something here"
+                    )
+
+                div.spacer-lg
 
             div.col-xs-12(
                 ng-if="modal.data.editForm.all.errors.length > 0"
@@ -49,12 +63,19 @@ div.page-column.modal-wrapper(
                     include action-buttons
 
             div.col-xs-12
-                div.spacer-sm
+                div.spacer-md
+                h3.text-left &nbsp;Body
+                div.spacer-xxs
+                div.spacer-1.bg-gray
+                div.spacer-xs
                 div(ng-bind-html=":: modal.data.body")
-
-                div.spacer-xl
+                div.spacer-xs
+                div.spacer-1.bg-gray
+                div.spacer-lg
 
             div.col-xs-12
+                h3.text-left &nbsp;Meta
+                div.spacer-sm
                 table.table.table-bordered
                     thead
                         tr

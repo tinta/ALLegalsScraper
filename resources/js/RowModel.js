@@ -196,6 +196,41 @@ angular
                 return validateStr.bind(this)(0, 100);
             };
 
+            this.editForm.appraisal_price = new FieldModel("Appraisal Price");
+            this.editForm.appraisal_price.validate = function () {
+                return validateStr.bind(this)(0, 100);
+            };
+
+            this.editForm.buy_price = new FieldModel("Buy Price");
+            this.editForm.buy_price.validate = function () {
+                return validateStr.bind(this)(0, 100);
+            };
+
+            this.editForm.name1 = new FieldModel("Name 1");
+            this.editForm.name1.validate = function () {
+                return validateStr.bind(this)(0, 100);
+            };
+
+            this.editForm.name2 = new FieldModel("Name 2");
+            this.editForm.name2.validate = function () {
+                return validateStr.bind(this)(0, 100);
+            };
+
+            this.editForm.last_sold_price = new FieldModel("Last Sold Price");
+            this.editForm.last_sold_price.validate = function () {
+                return validateStr.bind(this)(0, 100);
+            };
+
+            this.editForm.last_sold_year = new FieldModel("Last Sold Year");
+            this.editForm.last_sold_year.validate = function () {
+                return validateStr.bind(this)(0, 100);
+            };
+
+            this.editForm.notes = new FieldModel("Notes");
+            this.editForm.notes.validate = function () {
+                return validateStr.bind(this)(0, 100);
+            };
+
             this.editForm.all = {
                 validate: function () {
                     var data = {};
