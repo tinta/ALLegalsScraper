@@ -19,35 +19,36 @@ angular.module('ControllerListings', [
     ngTableParams,
     RowModel
 ){
-    var listings = $window.listings;
+    $scope.listings = $window.listings;
 
     // Format dates
-    _.each(listings, function(listing) {
-        listing.pub_date = moment(listing.pub_date).format('YYYY/MM/DD');
-        listing.sale_date = moment(listing.sale_date).format('YYYY/MM/DD');
-        listing.timestamp = moment(listing.timestamp).format('YYYY/MM/DD');
+    _.each($scope.listings, function(listing, index) {
+        $scope.listings[index] = createRow(listing, index);
     });
 
-    // Slim down `listings` to improve performance
-    $scope.listings = (function() {
-        var _listings = [];
-        _.each(listings, function(listing, index) {
-            var cleansedListing = _.omit(
-                listing,
-                'body',
-                'bed',
-                'bath',
-                'lot_area',
-                'indoor_area',
-                'source',
-                'sale_location'
-            );
-            cleansedListing.index = index;
-            _listings.push(cleansedListing)
-        });
+    function createRow (listing, index) {
+        var row = _.merge({}, listing);
+        row.pub_date = moment(listing.pub_date).format('YYYY/MM/DD');
+        row.sale_date = moment(listing.sale_date).format('YYYY/MM/DD');
+        row.timestamp = moment(listing.timestamp).format('YYYY/MM/DD');
+        row.index = index;
+        return row;
+    }
 
-        return _listings;
-    })();
+    function createListing (data, index) {
+        var listing = _.omit(
+            data,
+            'body',
+            'bed',
+            'bath',
+            'lot_area',
+            'indoor_area',
+            'source',
+            'sale_location'
+        );
+        listing.index = index;
+        return listing;
+    }
 
     // `ng-table` stuff
     var initTableOptions = {};
@@ -90,7 +91,7 @@ angular.module('ControllerListings', [
         isOpen: false,
         saveSucceeded: null,
         open: function (listingIndex) {
-            var listing = listings[listingIndex]
+            var listing = $scope.listings[listingIndex];
             // Work-around for text-highlighting in `body`
             var edit = _.omit(listing, ['body']);
             this.data = new RowModel(edit);
@@ -188,7 +189,10 @@ angular.module('ControllerListings', [
                     url: '/update',
                     data: postBody,
                     success: function (data) {
-                        This.open(data);
+                        var oldRow = _.findWhere($scope.listings, {case_id: data.case_id});
+                        var newRow = _.merge(oldRow, createRow(data, oldRow.index));
+                        $scope.listings[oldRow.index] = newRow;
+                        This.open(newRow.index);
                         This.saveSucceeded = true;
                         $scope.$apply();
                     },
