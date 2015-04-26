@@ -14,17 +14,23 @@ angular
 ){
     var RowModel = (function() {
         var editableFields = [
-            'street_addr',
-            'city',
             'sale_location',
             'sale_date',
+            'city',
             'zip',
-            'price',
+            'street_addr',
             'bed',
             'bath',
             'lot_area',
             'indoor_area',
-            'build_year'
+            'build_year',
+            'appraisal_price',
+            'buy_price',
+            'name1',
+            'name2',
+            'last_sold_price',
+            'last_sold_year',
+            'notes'
         ];
 
         var RowModel = function (properties) {
@@ -176,11 +182,6 @@ angular
                 return validateNum.bind(this)(0, 10);
             };
 
-            this.editForm.price = new FieldModel("Price");
-            this.editForm.price.validate = function () {
-                return validateNum.bind(this)(1000, 1000000);
-            };
-
             this.editForm.lot_area = new FieldModel("Lot Area");
             this.editForm.lot_area.validate = function () {
                 return validateStr.bind(this)(0, 100);
@@ -193,17 +194,17 @@ angular
 
             this.editForm.build_year = new FieldModel("Build Year");
             this.editForm.build_year.validate = function () {
-                return validateStr.bind(this)(0, 100);
+                return validateNum.bind(this)(1950, 3000);
             };
 
             this.editForm.appraisal_price = new FieldModel("Appraisal Price");
             this.editForm.appraisal_price.validate = function () {
-                return validateStr.bind(this)(0, 100);
+                return validateNum.bind(this)(1000, 1000000);
             };
 
             this.editForm.buy_price = new FieldModel("Buy Price");
             this.editForm.buy_price.validate = function () {
-                return validateStr.bind(this)(0, 100);
+                return validateNum.bind(this)(1000, 1000000);
             };
 
             this.editForm.name1 = new FieldModel("Name 1");
@@ -218,12 +219,12 @@ angular
 
             this.editForm.last_sold_price = new FieldModel("Last Sold Price");
             this.editForm.last_sold_price.validate = function () {
-                return validateStr.bind(this)(0, 100);
+                return validateNum.bind(this)(1000, 1000000);
             };
 
             this.editForm.last_sold_year = new FieldModel("Last Sold Year");
             this.editForm.last_sold_year.validate = function () {
-                return validateStr.bind(this)(0, 100);
+                return validateNum.bind(this)(1950, 3000);
             };
 
             this.editForm.notes = new FieldModel("Notes");

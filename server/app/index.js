@@ -55,17 +55,23 @@ app.post('/update', function(req, res) {
     }
 
     var editableFields = [
-        'street_addr',
-        'city',
         'sale_location',
         'sale_date',
+        'city',
         'zip',
-        'price',
+        'street_addr',
         'bed',
         'bath',
         'lot_area',
         'indoor_area',
-        'build_year'
+        'build_year',
+        'appraisal_price',
+        'buy_price',
+        'name1',
+        'name2',
+        'last_sold_price',
+        'last_sold_year',
+        'notes'
     ];
 
     var sqlColumnUpdateMap = (function() {
