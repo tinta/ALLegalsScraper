@@ -7,6 +7,9 @@ var moment = require('moment');
 var db = require('./../db-connect.js')();
 var util = require('./../util.js');
 
+// Scrapers
+var scrapeSaleDate = require('./scrapeSaleDate.js');
+
 var page = new Nightmare();
 
 var options = {};
