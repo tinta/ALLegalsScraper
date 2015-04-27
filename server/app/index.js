@@ -1,5 +1,6 @@
 var express = require('express');
 var bodyParser = require('body-parser');
+var moment = require('moment');
 var squel = require("squel").useFlavour('mysql');
 var app = express();
 var port = 3000;
@@ -80,11 +81,16 @@ app.post('/update', function(req, res) {
         var _list = {};
 
         editableFields.forEach(function(field) {
-            if (req.body[field] != undefined) {
-                if (!util.isPresent(req.body[field])) {
-                    req.body[field] = null;
+            var value = req.body[field];
+            if (value != undefined) {
+                if (!util.isPresent(value)) {
+                    value = null;
                 }
-                _list[field] = req.body[field];
+                if (field == 'pub_date' || field == 'sale_date') {
+                    value = moment(value).utcOffset(value).format('YYYY-MM-DD');
+                }
+
+                _list[field] = value;
             }
         });
 

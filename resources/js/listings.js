@@ -19,7 +19,7 @@ angular.module('ControllerListings', [
     ngTableParams,
     RowModel
 ){
-    $scope.listings = $window.listings;
+    $scope.listings = _.merge([],$window.listings);
 
     // Format dates
     _.each($scope.listings, function(listing, index) {
@@ -28,9 +28,9 @@ angular.module('ControllerListings', [
 
     function createRow (listing, index) {
         var row = _.merge({}, listing);
-        row.pub_date = moment(listing.pub_date).utc(0).format('YYYY/MM/DD');
-        row.sale_date = moment(listing.sale_date).utc(0).format('YYYY/MM/DD');
-        row.timestamp = moment(listing.timestamp).utc(0).format('YYYY/MM/DD');
+        row.pub_date = moment(listing.pub_date).utcOffset(0).format('YYYY/MM/DD');
+        row.sale_date = moment(listing.sale_date).utcOffset(0).format('YYYY/MM/DD');
+        row.timestamp = moment(listing.timestamp).utcOffset(0).format('YYYY/MM/DD');
         row.index = index;
         return row;
     }
@@ -167,6 +167,9 @@ angular.module('ControllerListings', [
                 this.data.attemptEdit();
 
                 postBody = this.data.model;
+
+                postBody.pub_date = moment(this.data.model.pub_date, 'YYYY/MM/DD').format();
+                postBody.sale_date = moment(this.data.model.sale_date, 'YYYY/MM/DD').format();
 
                 // Angular's `$http` service isnt allowing us to post data to the express server for some reason...
                 $.ajax({

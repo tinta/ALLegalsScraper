@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS `foreclosures` (
   `bath` double,
   `lot_area` double,
   `indoor_area` double,
-  `build_year` date,
+  `build_year` double,
   `notes` text,
   `attorny` varchar(50),
   `bank` varchar(50),

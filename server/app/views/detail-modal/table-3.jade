@@ -15,6 +15,11 @@ table.table.table-bordered
                     i.fa.fa-pencil
 
             td
+                label.editable(for="build_year")
+                    span Year Built
+                    i.fa.fa-pencil
+
+            td
                 label.editable(for="last_sold_price")
                     span Last Sold Price
                     i.fa.fa-pencil
@@ -26,5 +31,6 @@ table.table.table-bordered
         tr
             +editableTD('name1', 10)
             +editableTD('name2', 11)
-            +editableTD('last_sold_price', 12)
-            +editableTD('last_sold_year', 13)
+            +editableTD('build_year', 12)
+            +editableTD('last_sold_price', 13)
+            +editableTD('last_sold_year', 14)
