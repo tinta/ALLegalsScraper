@@ -1,14 +1,9 @@
-div.spacer-sm
-h3.text-left &nbsp;Sale
-div.spacer-sm
+h4.text-left &nbsp;Sale
+div.spacer-xxs
 
 table.table.table-bordered
     thead
         tr
-            td
-                label.editable(for="sale_date")
-                    span Sale Date
-                    i.fa.fa-pencil
             td
                 label.editable(for="sale_location")
                     span Sale Location
@@ -25,7 +20,30 @@ table.table.table-bordered
                     i.fa.fa-pencil
     tbody
         tr
-            +editableTD('sale_date', 4)
-            +editableTD('sale_location', 5)
-            +editableTD('appraisal_price', 6)
-            +editableTD('buy_price', 7)
+            +editableTD('sale_location', 4)
+            +editableTD('appraisal_price', 5)
+            +editableTD('buy_price', 6)
+
+
+table.table.table-bordered
+    thead
+        tr
+            td
+                label.editable(for="sale_date")
+                    span Sale Date
+                    i.fa.fa-pencil
+            td
+                label.editable(for="attorny")
+                    span Attorney
+                    i.fa.fa-pencil
+
+            td
+                label.editable(for="bank")
+                    span Bank
+                    i.fa.fa-pencil
+
+    tbody
+        tr
+            +editableTD('sale_date', 7)
+            +editableTD('attorny', 8)
+            +editableTD('bank', 9)

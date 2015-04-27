@@ -35,21 +35,6 @@ angular.module('ControllerListings', [
         return row;
     }
 
-    function createListing (data, index) {
-        var listing = _.omit(
-            data,
-            'body',
-            'bed',
-            'bath',
-            'lot_area',
-            'indoor_area',
-            'source',
-            'sale_location'
-        );
-        listing.index = index;
-        return listing;
-    }
-
     // `ng-table` stuff
     var initTableOptions = {};
     initTableOptions.page = 1;      // Show first page

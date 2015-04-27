@@ -71,7 +71,9 @@ app.post('/update', function(req, res) {
         'name2',
         'last_sold_price',
         'last_sold_year',
-        'notes'
+        'notes',
+        'attorny',
+        'bank'
     ];
 
     var sqlColumnUpdateMap = (function() {

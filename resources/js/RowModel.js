@@ -30,7 +30,9 @@ angular
             'name2',
             'last_sold_price',
             'last_sold_year',
-            'notes'
+            'notes',
+            'bank',
+            'attorny'
         ];
 
         var RowModel = function (properties) {
@@ -149,87 +151,116 @@ angular
 
             this.editForm.sale_location = new FieldModel("Sale Location");
             this.editForm.sale_location.validate = function () {
-                return validateStr.bind(this)(0, 100);
+                return true;
+                // return validateStr.bind(this)(0, 100);
             };
 
             this.editForm.sale_date = new FieldModel("Sale Date");
             this.editForm.sale_date.validate = function () {
-                return validateStr.bind(this)(0, 100);
+                return true;
+                // return validateStr.bind(this)(0, 100);
             };
 
             this.editForm.city = new FieldModel("City");
             this.editForm.city.validate = function () {
-                return validateStr.bind(this)(0, 100);
+                return true;
+                // return validateStr.bind(this)(0, 100);
             };
 
             this.editForm.zip = new FieldModel("Zip");
             this.editForm.zip.validate = function () {
-                return validateNum.bind(this)(30000, 40000);
+                return true;
+                // return validateNum.bind(this)(30000, 40000);
             };
 
             this.editForm.street_addr = new FieldModel("Address");
             this.editForm.street_addr.validate = function () {
-                return validateStr.bind(this)(0, 100);
+                return true;
+                // return validateStr.bind(this)(0, 100);
             };
 
             this.editForm.bed = new FieldModel("Bed");
             this.editForm.bed.validate = function () {
-                return validateNum.bind(this)(0, 10);
+                return true;
+                // return validateNum.bind(this)(0, 10);
             };
 
             this.editForm.bath = new FieldModel("Bath");
             this.editForm.bath.validate = function () {
-                return validateNum.bind(this)(0, 10);
+                return true;
+                // return validateNum.bind(this)(0, 10);
             };
 
             this.editForm.lot_area = new FieldModel("Lot Area");
             this.editForm.lot_area.validate = function () {
-                return validateStr.bind(this)(0, 100);
+                return true;
+                // return validateNum.bind(this)(0, 10000);
             };
 
             this.editForm.indoor_area = new FieldModel("Indoor Area");
             this.editForm.indoor_area.validate = function () {
-                return validateStr.bind(this)(0, 100);
+                return true;
+                // return validateNum.bind(this)(0, 10000);
             };
 
             this.editForm.build_year = new FieldModel("Build Year");
             this.editForm.build_year.validate = function () {
-                return validateNum.bind(this)(1950, 3000);
+                return true;
+                // return validateNum.bind(this)(1950, 3000);
             };
 
             this.editForm.appraisal_price = new FieldModel("Appraisal Price");
             this.editForm.appraisal_price.validate = function () {
-                return validateNum.bind(this)(1000, 1000000);
+                return true;
+                // return validateNum.bind(this)(1000, 1000000);
             };
 
             this.editForm.buy_price = new FieldModel("Buy Price");
             this.editForm.buy_price.validate = function () {
-                return validateNum.bind(this)(1000, 1000000);
+                return true;
+                // return validateNum.bind(this)(1000, 1000000);
             };
 
             this.editForm.name1 = new FieldModel("Name 1");
             this.editForm.name1.validate = function () {
-                return validateStr.bind(this)(0, 100);
+                return true;
+                // return validateStr.bind(this)(0, 100);
             };
 
             this.editForm.name2 = new FieldModel("Name 2");
             this.editForm.name2.validate = function () {
-                return validateStr.bind(this)(0, 100);
+                return true;
+                // return validateStr.bind(this)(0, 100);
             };
 
             this.editForm.last_sold_price = new FieldModel("Last Sold Price");
             this.editForm.last_sold_price.validate = function () {
-                return validateNum.bind(this)(1000, 1000000);
+                return true;
+                // return validateNum.bind(this)(1000, 1000000);
             };
 
             this.editForm.last_sold_year = new FieldModel("Last Sold Year");
             this.editForm.last_sold_year.validate = function () {
-                return validateNum.bind(this)(1950, 3000);
+                return true;
+                // return validateNum.bind(this)(1950, 3000);
             };
 
             this.editForm.notes = new FieldModel("Notes");
             this.editForm.notes.validate = function () {
-                return validateStr.bind(this)(0, 100);
+                return true;
+                // return true;
+            };
+
+            this.editForm.attorny = new FieldModel("Attorney");
+            this.editForm.attorny.validate = function () {
+                return true;
+                // return validateNum.bind(this)(1950, 50);
+            };
+
+            this.editForm.bank = new FieldModel("Bank");
+            this.editForm.bank.validate = function () {
+                return true;
+                // return validateStr.bind(this)(0, 50);
             };
 
             this.editForm.all = {
