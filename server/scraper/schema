@@ -16,14 +16,16 @@ CREATE TABLE IF NOT EXISTS `foreclosures` (
   `last_sold_price` double,
   `last_sold_year` double,
   `buy_price` double,
-  `name1` varchar(30),
-  `name2` varchar(30),
+  `name1` varchar(50),
+  `name2` varchar(50),
   `bed` double,
   `bath` double,
   `lot_area` double,
   `indoor_area` double,
   `build_year` date,
   `notes` text,
+  `attorny` varchar(50),
+  `bank` varchar(50),
   PRIMARY KEY (`uid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
