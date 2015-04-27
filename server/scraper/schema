@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS `foreclosures` (
   `indoor_area` double,
   `build_year` double,
   `notes` text,
-  `attorny` varchar(50),
+  `attorney` varchar(50),
   `bank` varchar(50),
   PRIMARY KEY (`uid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

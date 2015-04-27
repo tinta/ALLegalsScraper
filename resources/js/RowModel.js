@@ -32,7 +32,7 @@ angular
             'last_sold_year',
             'notes',
             'bank',
-            'attorny'
+            'attorney'
         ];
 
         var RowModel = function (properties) {
@@ -251,8 +251,8 @@ angular
                 // return true;
             };
 
-            this.editForm.attorny = new FieldModel("Attorney");
-            this.editForm.attorny.validate = function () {
+            this.editForm.attorney = new FieldModel("Attorney");
+            this.editForm.attorney.validate = function () {
                 return true;
                 // return validateNum.bind(this)(1950, 50);
             };

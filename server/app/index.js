@@ -73,7 +73,7 @@ app.post('/update', function(req, res) {
         'last_sold_price',
         'last_sold_year',
         'notes',
-        'attorny',
+        'attorney',
         'bank'
     ];
 
