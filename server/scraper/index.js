@@ -24,23 +24,24 @@ options.county = 'madison';
 var table = "foreclosures";
 var listings = {};
 
-var startDate = moment().add(-28, 'day').format('MM-DD-YYYY');
-var endDate = moment().add(14, 'day').format('MM-DD-YYYY');
+var startDate = moment().add(-14, 'day').format('MM-DD-YYYY');
+var endDate = moment().add(0, 'day').format('MM-DD-YYYY');
 var scrapeUrl = 'http://www.alabamalegals.com/index.cfm?fuseaction=home';
 var counties = [
     56, // blount
     60, // colbert
-    // 57, // cullman
-    // 65, // deKalb
-    // 59, // franklin
-    // 66, // jackson
-    // 1,  // jefferson
-    // 4,  // lauderdale
-    // 61, // lawrence
-    // 67, // limestone
-    // 5,  // madison
-    // 63, // marshall
-    // 62, // morgan
+    57, // cullman
+    65, // deKalb
+    59, // franklin
+    66, // jackson
+    1,  // jefferson
+    4,  // lauderdale
+    61, // lawrence
+    67, // limestone
+    5,  // madison
+    63, // marshall
+    62, // morgan
+    '', // placholder. the last query always fails due to `Cannot enqueue Query after invoking quit.`
 ];
 
 scrapeCounty(0);
@@ -105,13 +106,11 @@ function scrapeCounty (index) {
 
             return foreclosures;
         }, function(scrapedForeclosures) {
-            console.log(scrapedForeclosures)
-            console.log(Object.keys(scrapedForeclosures).length)
-
             writeToDB(scrapedForeclosures);
-
         })
         .run(function(err) {
+            if (err) throw err;
+
             if (counties[index + 1]) {
                 console.log(index)
                 scrapeCounty(index + 1);
@@ -139,11 +138,9 @@ function writeToDB (listings) {
         console.log(uids.scraped)
 
         SQLFindListing = squel.select().from(table).where(uids.sql.join(" OR ")).toString();
-        console.log(SQLFindListing)
         query = db.query(SQLFindListing);
 
         query.on('result', function(result) {
-            if (result.case_id == 1388618) { console.log('WTF')}
             uids.present.push(result.case_id);
         });
 
@@ -195,8 +192,10 @@ function writeToDB (listings) {
                         SQLInsertListing = squel.insert({replaceSingleQuotes: true}).into(table).setFields(insertMap).toString();
 
                         db.query(SQLInsertListing, function(err) {
+                            // console.log('ERRRRR')
+                            // console.log(err)
                             if (err) {
-                                db.end();
+                                // db.end();
                                 throw err;
                             }
 
