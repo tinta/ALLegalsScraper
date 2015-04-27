@@ -28,9 +28,9 @@ angular.module('ControllerListings', [
 
     function createRow (listing, index) {
         var row = _.merge({}, listing);
-        row.pub_date = moment(listing.pub_date).format('YYYY/MM/DD');
-        row.sale_date = moment(listing.sale_date).format('YYYY/MM/DD');
-        row.timestamp = moment(listing.timestamp).format('YYYY/MM/DD');
+        row.pub_date = moment(listing.pub_date).utc(0).format('YYYY/MM/DD');
+        row.sale_date = moment(listing.sale_date).utc(0).format('YYYY/MM/DD');
+        row.timestamp = moment(listing.timestamp).utc(0).format('YYYY/MM/DD');
         row.index = index;
         return row;
     }
