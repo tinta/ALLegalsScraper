@@ -45,6 +45,12 @@ html
                                 placeholder="fooo"
                             ) [[ listing.name1 ]]
                             td(
+                                data-title="'Mortgage $'"
+                                sortable="'buy_price'"
+                                filter="{ 'buy_price': 'text' }"
+                                placeholder="fooo"
+                            ) [[ listing.buy_price ]]
+                            td(
                                 data-title="'County'"
                                 sortable="'county'"
                                 filter="{ 'county': 'county' }"

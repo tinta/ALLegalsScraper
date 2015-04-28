@@ -70,6 +70,11 @@ angular.module('ControllerListings', [
         }
     });
 
+    var hash = window.location.hash;
+    if (hash.substring(0,2) == '#/') {
+        $scope.tableParams.filter()['county'] = hash.substring(2, hash.length);
+    }
+
     // Detail modal stuff
     $scope.modal = {
         data: null,
