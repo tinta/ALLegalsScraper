@@ -49,9 +49,19 @@ angular.module('ControllerListings', [
         total: $scope.listings.length, // length of data
         getData: function($defer, params) {
             // Filter through the rows
-            var filteredData = params.filter() ?
-                $filter('filter')($scope.listings, params.filter()) :
-                $scope.listings;
+            var filteredData = (function() {
+                var filters = params.filter();
+                var data;
+                if (filters) {
+                    if (filters['county']) {
+                        window.location.hash = '#/' + filters['county'];
+                        console.log(filters['county'])
+                    }
+                    return $filter('filter')($scope.listings, filters);
+                }
+                return $scope.listings;
+            })();
+
 
             // Let pagination know what the new number of rows are
             params.total(filteredData.length);
