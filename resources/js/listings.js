@@ -40,7 +40,7 @@ angular.module('ControllerListings', [
     initTableOptions.page = 1;      // Show first page
     initTableOptions.count = 10;    // Amount of rows per page
     initTableOptions.sorting = {    // Initial sorting settings
-        'pub_date': 'desc'
+        'sale_date': 'desc'
     };
     initTableOptions.filter = {};
 

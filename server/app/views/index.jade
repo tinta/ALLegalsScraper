@@ -34,21 +34,16 @@ html
                             ng-click="modal.open(listing.index)"
                         )
                             td(
-                                data-title="'ID'"
-                                sortable="'case_id'"
-                                filter="{ 'case_id': 'text' }"
-                                placeholder="fooo"
-                            ) [[ listing.case_id ]]
-                            td(
-                                data-title="'Pub. Date'"
-                                sortable="'pub_date'"
-                                filter="{ 'pub_date': 'date' }"
-                            ) [[ listing.pub_date ]]
-                            td(
                                 data-title="'Sale Date'"
                                 sortable="'sale_date'"
                                 filter="{ 'sale_date': 'date' }"
                             ) [[ listing.sale_date ]]
+                            td(
+                                data-title="'Name 1'"
+                                sortable="'name1'"
+                                filter="{ 'name1': 'text' }"
+                                placeholder="fooo"
+                            ) [[ listing.name1 ]]
                             td(
                                 data-title="'County'"
                                 sortable="'county'"
