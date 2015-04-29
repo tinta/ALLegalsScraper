@@ -30,9 +30,10 @@ function addStaticAssetsPath (path) {
     return express.static(process.cwd() + path)
 }
 
-app.get('/', function (req, res) {
-    var yesterday = moment().add(-1, 'd').format('YYYY-MM-DD');
-    var in7Days = moment().add(7, 'd').format('YYYY-MM-DD');
+function renderListingsInRange(res, start, end) {
+    var startDate = moment().add(start, 'd').format('YYYY-MM-DD');
+    var endDate = moment().add(end, 'd').format('YYYY-MM-DD');
+
     var counties = [
         'colbert',
         'lauderdale'
@@ -44,23 +45,29 @@ app.get('/', function (req, res) {
         sqlCounties.push('county = ' + db.escape(county));
     });
 
-    var sqlGetForeclosures = squel
+    var sqlInRange = squel
         .select()
         .from(table)
-        .where('sale_date < ' + db.escape(in7Days))
-        .where('sale_date > ' + db.escape(yesterday))
+        .where('sale_date > ' + db.escape(startDate))
+        .where('sale_date < ' + db.escape(endDate))
         .where(sqlCounties.join(' OR '))
         .toString();
 
-    console.log("1. " + sqlGetForeclosures);
-
-    db.query(sqlGetForeclosures, function(err, foreclosures) {
+    db.query(sqlInRange, function(err, results) {
         if (err) throw err;
-        foreclosures = foreclosures || {};
+        results = results || {};
         var scope = {};
-        scope.foreclosures = JSON.stringify(foreclosures);
+        scope.foreclosures = JSON.stringify(results);
         res.render('index', scope);
     });
+}
+
+app.get('/', function (req, res) {
+    renderListingsInRange(res, -1, 7);
+});
+
+app.get('/upcoming', function (req, res) {
+    renderListingsInRange(res, 7, 14);
 });
 
 app.get('/all', function (req, res) {
