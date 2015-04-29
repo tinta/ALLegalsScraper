@@ -31,8 +31,33 @@ function addStaticAssetsPath (path) {
 }
 
 app.get('/', function (req, res) {
+    var yesterday = moment().add(-1, 'd').format('YYYY-MM-DD');
+    var in7Days = moment().add(7, 'd').format('YYYY-MM-DD');
 
-    var sqlGetForeclosures = squel.select().from(table).toString();
+    var sqlGetForeclosures = squel
+        .select()
+        .from(table)
+        .where('sale_date < ' + db.escape(in7Days))
+        .where('sale_date > ' + db.escape(yesterday))
+        .toString();
+
+    console.log("1. " + sqlGetForeclosures);
+
+    db.query(sqlGetForeclosures, function(err, foreclosures) {
+        if (err) throw err;
+        foreclosures = foreclosures || {};
+        var scope = {};
+        scope.foreclosures = JSON.stringify(foreclosures);
+        res.render('index', scope);
+    });
+});
+
+app.get('/all', function (req, res) {
+    var sqlGetForeclosures = squel
+        .select()
+        .from(table)
+        .toString();
+
     console.log("1. " + sqlGetForeclosures);
 
     db.query(sqlGetForeclosures, function(err, foreclosures) {

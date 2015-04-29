@@ -38,9 +38,9 @@ angular.module('ControllerListings', [
     // `ng-table` stuff
     var initTableOptions = {};
     initTableOptions.page = 1;      // Show first page
-    initTableOptions.count = 10;    // Amount of rows per page
+    initTableOptions.count = 15;    // Amount of rows per page
     initTableOptions.sorting = {    // Initial sorting settings
-        'sale_date': 'desc'
+        'sale_date': 'asc'
     };
     initTableOptions.filter = {};
 
