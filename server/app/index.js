@@ -33,12 +33,23 @@ function addStaticAssetsPath (path) {
 app.get('/', function (req, res) {
     var yesterday = moment().add(-1, 'd').format('YYYY-MM-DD');
     var in7Days = moment().add(7, 'd').format('YYYY-MM-DD');
+    var counties = [
+        'colbert',
+        'lauderdale'
+    ];
+
+    var sqlCounties = [];
+
+    counties.forEach(function(county) {
+        sqlCounties.push('county = ' + db.escape(county));
+    });
 
     var sqlGetForeclosures = squel
         .select()
         .from(table)
         .where('sale_date < ' + db.escape(in7Days))
         .where('sale_date > ' + db.escape(yesterday))
+        .where(sqlCounties.join(' OR '))
         .toString();
 
     console.log("1. " + sqlGetForeclosures);

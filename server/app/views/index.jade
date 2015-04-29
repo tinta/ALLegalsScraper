@@ -9,12 +9,19 @@ html
     )
         div.spacer-md
 
-        div.bg-red.page-column
-            div.spacer-xxs
-            div
-                h2.text-white
-                    i.fa.fa-home
-                    span.text-thin.pad-l Foreclosures in Alabama
+        div.bg-red
+            div.spacer-xs
+            div.clearfix.page-column.container.text-white
+                div.pull-left
+                    h2
+                        i.fa.fa-home
+                        span.text-thin.pad-l Sales in Alabama
+                div.pull-right
+                    div.spacer-xs
+                    h4.text-thin.pad-lr
+                        a(href="/") Current
+                    h4.text-thin.pad-lr
+                        a(href="/all") All
             div.spacer-xs
 
         div.spacer-md
