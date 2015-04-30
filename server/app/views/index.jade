@@ -48,6 +48,11 @@ html
                                 filter="{ 'sale_date': 'date' }"
                             ) [[ listing.sale_date ]]
                             td(
+                                data-title="'Address'"
+                                sortable="'street_addr'"
+                                filter="{ 'street_addr': 'text' }"
+                            ) [[ listing.street_addr ]]
+                            td(
                                 data-title="'Name 1'"
                                 sortable="'name1'"
                                 filter="{ 'name1': 'text' }"
@@ -60,6 +65,12 @@ html
                                 placeholder="fooo"
                             ) [[ listing.buy_price ]]
                             td(
+                                data-title="'Appraisal $'"
+                                sortable="'appraisal_price'"
+                                filter="{ 'appraisal_price': 'text' }"
+                                placeholder="fooo"
+                            ) [[ listing.appraisal_price ]]
+                            td(
                                 data-title="'County'"
                                 sortable="'county'"
                                 filter="{ 'county': 'county' }"
@@ -70,15 +81,10 @@ html
                                 filter="{ 'city': 'text' }"
                             ) [[ listing.city ]]
                             td(
-                                data-title="'Address'"
-                                sortable="'street_addr'"
-                                filter="{ 'street_addr': 'text' }"
-                            ) [[ listing.street_addr ]]
-                            td(
-                                data-title="'Zip'"
-                                sortable="'zip'"
-                                filter="{ 'zip': 'text' }"
-                            ) [[ listing.zip ]]
+                                data-title="'Attorney'"
+                                sortable="'attorney'"
+                                filter="{ 'attorney': 'text' }"
+                            ) [[ listing.attorney ]]
 
         script(type="text/ng-template" id="ng-table/filters/county.html")
             input.input-filter.form-control(
