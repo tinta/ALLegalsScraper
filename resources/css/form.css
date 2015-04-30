@@ -38,9 +38,17 @@ input[type=email].invis {
 }
 
 .editable i.fa {
-    right: 4px;
-    top: 2px;
+    top: 0;
     position: absolute;
+    font-size: 1.3em;
+}
+
+.editable i.fa:first-of-type {
+    right: 4px;
+}
+
+.editable i.fa:nth-of-type(2) {
+    left: 4px;
 }
 
 ::-webkit-input-placeholder { /* WebKit browsers */

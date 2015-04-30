@@ -1,32 +1,36 @@
-h4.text-left &nbsp;Home History
-div.spacer-xxs
-
 table.table.table-bordered
     thead
         tr
             td
                 label.editable(for="name1")
-                    span Name 1
                     i.fa.fa-pencil
+                    i.fa.fa-user
+                    span Name 1
 
             td
                 label.editable(for="name2")
-                    span Name 2
                     i.fa.fa-pencil
+                    i.fa.fa-user-plus
+                    span Name 2
 
             td
                 label.editable(for="build_year")
-                    span Year Built
                     i.fa.fa-pencil
+                    i.fa.fa-calendar-o
+                    span Year Built
 
             td
                 label.editable(for="last_sold_price")
-                    span Last Sold Price
                     i.fa.fa-pencil
+                    i.fa.fa-dollar
+                    span Last Sold Price
+
             td
                 label.editable(for="last_sold_year")
-                    span Last Sold Year
                     i.fa.fa-pencil
+                    i.fa.fa-calendar-o
+                    span Last Sold Year
+
     tbody
         tr
             +editableTD('name1', 10)

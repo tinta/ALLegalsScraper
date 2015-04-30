@@ -11,7 +11,7 @@ div.page-column.modal-wrapper(
         div.row
             div.col-xs-6.text-left
                 div.spacer-sm
-                h3 &nbsp;Case \#[[ modal.data.model.case_id ]]
+                h3.text-thin &nbsp;Case \#[[ modal.data.model.case_id ]]
                 div.spacer-md
             div.col-xs-6
                 h2.pad-lr.pull-right.text-gray.text-gray-dark-hover(
@@ -21,13 +21,22 @@ div.page-column.modal-wrapper(
 
             div.col-xs-12
                 form
-                    include table-1
-                    include table-2
-                    include table-3
-                    include table-4
+                    include tables/location
+
+                    h3.text-thin.text-left &nbsp;Sale
+                    div.spacer-xs
+                    include tables/sale
+
+                    h3.text-thin.text-left &nbsp;Home History
+                    div.spacer-xs
+                    include tables/history
+
+                    h3.text-thin.text-left &nbsp;Home Stats
+                    div.spacer-xs
+                    include tables/stats
 
                     div.spacer-md
-                    h3.text-left &nbsp;Notes
+                    h3.text-thin.text-left &nbsp;Notes
                     div.spacer-xxs
                     div.spacer-1.bg-gray
                     div.spacer-xs
@@ -65,7 +74,7 @@ div.page-column.modal-wrapper(
 
             div.col-xs-12
                 div.spacer-md
-                h3.text-left &nbsp;Body
+                h3.text-thin.text-left &nbsp;Body
                 div.spacer-xxs
                 div.spacer-1.bg-gray
                 div.spacer-xs
@@ -75,7 +84,7 @@ div.page-column.modal-wrapper(
                 div.spacer-lg
 
             div.col-xs-12
-                h3.text-left &nbsp;Meta
+                h3.text-thin.text-left &nbsp;Meta
                 div.spacer-sm
                 table.table.table-bordered
                     thead

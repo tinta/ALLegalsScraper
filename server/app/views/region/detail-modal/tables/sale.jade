@@ -1,23 +1,22 @@
-h4.text-left &nbsp;Sale
-div.spacer-xxs
-
 table.table.table-bordered
     thead
         tr
             td
                 label.editable(for="sale_location")
-                    span Sale Location
                     i.fa.fa-pencil
+                    i.fa.fa-map-marker
+                    span Sale Location
 
             td
                 label.editable(for="appraisal_price")
-                    span Appraisal Price
                     i.fa.fa-pencil
-
+                    i.fa.fa-dollar
+                    span Appraisal Price
             td
                 label.editable(for="buy_price")
-                    span Mortgage Value
                     i.fa.fa-pencil
+                    i.fa.fa-dollar
+                    span Mortgage Value
     tbody
         tr
             +editableTD('sale_location', 4)
@@ -30,17 +29,20 @@ table.table.table-bordered
         tr
             td
                 label.editable(for="sale_date")
-                    span Sale Date
                     i.fa.fa-pencil
+                    i.fa.fa-calendar-o
+                    span Sale Date
             td
                 label.editable(for="attorney")
-                    span Attorney
                     i.fa.fa-pencil
+                    i.fa.fa-briefcase
+                    span Attorney
 
             td
                 label.editable(for="bank")
-                    span Bank
                     i.fa.fa-pencil
+                    i.fa.fa-bank
+                    span Bank
 
     tbody
         tr
