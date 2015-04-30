@@ -113,9 +113,9 @@ function scrapeCounty (index) {
 
             if (counties[index + 1]) {
                 console.log(index)
-                scrapeCounty(index + 1);
+                return scrapeCounty(index + 1);
             } else {
-                db.end();
+                return db.end();
             }
         });
 }
@@ -159,9 +159,22 @@ function writeToDB (listings) {
                         var city, streetAddr, zip;
 
                         var insertMap = {};
+                        insertMap["body"] = (absentForeclosure.body.length > 10000) ? absentForeclosure.body.substring(0,10000) : absentForeclosure.body;
+
+                        // ensure that this foreclosures doesn't already exist in the database, and if it does, return.
+                        alreadyExists = squel.select({replaceSingleQuotes: true}).from(table).where("body LIKE ?", insertMap["body"]).toString();
+                        var duplicate = db.query(alreadyExists, function(err) {
+                            if (err) {
+                                throw err;
+                            }
+                        );
+
+                        if (duplicate) {
+                            return;
+                        }
+                            
                         insertMap["case_id"] = parseInt(absentForeclosure.caseId);
                         insertMap["county"] = absentForeclosure.county;
-                        insertMap["body"] = (absentForeclosure.body.length > 10000) ? absentForeclosure.body.substring(0,10000) : absentForeclosure.body;
                         insertMap["source"] = absentForeclosure.source;
                         insertMap["pub_date"] = pubDate;
                         insertMap["sale_date"] = saleDate;
@@ -179,26 +192,12 @@ function writeToDB (listings) {
                             insertMap["street_addr"] = streetAddr;
                         }
 
-                        // Optional
-                        // util.encaseInTicks('street_addr'),
-                        // util.encaseInTicks('city'),
-                        // util.encaseInTicks('sale_location'),
-                        // util.encaseInTicks('sale_date'),
-                        // util.encaseInTicks('zip'),
-                        // util.encaseInTicks('price'),
-                        // util.encaseInTicks('bed')
-                        // util.encaseInTicks('bath')
-
                         SQLInsertListing = squel.insert({replaceSingleQuotes: true}).into(table).setFields(insertMap).toString();
 
                         db.query(SQLInsertListing, function(err) {
-                            // console.log('ERRRRR')
-                            // console.log(err)
                             if (err) {
-                                // db.end();
                                 throw err;
                             }
-
                             insertedRows++;
                         });
                     } else {
