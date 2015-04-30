@@ -34,7 +34,7 @@ block content
             input.input-filter.form-control(
                 type="text"
                 name="[[ name ]]"
-                placeholder="yyyy/mm/dd"
+                placeholder="m/d/yyyy"
                 ng-model="params.filter()[name]"
             )
 
@@ -65,7 +65,7 @@ block content
                 )
                     td(
                         data-title="'Sale Date'"
-                        sortable="'sale_date'"
+                        sortable="'sale_date_sort'"
                         filter="{ 'sale_date': 'date' }"
                     ) [[ listing.sale_date ]]
                     td(
@@ -77,19 +77,16 @@ block content
                         data-title="'Name 1'"
                         sortable="'name1'"
                         filter="{ 'name1': 'text' }"
-                        placeholder="fooo"
                     ) [[ listing.name1 ]]
                     td(
                         data-title="'Mortgage $'"
                         sortable="'buy_price'"
                         filter="{ 'buy_price': 'text' }"
-                        placeholder="fooo"
                     ) [[ listing.buy_price ]]
                     td(
                         data-title="'Appraisal $'"
                         sortable="'appraisal_price'"
                         filter="{ 'appraisal_price': 'text' }"
-                        placeholder="fooo"
                     ) [[ listing.appraisal_price ]]
                     td(
                         data-title="'County'"

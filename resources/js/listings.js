@@ -21,16 +21,18 @@ angular.module('ControllerListings', [
 ){
     $scope.listings = _.merge([],$window.listings);
 
-    // Format dates
+    // Format data
+    var dateFormat = 'M/D/YYYY';
     _.each($scope.listings, function(listing, index) {
         $scope.listings[index] = createRow(listing, index);
     });
 
     function createRow (listing, index) {
         var row = _.merge({}, listing);
-        row.pub_date = moment(listing.pub_date).utcOffset(0).format('YYYY/MM/DD');
-        row.sale_date = moment(listing.sale_date).utcOffset(0).format('YYYY/MM/DD');
-        row.timestamp = moment(listing.timestamp).utcOffset(0).format('YYYY/MM/DD');
+        row.pub_date = moment(listing.pub_date).utcOffset(0).format(dateFormat);
+        row.sale_date = moment(listing.sale_date).utcOffset(0).format(dateFormat);
+        row.sale_date_sort = moment(listing.sale_date).utcOffset(0).toDate();
+        row.timestamp = moment(listing.timestamp).utcOffset(0).format(dateFormat);
         row.index = index;
         return row;
     }
@@ -40,7 +42,7 @@ angular.module('ControllerListings', [
     initTableOptions.page = 1;      // Show first page
     initTableOptions.count = 15;    // Amount of rows per page
     initTableOptions.sorting = {    // Initial sorting settings
-        'sale_date': 'asc'
+        'sale_date_sort': 'asc'
     };
     initTableOptions.filter = {};
 
@@ -185,8 +187,8 @@ angular.module('ControllerListings', [
 
                 postBody = this.data.model;
 
-                postBody.pub_date = moment(this.data.model.pub_date, 'YYYY/MM/DD').format();
-                postBody.sale_date = moment(this.data.model.sale_date, 'YYYY/MM/DD').format();
+                postBody.pub_date = moment(this.data.model.pub_date, dateFormat).format();
+                postBody.sale_date = moment(this.data.model.sale_date, dateFormat).format();
 
                 // Angular's `$http` service isnt allowing us to post data to the express server for some reason...
                 $.ajax({
