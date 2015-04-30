@@ -22,15 +22,15 @@ var counties = [
     // 60, // colbert
     // 57, // cullman
     // 65, // deKalb
-    // 59, // franklin
     // 66, // jackson
     // 1,  // jefferson
-    // 4,  // lauderdale
+    59, // franklin
+    4,  // lauderdale
     // 61, // lawrence
     // 67, // limestone
-    5,  // madison
-    63, // marshall
-    62, // morgan
+    // 5,  // madison
+    // 63, // marshall
+    // 62, // morgan
     '', // placholder. the last query always fails due to `Cannot enqueue Query after invoking quit.`
 ];
 
@@ -170,10 +170,8 @@ function writeToDB (listings) {
 
             if (!absentForeclosure) {
                 loop++;
-                if (loop == uids.absent.length) {
-                    deferred.resolve(true);
-                    return;
-                }
+                if (loop == uids.absent.length) deferred.resolve(true);
+                return;
             }
 
             var body = absentForeclosure.body;
@@ -190,8 +188,8 @@ function writeToDB (listings) {
                 .where("body LIKE ?", insertMap["body"])
                 .toString();
 
-            promiseSql(sqlFindDuplicates, function(duplicates) {
-                if (!util.isPresent(duplicates)) {
+            promiseSql(sqlFindDuplicates).then(function(duplicates) {
+                if (!util.isPresent(duplicates[0])) {
                     insertMap["case_id"] = parseInt(absentForeclosure.caseId);
                     insertMap["county"] = absentForeclosure.county;
                     insertMap["source"] = absentForeclosure.source;
@@ -200,13 +198,13 @@ function writeToDB (listings) {
 
                     insertMap = _.merge(insertMap, scrapeAddress(body));
 
-                    SQLInsertListing = squel
+                    var sqlInsertListing = squel
                         .insert({replaceSingleQuotes: true})
                         .into(table)
                         .setFields(insertMap)
                         .toString();
 
-                    return promiseSql(SQLInsertListing);
+                    return promiseSql(sqlInsertListing);
                 }
 
                 count.duplicates += 1;
