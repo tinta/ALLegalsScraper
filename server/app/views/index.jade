@@ -7,8 +7,6 @@ block content
             a(href="/#{region}").col-xs-6.caps
                 div.bg-blue.bg-orange-hover
                     div
-                        //- - currentBg += 1
-                        //- - if (currentBg === bgs.length) currentBg = 0
                         div.spacer-xs
                         h3.text-thin #{region} Counties
                         div.spacer-xxs
@@ -16,8 +14,10 @@ block content
                     div.pad-lr
                         div.spacer-sm
                         h4.pad-lr
-                            for county in counties
-                                span.pad-b.text-thin #{county}&nbsp;
+                            for county, i in counties
+                                if i !== 0
+                                    span.text-thin &nbsp;|&nbsp;
+                                span.pad-b.text-thin #{county}
                         div.spacer-xs
 
                 div.spacer-md
