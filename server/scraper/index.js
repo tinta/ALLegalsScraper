@@ -198,13 +198,13 @@ function writeToDB (listings) {
                                     insertedRows++;
                                 });
                             } else {
-                                duplicate += 1;
+                                duplicates += 1;
                             }
                         });
                     }
                 });
             } else {
-                console('No new listings found');
+                console.log('No new listings found');
             }
         });
     }
