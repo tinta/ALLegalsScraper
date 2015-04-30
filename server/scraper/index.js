@@ -3,6 +3,7 @@ var Nightmare = require('nightmare');
 var _ = require('lodash');
 var moment = require('moment');
 var squel = require("squel").useFlavour('mysql');
+var Q = require('q');
 
 // Instantiations
 var db = require('./../db-connect.js')();
@@ -24,8 +25,8 @@ options.county = 'madison';
 var table = "foreclosures";
 var listings = {};
 
-var startDate = moment().add(-14, 'day').format('MM-DD-YYYY');
-var endDate = moment().add(0, 'day').format('MM-DD-YYYY');
+var startDate = moment().add(-28, 'day').format('MM-DD-YYYY');
+var endDate = moment().add(-14, 'day').format('MM-DD-YYYY');
 var scrapeUrl = 'http://www.alabamalegals.com/index.cfm?fuseaction=home';
 var counties = [
     56, // blount
@@ -125,27 +126,35 @@ function writeToDB (listings) {
     uids.present = [];
     uids.absent = [];
     uids.sql = [];
-    var SQLFindListing, query;
+    var sqlFindListing, query;
 
-    if (uids.scraped.length > 0) {
+    var count = {};
+    count.scraped = uids.scraped.length;
+    count.inserts = 0;
+    count.duplicates = 0;
+    count.print = function () {
+        console.log('Inserted Rows: ' + count.inserts);
+        console.log('Duplicates Found: ' + count.duplicates);
+    }
+
+    if (count.scraped > 0) {
         uids.scraped.forEach(function(uid, index) {
             uids.scraped[index] = db.escape(parseInt(uid));
             uids.sql.push('case_id = ' + uids.scraped[index]);
         });
 
-        console.log('scraped ' + uids.scraped.length + ' listings')
-
-        SQLFindListing = squel.select().from(table).where(uids.sql.join(" OR ")).toString();
-        query = db.query(SQLFindListing);
+        sqlFindListing = squel.select().from(table).where(uids.sql.join(" OR ")).toString();
+        query = db.query(sqlFindListing);
 
         query.on('result', function(result) {
             uids.present.push(result.case_id);
         });
 
         query.on('end', function() {
-            var insertedRows = 0;
-            var duplicates = 0;
             uids.absent = _.difference(uids.scraped, uids.present);
+
+            var deferred = Q.defer();
+            var loop = 0;
 
             if (uids.absent.length > 0) {
                 uids.absent.forEach(function(absentUid) {
@@ -168,9 +177,7 @@ function writeToDB (listings) {
                             .toString();
 
                         db.query(sqlFindDuplicates, function(err, duplicates) {
-                            if (err) {
-                                throw err;
-                            }
+                            if (err) throw err;
                             if (!util.isPresent(duplicates)) {
                                 insertMap["case_id"] = parseInt(absentForeclosure.caseId);
                                 insertMap["county"] = absentForeclosure.county;
@@ -195,17 +202,28 @@ function writeToDB (listings) {
 
                                 db.query(SQLInsertListing, function(err) {
                                     if (err) {throw err;}
-                                    insertedRows++;
+                                    count.inserts++;
+                                    loop++;
+                                    if (loop == uids.absent.length) deferred.resolve(true);
                                 });
                             } else {
-                                duplicate += 1;
+                                count.duplicates += 1;
+                                loop++;
+                                if (loop == uids.absent.length) deferred.resolve(true);
                             }
                         });
+                    } else {
+                        loop++;
+                        if (loop == uids.absent.length) deferred.resolve(true);
                     }
                 });
             } else {
-                console('No new listings found');
+                console.log('No new listings found');
             }
+
+            deferred.promise.then(function() {
+                count.print();
+            });
         });
     }
 }
