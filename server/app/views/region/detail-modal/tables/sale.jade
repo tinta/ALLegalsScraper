@@ -17,12 +17,19 @@ table.table.table-bordered
                     i.fa.fa-pencil
                     i.fa.fa-dollar
                     span Mortgage Value
+
+            td
+                label.editable(for="last_sold_year")
+                    i.fa.fa-pencil
+                    i.fa.fa-calendar-o
+                    span Mortgage Year
+
     tbody
         tr
             +editableTD('sale_location', 4)
             +editableTD('appraisal_price', 5)
             +editableTD('buy_price', 6)
-
+            +editableTD('last_sold_year', 7)
 
 table.table.table-bordered
     thead
@@ -46,6 +53,6 @@ table.table.table-bordered
 
     tbody
         tr
-            +editableTD('sale_date', 7)
-            +editableTD('attorney', 8)
-            +editableTD('bank', 9)
+            +editableTD('sale_date', 8)
+            +editableTD('attorney', 9)
+            +editableTD('bank', 10)
