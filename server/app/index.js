@@ -5,52 +5,61 @@ var squel = require("squel").useFlavour('mysql');
 var app = express();
 var port = 3000;
 
+function addStaticPath (path) { return express.static(process.cwd() + path); }
+app.use("/resources",   addStaticPath('/resources') );
+app.use("/angular",     addStaticPath('/node_modules/angular'));
+app.use("/angular-sanitize",     addStaticPath('/node_modules/angular-sanitize'));
+app.use("/ng-table",    addStaticPath('/node_modules/ng-table'));
+app.use("/lodash",      addStaticPath('/node_modules/lodash'));
+app.use("/moment",      addStaticPath('/node_modules/moment'));
+app.use("/bootstrap",   addStaticPath('/node_modules/bootstrap'));
+app.use("/font-awesome",   addStaticPath('/node_modules/font-awesome'));
+app.use("/jquery",   addStaticPath('/node_modules/jquery'));
+
 app.set('views', './server/app/views');
 app.set('view engine',  'jade');
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use("/resources",   addStaticAssetsPath('/resources') );
-app.use("/angular",     addStaticAssetsPath('/node_modules/angular'));
-app.use("/angular-sanitize",     addStaticAssetsPath('/node_modules/angular-sanitize'));
-app.use("/ng-table",    addStaticAssetsPath('/node_modules/ng-table'));
-app.use("/lodash",      addStaticAssetsPath('/node_modules/lodash'));
-app.use("/moment",      addStaticAssetsPath('/node_modules/moment'));
-app.use("/bootstrap",   addStaticAssetsPath('/node_modules/bootstrap'));
-app.use("/font-awesome",   addStaticAssetsPath('/node_modules/font-awesome'));
-app.use("/jquery",   addStaticAssetsPath('/node_modules/jquery'));
 app.locals.pretty = true;
-
 app.listen(port);
+
 console.log('Now watching connections to port ' + port + '...');
 
+// Custom requires
 var db = require('./../db-connect.js')();
 var util = require('./../util.js');
+
 var table = "foreclosures";
 
-function addStaticAssetsPath (path) {
-    return express.static(process.cwd() + path)
-}
-
-function renderListingsInRange(res, start, end) {
-    var startDate = moment().add(start, 'd').format('YYYY-MM-DD');
-    var endDate = moment().add(end, 'd').format('YYYY-MM-DD');
-
-    var counties = [
-        'colbert',
-        'lauderdale'
-    ];
-
-    var sqlCounties = [];
-
+var sqlize = {};
+sqlize.momentFormat = 'YYYY-MM-DD';
+sqlize.endOfWeek = function (yyyymmdd) {
+    return moment(yyyymmdd, this.momentFormat)
+        // .day(X), where X is a day of the week (0 = Sunday, 6 = Saturday)
+        .day(6)
+        .format(sqlize.momentFormat);
+};
+sqlize.counties = function (counties) {
+    var _counties = [];
     counties.forEach(function(county) {
-        sqlCounties.push('county = ' + db.escape(county));
+        _counties.push('county = ' + db.escape(county));
     });
+    return _counties.join(' OR ');
+};
 
+var regions = {};
+regions.northeast = [
+    'colbert',
+    'lauderdale'
+];
+
+function renderListingsInRange (res, sqlStart, sqlEnd, counties) {
+    var sqlCounties = sqlize.counties(counties);
     var sqlInRange = squel
         .select()
         .from(table)
-        .where('sale_date > ' + db.escape(startDate))
-        .where('sale_date < ' + db.escape(endDate))
-        .where(sqlCounties.join(' OR '))
+        .where('sale_date > ' + db.escape(sqlStart))
+        .where('sale_date < ' + db.escape(sqlEnd))
+        .where(sqlCounties)
         .toString();
 
     db.query(sqlInRange, function(err, results) {
@@ -63,11 +72,15 @@ function renderListingsInRange(res, start, end) {
 }
 
 app.get('/', function (req, res) {
-    renderListingsInRange(res, -1, 7);
+    var startDate = moment().format(sqlize.momentFormat);
+    var endDate = sqlize.endOfWeek(startDate)
+    renderListingsInRange(res, startDate, endDate, regions.northeast);
 });
 
-app.get('/upcoming', function (req, res) {
-    renderListingsInRange(res, 7, 14);
+app.get('/next-week', function (req, res) {
+    var startDate = moment().day(8).format(sqlize.momentFormat);
+    var endDate = sqlize.endOfWeek(startDate);
+    renderListingsInRange(res, startDate, endDate, regions.northeast);
 });
 
 app.get('/all', function (req, res) {
