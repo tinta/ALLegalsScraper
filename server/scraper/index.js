@@ -18,19 +18,19 @@ var startDate = moment().add(-14, 'day').format('MM-DD-YYYY');
 var endDate = moment().add(0, 'day').format('MM-DD-YYYY');
 var scrapeUrl = 'http://www.alabamalegals.com/index.cfm?fuseaction=home';
 var counties = [
-    // 56, // blount
-    // 60, // colbert
-    // 57, // cullman
-    // 65, // deKalb
-    // 66, // jackson
-    // 1,  // jefferson
+    56, // blount
+    60, // colbert
+    57, // cullman
+    65, // deKalb
+    66, // jackson
+    1,  // jefferson
     59, // franklin
     4,  // lauderdale
-    // 61, // lawrence
-    // 67, // limestone
-    // 5,  // madison
-    // 63, // marshall
-    // 62, // morgan
+    61, // lawrence
+    67, // limestone
+    5,  // madison
+    63, // marshall
+    62, // morgan
     '', // placholder. the last query always fails due to `Cannot enqueue Query after invoking quit.`
 ];
 
