@@ -24,20 +24,20 @@ options.county = 'madison';
 var table = "foreclosures";
 var listings = {};
 
-var startDate = moment().add(-30, 'day').format('MM-DD-YYYY');
-var endDate = moment().add(-14, 'day').format('MM-DD-YYYY');
+var startDate = moment().add(-14, 'day').format('MM-DD-YYYY');
+var endDate = moment().add(0, 'day').format('MM-DD-YYYY');
 var scrapeUrl = 'http://www.alabamalegals.com/index.cfm?fuseaction=home';
 var counties = [
-    56, // blount
-    60, // colbert
-    57, // cullman
-    65, // deKalb
-    59, // franklin
-    66, // jackson
-    1,  // jefferson
-    4,  // lauderdale
-    61, // lawrence
-    67, // limestone
+    // 56, // blount
+    // 60, // colbert
+    // 57, // cullman
+    // 65, // deKalb
+    // 59, // franklin
+    // 66, // jackson
+    // 1,  // jefferson
+    // 4,  // lauderdale
+    // 61, // lawrence
+    // 67, // limestone
     5,  // madison
     63, // marshall
     62, // morgan
@@ -112,7 +112,6 @@ function scrapeCounty (index) {
             if (err) throw err;
 
             if (counties[index + 1]) {
-                console.log(index)
                 return scrapeCounty(index + 1);
             } else {
                 return db.end();
@@ -134,8 +133,7 @@ function writeToDB (listings) {
             uids.sql.push('case_id = ' + uids.scraped[index]);
         });
 
-        console.log('scraped')
-        console.log(uids.scraped)
+        console.log('scraped ' + uids.scraped.length + ' listings')
 
         SQLFindListing = squel.select().from(table).where(uids.sql.join(" OR ")).toString();
         query = db.query(SQLFindListing);
@@ -146,6 +144,7 @@ function writeToDB (listings) {
 
         query.on('end', function() {
             var insertedRows = 0;
+            var duplicates = 0;
             uids.absent = _.difference(uids.scraped, uids.present);
 
             if (uids.absent.length > 0) {
@@ -162,46 +161,46 @@ function writeToDB (listings) {
                         insertMap["body"] = (absentForeclosure.body.length > 10000) ? absentForeclosure.body.substring(0,10000) : absentForeclosure.body;
 
                         // ensure that this foreclosures doesn't already exist in the database, and if it does, return.
-                        alreadyExists = squel.select({replaceSingleQuotes: true}).from(table).where("body LIKE ?", insertMap["body"]).toString();
-                        var duplicate = db.query(alreadyExists, function(err) {
+                        var sqlFindDuplicates = squel
+                            .select({replaceSingleQuotes: true})
+                            .from(table)
+                            .where("body LIKE ?", insertMap["body"])
+                            .toString();
+
+                        db.query(sqlFindDuplicates, function(err, duplicates) {
                             if (err) {
                                 throw err;
                             }
-                        );
-
-                        if (duplicate) {
-                            return;
-                        }
-                            
-                        insertMap["case_id"] = parseInt(absentForeclosure.caseId);
-                        insertMap["county"] = absentForeclosure.county;
-                        insertMap["source"] = absentForeclosure.source;
-                        insertMap["pub_date"] = pubDate;
-                        insertMap["sale_date"] = saleDate;
+                            if (!util.isPresent(duplicates)) {
+                                insertMap["case_id"] = parseInt(absentForeclosure.caseId);
+                                insertMap["county"] = absentForeclosure.county;
+                                insertMap["source"] = absentForeclosure.source;
+                                insertMap["pub_date"] = pubDate;
+                                insertMap["sale_date"] = saleDate;
 
 
-                        if ((addressParts != null) && (addressParts.length === 4)) {
-                            streetAddr = addressParts[1];
-                            city = addressParts[2];
-                            insertMap["zip"] = addressParts[3];
+                                if ((addressParts != null) && (addressParts.length === 4)) {
+                                    streetAddr = addressParts[1];
+                                    city = addressParts[2];
+                                    insertMap["zip"] = addressParts[3];
 
-                            if (streetAddr.length > 63) streetAddr = streetAddr.substring(0,63);
-                            if (city.length > 63) city = city.substring(0,63);
+                                    if (streetAddr.length > 63) streetAddr = streetAddr.substring(0,63);
+                                    if (city.length > 63) city = city.substring(0,63);
 
-                            insertMap["city"] = city;
-                            insertMap["street_addr"] = streetAddr;
-                        }
+                                    insertMap["city"] = city;
+                                    insertMap["street_addr"] = streetAddr;
+                                }
 
-                        SQLInsertListing = squel.insert({replaceSingleQuotes: true}).into(table).setFields(insertMap).toString();
+                                SQLInsertListing = squel.insert({replaceSingleQuotes: true}).into(table).setFields(insertMap).toString();
 
-                        db.query(SQLInsertListing, function(err) {
-                            if (err) {
-                                throw err;
+                                db.query(SQLInsertListing, function(err) {
+                                    if (err) {throw err;}
+                                    insertedRows++;
+                                });
+                            } else {
+                                duplicate += 1;
                             }
-                            insertedRows++;
                         });
-                    } else {
-                        console.log(absentUid)
                     }
                 });
             }
