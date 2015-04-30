@@ -203,6 +203,8 @@ function writeToDB (listings) {
                         });
                     }
                 });
+            } else {
+                console('No new listings found');
             }
         });
     }

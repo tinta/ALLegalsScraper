@@ -21,12 +21,17 @@ var regexi = [
     {
         // MM/DD/YYYY
         re: new RegExp('(' + re.mm + '\\/' + re.dd + '\\/' + re.yyyy + ')', 'gi'),
-        momentFormat: 'MMMM D, YYYY',
+        momentFormat: 'MM/DD/YYYY',
+    },
+    {
+        // MM/DD/ YYYY
+        re: new RegExp('(' + re.mm + '\\/' + re.dd + '\\/\\s' + re.yyyy + ')', 'gi'),
+        momentFormat: 'MM/DD/ YYYY',
     },
     {
         // MM/DD/YY
         re: new RegExp('(' + re.mm + '\\/' + re.dd + '\\/\\d\\d)(?:\\s)', 'gi'),
-        momentFormat: 'MMMM D, YYYY',
+        momentFormat: 'MM/DD/YY',
     },
 ];
 
