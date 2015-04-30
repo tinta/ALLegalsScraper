@@ -1,105 +1,23 @@
-doctype html
-html
-    include head
+extends layout
 
-    body.text-center(
-        ng-app="ControllerListings"
-        ng-controller="ControllerListings"
-        ng-cloak
-    )
-        div.spacer-md
+block content
+    div.row.text-white
+        div.spacer-xs
+        each counties, region in regions
+            a(href="/#{region}").col-xs-6.caps
+                div.bg-blue.bg-orange-hover
+                    div
+                        //- - currentBg += 1
+                        //- - if (currentBg === bgs.length) currentBg = 0
+                        div.spacer-xs
+                        h3.text-thin #{region} Counties
+                        div.spacer-xxs
+                    div.spacer-1.bg-white
+                    div.pad-lr
+                        div.spacer-sm
+                        h4.pad-lr
+                            for county in counties
+                                span.pad-b.text-thin #{county}&nbsp;
+                        div.spacer-xs
 
-        div.bg-red
-            div.spacer-xs
-            div.clearfix.page-column.container.text-white
-                div.pull-left
-                    h2
-                        i.fa.fa-home
-                        span.text-thin.pad-l Sales in Alabama
-                div.pull-right
-                    div.spacer-xs
-                    h4.text-thin.pad-lr
-                        a(href="/") Current
-                    h4.text-thin.pad-lr
-                        a(href="/next-week") Next Week
-                    h4.text-thin.pad-lr
-                        a(href="/all") All
-            div.spacer-xs
-
-        div.spacer-md
-
-        div.page-column.container
-            div.row
-                div.col-xs-12
-                    div Displaying [[ tableParams.data.length ]] of [[ tableParams.total() ]] Listings
-                    div.spacer-sm
-                div.col-xs-12
-                    table.table.table-striped.table-bordered.table-hover.bg-white(
-                        ng-table="tableParams"
-                        show-filter="true"
-                    )
-                        tr(
-                            ng-repeat="listing in $data"
-                            ng-click="modal.open(listing.index)"
-                        )
-                            td(
-                                data-title="'Sale Date'"
-                                sortable="'sale_date'"
-                                filter="{ 'sale_date': 'date' }"
-                            ) [[ listing.sale_date ]]
-                            td(
-                                data-title="'Address'"
-                                sortable="'street_addr'"
-                                filter="{ 'street_addr': 'text' }"
-                            ) [[ listing.street_addr ]]
-                            td(
-                                data-title="'Name 1'"
-                                sortable="'name1'"
-                                filter="{ 'name1': 'text' }"
-                                placeholder="fooo"
-                            ) [[ listing.name1 ]]
-                            td(
-                                data-title="'Mortgage $'"
-                                sortable="'buy_price'"
-                                filter="{ 'buy_price': 'text' }"
-                                placeholder="fooo"
-                            ) [[ listing.buy_price ]]
-                            td(
-                                data-title="'Appraisal $'"
-                                sortable="'appraisal_price'"
-                                filter="{ 'appraisal_price': 'text' }"
-                                placeholder="fooo"
-                            ) [[ listing.appraisal_price ]]
-                            td(
-                                data-title="'County'"
-                                sortable="'county'"
-                                filter="{ 'county': 'county' }"
-                            ) [[ listing.county ]]
-                            td(
-                                data-title="'City'"
-                                sortable="'city'"
-                                filter="{ 'city': 'text' }"
-                            ) [[ listing.city ]]
-                            td(
-                                data-title="'Attorney'"
-                                sortable="'attorney'"
-                                filter="{ 'attorney': 'text' }"
-                            ) [[ listing.attorney ]]
-
-        script(type="text/ng-template" id="ng-table/filters/county.html")
-            input.input-filter.form-control(
-                type="text"
-                name="[[ name ]]"
-                placeholder="ex. Madison"
-                ng-model="params.filter()[name]"
-            )
-
-        script(type="text/ng-template" id="ng-table/filters/date.html")
-            input.input-filter.form-control(
-                type="text"
-                name="[[ name ]]"
-                placeholder="yyyy/mm/dd"
-                ng-model="params.filter()[name]"
-            )
-
-        include detail-modal/index
+                div.spacer-md

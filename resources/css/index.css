@@ -14,6 +14,10 @@ label,
     cursor: pointer;
 }
 
+.caps {
+    text-transform: capitalize;
+}
+
 .bg-white {
     background-color: #ffffff;
 }
@@ -38,8 +42,16 @@ label,
     background-color: #D19452;
 }
 
+body .bg-orange-hover:hover {
+    background-color: #D19452;
+}
+
 .bg-blue {
     background-color: #416873;
+}
+
+.bg-yellow {
+    background-color: #CFBC52;
 }
 
 .text-white {
@@ -49,6 +61,11 @@ label,
 .text-gray {
     color: #888;
 }
+
+.text-gray-dark {
+    color: #414141;
+}
+
 
 .text-gray-dark-hover:hover {
     color: #414141;
