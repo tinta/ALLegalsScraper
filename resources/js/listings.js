@@ -161,6 +161,8 @@ angular.module('ControllerListings', [
                     });
                 });
 
+                body = "<span>" + body + "</span>";
+
                 return $sce.trustAsHtml(body);
             })();
         },
