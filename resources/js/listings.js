@@ -2,7 +2,7 @@ angular.module('ControllerListings', [
 // Dependencies
     'ngTable',
     'RowModel',
-    'ngSanitize'
+    'Highlight'
 ], function($interpolateProvider) {
     $interpolateProvider.startSymbol('[[');
     $interpolateProvider.endSymbol(']]');
@@ -15,9 +15,9 @@ angular.module('ControllerListings', [
     $window,
     $filter,
     $http,
-    $sce,
     ngTableParams,
-    RowModel
+    RowModel,
+    Highlight
 ){
     $scope.listings = _.merge([],$window.listings);
 
@@ -88,97 +88,35 @@ angular.module('ControllerListings', [
     }
 
     // Detail modal stuff
-    $scope.modal = {
-        data: null,
-        isOpen: false,
-        saveSucceeded: null,
-        open: function (listingIndex) {
+    $scope.modal = (function() {
+        var modal = {};
+        modal.data = null;
+        modal.isOpen = false;
+        modal.saveSucceeded = null;
+        modal.open = function (listingIndex) {
             var listing = $scope.listings[listingIndex];
+
             // Work-around for text-highlighting in `body`
             var edit = _.omit(listing, ['body']);
+
             this.data = new RowModel(edit);
-
             this.data.initiateEdit();
+            this.data.body = Highlight(listing.body);
             this.isOpen = true;
-
-            this.data.body = (function() {
-                var body = listing.body;
-                var highlightMap = {
-                    'bg-red': [
-                        'alabama',
-                        '(?:\\s)al(?:\\s)',
-                        '(?:\\w*\\s)county',
-                    ],
-                    'bg-orange': [
-                        'January',
-                        'February',
-                        'March',
-                        'April',
-                        'May',
-                        'June',
-                        'July',
-                        'August',
-                        'September',
-                        'October',
-                        'November',
-                        'December',
-                        '20\\d\\d'
-                    ],
-                    'bg-blue': [
-                        "attorney(\\'?)(s?)",
-                        'courthouse'
-                    ],
-                    'bg-green': [
-                        "3(\\d{4})(?:\\s)"
-                    ],
-                    'bg-purple': [
-                        '(?:\\s)circle(?:\\s)',
-                        '(?:\\s)cir(?:\\s)',
-                        '(?:\\s)drive(?:\\s)',
-                        '(?:\\s)dr(?:\\s)',
-                        '(?:\\s)road(?:\\s)',
-                        '(?:\\s)rd(?:\\s)',
-                        '(?:\\s)avenue(?:\\s)',
-                        '(?:\\s)ave(?:\\s)',
-                        '(?:\\s)highway(?:\\s)',
-                        '(?:\\s)street(?:\\s)',
-                        '(?:\\s)st(?:\\s)',
-                        '(?:\\s)trail(?:\\s)',
-                    ]
-                };
-
-                function highlight (className) {
-                    return [
-                        '<span class="pad-lr text-white text-thin', className ,'">',
-                         '$&',
-                         '</span>'
-                    ].join(' ');
-                }
-
-                _.each(highlightMap, function(highlightList, key) {
-                    _.each(highlightList, function(text) {
-                        var re = new RegExp(text, 'gi');
-                        var match
-                        body = body.replace(re, highlight(key));
-                    });
-                });
-
-                body = "<span>" + body + "</span>";
-
-                return $sce.trustAsHtml(body);
-            })();
-        },
-        close: function () {
+        };
+        modal.close = function () {
             this.data = null;
             this.saveSucceeded = null;
             this.isOpen = false;
-        },
-        abortEdit: function () {
+            this.remove.text = 'Delete';
+            this.remove.action = this.remove.init;
+        };
+        modal.abortEdit = function () {
             this.data.abortEdit();
             this.saveSucceeded = null;
             this.data.initiateEdit();
-        },
-        save: function () {
+        };
+        modal.save = function () {
             var This = this;
             var postBody;
 
@@ -209,8 +147,37 @@ angular.module('ControllerListings', [
                     }
                 });
             }
+        };
+        modal.remove = {};
+        modal.remove.text = 'Delete';
+        modal.remove.init = function () {
+            this.text = 'Positive?';
+            this.action = this.remove;
+        };
+        modal.remove.action = modal.remove.init;
+        modal.remove.remove = function () {
+            var postBody = {};
+
+            postBody = modal.data.model;
+            $.ajax({
+                method: 'POST',
+                url: '/delete',
+                data: postBody,
+                success: function (data) {
+                    var oldRow = _.findWhere($scope.listings, {case_id: data.case_id});
+                    $scope.listings.splice(oldRow.index, 1);
+                    modal.close();
+                    $scope.$apply();
+
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            });
         }
-    };
+
+        return modal;
+    })();
 
     // Dev
     $window.logScope = function () {

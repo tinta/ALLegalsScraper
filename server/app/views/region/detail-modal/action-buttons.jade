@@ -1,4 +1,4 @@
-div.pad-lr(
+div.pad-lr.pull-left(
     ng-click="modal.abortEdit()"
 )
     h4.text-white.pad(
@@ -12,7 +12,7 @@ div.pad-lr(
             div.fa-stack
                 i.fa.fa-stack-2x.fa-circle
                 i.fa.fa-stack-1x.fa-undo.text-blue
-div.pad-lr(
+div.pad-lr.pull-left(
     ng-if="modal.saveSucceeded == true && modal.data.editForm.all.isUnchanged()"
 )
     h4.bg-orange.text-white.pad
@@ -22,7 +22,7 @@ div.pad-lr(
                 i.fa.fa-stack-2x.fa-circle
                 i.fa.fa-stack-1x.fa-check.text-orange
 
-div.pad-lr(
+div.pad-lr.pull-left(
     ng-if="modal.saveSucceeded == false"
 )
     h4.text-thin.bg-red.text-white.pad
@@ -32,7 +32,7 @@ div.pad-lr(
                 i.fa.fa-stack-2x.fa-circle
                 i.fa.fa-stack-1x.fa-exclamation.text-red
 
-div.pad-lr(
+div.pad-lr.pull-left(
     ng-click="modal.save()"
 )
     h4.text-thin.text-white.pad(
@@ -46,3 +46,13 @@ div.pad-lr(
             div.fa-stack
                 i.fa.fa-stack-2x.fa-circle
                 i.fa.fa-stack-1x.fa-save.text-green
+
+div.pad-lr.pull-right(
+    ng-click="modal.remove.action()"
+)
+    h4.text-thin.bg-red.text-white.pad
+        div.pad-l.text-thin [[ modal.remove.text ]]
+        div.pad-lr
+            div.fa-stack
+                i.fa.fa-stack-2x.fa-circle
+                i.fa.fa-stack-1x.fa-trash-o.text-red
