@@ -4,8 +4,8 @@
   "description": "Scrape Public Notices from AlabamaLegals.com",
   "main": "index.js",
   "scripts": {
-    "start": "node server/app/index.js",
-    "scraper": "node server/scraper/index.js"
+    "start": "/usr/local/bin/node server/app/index.js",
+    "scraper": "/usr/local/bin/node server/scraper/index.js"
   },
   "author": "",
   "license": "ISC",
