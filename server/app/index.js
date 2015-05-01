@@ -120,7 +120,7 @@ app.get('/', function (req, res) {
 app.get('/:region', function (req, res) {
     var counties = regions[req.params.region];
     if (util.isPresent(counties)) {
-        var startDate = moment().format(sqlize.momentFormat);
+        var startDate = moment().add(-1, 'd').format(sqlize.momentFormat);
         var endDate = sqlize.endOfWeek(startDate)
         renderListingsInRange(res, startDate, endDate, req.params.region);
     } else {
