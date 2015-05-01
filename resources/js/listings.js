@@ -19,13 +19,18 @@ angular.module('ControllerListings', [
     RowModel,
     Highlight
 ){
-    $scope.listings = _.merge([],$window.listings);
-
     // Format data
     var dateFormat = 'M/D/YYYY';
-    _.each($scope.listings, function(listing, index) {
-        $scope.listings[index] = createRow(listing, index);
-    });
+
+    $scope.listings = setAll($window.listings);
+
+    function setAll (listings) {
+        var _listings = [];
+        _.each(listings, function(listing, index) {
+            _listings[index] = createRow(listing, index);
+        });
+        return _listings;
+    }
 
     function createRow (listing, index) {
         var row = _.merge({}, listing);
@@ -57,7 +62,6 @@ angular.module('ControllerListings', [
                 if (filters) {
                     if (filters['county']) {
                         window.location.hash = '#/' + filters['county'];
-                        console.log(filters['county'])
                     }
                     return $filter('filter')($scope.listings, filters);
                 }
@@ -156,19 +160,18 @@ angular.module('ControllerListings', [
         };
         modal.remove.action = modal.remove.init;
         modal.remove.remove = function () {
-            var postBody = {};
-
-            postBody = modal.data.model;
+            var postBody = modal.data.model;
+            var uid = postBody.uid;
             $.ajax({
                 method: 'POST',
                 url: '/delete',
                 data: postBody,
                 success: function (data) {
-                    var oldRow = _.findWhere($scope.listings, {case_id: data.case_id});
+                    var oldRow = _.findWhere($scope.listings, {uid: uid});
                     $scope.listings.splice(oldRow.index, 1);
+                    $scope.tableParams.reload();
                     modal.close();
                     $scope.$apply();
-
                 },
                 error: function (err) {
                     console.log(err);

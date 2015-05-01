@@ -220,7 +220,13 @@ app.post('/update', function(req, res) {
 
     if (Object.keys(sqlColumnUpdateMap).length === 0) return new Error('no editable fields were passed to endpoint')
 
-    var sqlUpdate = squel.update({replaceSingleQuotes: true}).table(table).setFields(sqlColumnUpdateMap).where("uid = " + db.escape(uid)).toString();
+    var sqlUpdate = squel
+        .update({replaceSingleQuotes: true})
+        .table(table)
+        .setFields(sqlColumnUpdateMap)
+        .where("uid = " + db.escape(uid))
+        .toString();
+
     console.log("2. "  + sqlUpdate);
 
     db.query(sqlUpdate, function (err) {
@@ -236,5 +242,23 @@ app.post('/update', function(req, res) {
             if (!results[0]) throw 'Could not find updated row';
             res.send(results[0]);
         });
+    });
+});
+
+app.post('/delete', function(req, res) {
+    var uid = req.body.uid;
+
+    var sqlDelete = squel
+        .delete()
+        .from(table)
+        .where("uid = " + uid)
+        .toString();
+
+    console.log("1. "  + sqlDelete);
+
+
+    db.query(sqlDelete, function (err) {
+        if (err) throw err;
+        res.send(true);
     });
 });
