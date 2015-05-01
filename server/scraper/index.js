@@ -14,8 +14,8 @@ var scrapeAddress = require('./scrapeAddress.js');
 var page = new Nightmare();
 
 var table = "foreclosures";
-var startDate = moment().add(-28, 'day').format('MM-DD-YYYY');
-var endDate = moment().add(-14, 'day').format('MM-DD-YYYY');
+var startDate = moment().add(-14, 'day').format('MM-DD-YYYY');
+var endDate = moment().add(0, 'day').format('MM-DD-YYYY');
 var scrapeUrl = 'http://www.alabamalegals.com/index.cfm?fuseaction=home';
 var counties = [
     60, // colbert
