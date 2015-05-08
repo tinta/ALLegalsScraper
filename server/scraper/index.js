@@ -140,6 +140,7 @@ function writeToDB (listings) {
     }
 
     if (uids.scraped.length === 0) {
+        console.log('No listings were found in this county');
         writeToDBDeferred.resolve(false);
         return writeToDBDeferred.promise;
     }
@@ -179,8 +180,9 @@ function writeToDB (listings) {
             deferred.resolve(true);
         } else {
             console.log('Fetched all results!');
-            console.log(uids.scraped + ' listings were scraped.');
-            console.log(uids.absent + ' are listings not found in our database.');
+            console.log(uids.scraped.length + ' listings were scraped.');
+            console.log('Commencing DB inserts for following listings, which were not found in our DB.');
+            console.log(uids.absent.join(', '));
 
             uids.absent.forEach(function(absentUid) {
                 var absentForeclosure = listings[absentUid];
