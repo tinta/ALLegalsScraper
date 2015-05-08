@@ -11,10 +11,11 @@ var util = require('./../util.js');
 var scrapeSaleDate = require('./scrapeSaleDate.js');
 var scrapeAddress = require('./scrapeAddress.js');
 
+
+// Initializations
 var page = new Nightmare();
 
 var table = "foreclosures";
-var listings = {};
 var startDate = moment().add(-1, 'day').format('MM-DD-YYYY');
 var endDate = moment().add(0, 'day').format('MM-DD-YYYY');
 var scrapeUrl = 'http://www.alabamalegals.com/index.cfm?fuseaction=home';
@@ -126,6 +127,8 @@ function writeToDB (listings) {
     uids.sql = [];
     var sqlFindListing, query;
 
+    console.log(Array(50).join('=+'));
+
     var count = {};
     count.inserts = 0;
     count.duplicates = 0;
@@ -133,10 +136,13 @@ function writeToDB (listings) {
         console.log('Scraped Listings: ' + uids.scraped.length);
         console.log('Inserted Rows: ' + count.inserts);
         console.log('Duplicates Found: ' + count.duplicates);
-        console.log(Array(50).join('='));
+        console.log(Array(20).join('+='));
     }
 
-    if (uids.scraped.length === 0) return;
+    if (uids.scraped.length === 0) {
+        writeToDBDeferred.resolve(false);
+        return writeToDBDeferred.promise;
+    }
 
     uids.scraped.forEach(function(uid, index) {
         uids.scraped[index] = db.escape(parseInt(uid));
@@ -151,8 +157,15 @@ function writeToDB (listings) {
 
     query = db.query(sqlFindListing);
 
+
     query.on('result', function(result) {
+        console.log('Result! ID #' + result.case_id);
         uids.present.push(result.case_id);
+    });
+
+    query.on('error', function(err) {
+        console.log('Database stream error!');
+        throw err;
     });
 
     query.on('end', function() {
@@ -162,61 +175,68 @@ function writeToDB (listings) {
         var loop = 0;
 
         if (uids.absent.length ==  0) {
+            console.log('No new results were scraped');
             deferred.resolve(true);
-            return;
-        }
+        } else {
+            console.log('Fetched all results!');
+            console.log(uids.scraped + ' listings were scraped.');
+            console.log(uids.absent + ' are listings not found in our database.');
 
-        uids.absent.forEach(function(absentUid) {
-            var absentForeclosure = listings[absentUid];
+            uids.absent.forEach(function(absentUid) {
+                var absentForeclosure = listings[absentUid];
 
-            if (!absentForeclosure) {
-                loop++;
-                if (loop == uids.absent.length) deferred.resolve(true);
-                return;
-            }
-
-            var body = absentForeclosure.body;
-            var pubDate = moment(absentForeclosure.pubDate, 'MM-DD-YYYY').format('YYYY-MM-DD');
-            var saleDate = scrapeSaleDate(body);
-
-            var insertMap = {};
-            insertMap["body"] = (body.length > 10000) ? body.substring(0,10000) : body;
-
-            // ensure that this foreclosures doesn't already exist in the database, and if it does, return.
-            var sqlFindDuplicates = squel
-                .select({replaceSingleQuotes: true})
-                .from(table)
-                .where("body LIKE ?", insertMap["body"])
-                .toString();
-
-            promiseSql(sqlFindDuplicates).then(function(duplicates) {
-                if (!util.isPresent(duplicates[0])) {
-                    insertMap["case_id"] = parseInt(absentForeclosure.caseId);
-                    insertMap["county"] = absentForeclosure.county;
-                    insertMap["source"] = absentForeclosure.source;
-                    insertMap["pub_date"] = pubDate;
-                    insertMap["sale_date"] = saleDate;
-
-                    insertMap = _.merge(insertMap, scrapeAddress(body));
-
-                    var sqlInsertListing = squel
-                        .insert({replaceSingleQuotes: true})
-                        .into(table)
-                        .setFields(insertMap)
-                        .toString();
-
-                    return promiseSql(sqlInsertListing);
+                if (!absentForeclosure) {
+                    loop++;
+                    if (loop == uids.absent.length) {
+                        loop++;
+                        if (loop == uids.absent.length) deferred.resolve(true);
+                        return;
+                    }
                 }
 
-                count.duplicates += 1;
-                return Q(false);
-            })
-            .then(function(insertObj) {
-                if (insertObj) count.inserts++;
-                loop++;
-                if (loop == uids.absent.length) deferred.resolve(true);
+                var body = absentForeclosure.body;
+                var pubDate = moment(absentForeclosure.pubDate, 'MM-DD-YYYY').format('YYYY-MM-DD');
+                var saleDate = scrapeSaleDate(body);
+
+                var insertMap = {};
+                insertMap["body"] = (body.length > 10000) ? body.substring(0,10000) : body;
+
+                // ensure that this foreclosures doesn't already exist in the database, and if it does, return.
+                var sqlFindDuplicates = squel
+                    .select({replaceSingleQuotes: true})
+                    .from(table)
+                    .where("body LIKE ?", insertMap["body"])
+                    .toString();
+
+                promiseSql(sqlFindDuplicates).then(function(duplicates) {
+                    if (!util.isPresent(duplicates[0])) {
+                        insertMap["case_id"] = parseInt(absentForeclosure.caseId);
+                        insertMap["county"] = absentForeclosure.county;
+                        insertMap["source"] = absentForeclosure.source;
+                        insertMap["pub_date"] = pubDate;
+                        insertMap["sale_date"] = saleDate;
+
+                        insertMap = _.merge(insertMap, scrapeAddress(body));
+
+                        var sqlInsertListing = squel
+                            .insert({replaceSingleQuotes: true})
+                            .into(table)
+                            .setFields(insertMap)
+                            .toString();
+
+                        return promiseSql(sqlInsertListing);
+                    }
+
+                    count.duplicates += 1;
+                    return Q(false);
+                })
+                .then(function(insertObj) {
+                    if (insertObj) count.inserts++;
+                    loop++;
+                    if (loop == uids.absent.length) deferred.resolve(true);
+                });
             });
-        });
+        }
 
         deferred.promise.then(function() {
             count.print();
