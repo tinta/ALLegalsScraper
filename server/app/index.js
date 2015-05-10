@@ -74,10 +74,13 @@ regions.mideast = [
 var sqlize = {};
 sqlize.momentFormat = 'YYYY-MM-DD';
 sqlize.endOfWeek = function (yyyymmdd) {
-    return moment(yyyymmdd, this.momentFormat)
-        // .day(X), where X is a day of the week (0 = Sunday, 6 = Saturday)
-        .day(6)
-        .format(sqlize.momentFormat);
+    var startMoment = moment(yyyymmdd, this.momentFormat);
+    var eowMoment = moment(startMoment).day(6);
+
+    // This occurs if both days are Saturday
+    if (startMoment.day() === eowMoment.day()) eowMoment.day(13);
+
+    return eowMoment.format(sqlize.momentFormat);
 };
 sqlize.counties = function (counties) {
     var _counties = [];
