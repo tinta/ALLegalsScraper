@@ -1,27 +1,20 @@
 table.table.table-bordered
     thead
         tr
-            td County
             td
-                label.editable(for="city")
-                    i.fa.fa-pencil
+                div.editable
+                    i
                     i.fa.fa-map-marker
-                    span City
-            td
-                label.editable(for="zip")
-                    i.fa.fa-pencil
-                    i.fa.fa-map-marker
-                    span Zip
-            td
-                label.editable(for="street_addr")
-                    i.fa.fa-pencil
-                    i.fa.fa-map-marker
-                    span Address
+                    span County
+
+            +editableTHead('City', 'city', 'fa-map-marker')
+            +editableTHead('Zip', 'zip', 'fa-map-marker')
+            +editableTHead('Address', 'street_addr', 'fa-map-marker')
 
     tbody
         tr
             td [[ modal.data.model.county ]]
 
-            +editableTD('city', 1)
-            +editableTD('zip', 2)
-            +editableTD('street_addr', 3)
+            +editableTData('city', 1)
+            +editableTData('zip', 2)
+            +editableTData('street_addr', 3)

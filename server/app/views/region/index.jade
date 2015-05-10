@@ -1,4 +1,6 @@
 extends ../layout
+include mixins/editableTData
+include mixins/editableTHead
 
 block head
     script(type='text/javascript', src="/lodash/index.js")
@@ -17,6 +19,7 @@ block head
         window.listings = !{ foreclosures };
 
 block content
+    include 
     div.row(
         ng-app="ControllerListings"
         ng-controller="ControllerListings"

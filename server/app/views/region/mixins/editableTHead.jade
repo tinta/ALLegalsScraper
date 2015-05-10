@@ -1,0 +1,10 @@
+mixin editableTHead (TITLE, NAME, ICON)
+    td
+        label.editable(
+            for="#{NAME}"
+        )
+            i.fa.fa-pencil(
+                ng-show="user.isLoggedIn"
+            )
+            i.fa(class="#{ICON}")
+            span= TITLE

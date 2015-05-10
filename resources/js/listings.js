@@ -22,6 +22,9 @@ angular.module('ControllerListings', [
     // Format data
     var dateFormat = 'M/D/YYYY';
 
+    $scope.user = {};
+    $scope.user.isLoggedIn = false;
+
     $scope.listings = setAll($window.listings);
 
     function setAll (listings) {

@@ -1,33 +1,13 @@
 table.table.table-bordered
     thead
         tr
-            td
-                label.editable(for="bed")
-                    i.fa.fa-pencil
-                    i.fa.fa-bed
-                    span Bed
-
-            td
-                label.editable(for="bath")
-                    i.fa.fa-pencil
-                    i.fa.fa-tint
-                    span Bath
-
-            td
-                label.editable(for="lot_area")
-                    i.fa.fa-pencil
-                    i.fa.fa-tree
-                    span Lot Area (acres)
-
-            td
-                label.editable(for="indoor_area")
-                    i.fa.fa-pencil
-                    i.fa.fa-home
-                    span Indoor Area (sqft)
-
+            +editableTHead('Bed', 'bed', 'fa-bed')
+            +editableTHead('Bath', 'bath', 'fa-tint')
+            +editableTHead('Lot Area (acres)', 'lot_area', 'fa-tree')
+            +editableTHead('Indoor Area (sqft)', 'indoor_area', 'fa-home')
     tbody
         tr
-            +editableTD('bed', 15)
-            +editableTD('bath', 16)
-            +editableTD('lot_area', 17)
-            +editableTD('indoor_area', 18)
+            +editableTData('bed', 15)
+            +editableTData('bath', 16)
+            +editableTData('lot_area', 17)
+            +editableTData('indoor_area', 18)
