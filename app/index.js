@@ -25,8 +25,8 @@ app.listen(port);
 console.log('Now watching connections to port ' + port + '...');
 
 // Custom requires
-var db = require('./../db-connect.js')();
-var util = require('./../util.js');
+var db = require('./../common/db-connect.js')();
+var util = require('./../common/util.js');
 
 var table = "foreclosures";
 
