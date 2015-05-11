@@ -105,8 +105,6 @@ function renderListingsInRange (res, sqlStart, sqlEnd, region) {
         .where(sqlCounties)
         .toString();
 
-    console.log("1. " + sqlInRange);
-
     db.query(sqlInRange, function(err, results) {
         if (err) throw err;
         results = results || {};
@@ -124,15 +122,9 @@ app.get('/', function (req, res) {
     res.render('index', scope);
 });
 
-app.get('/:region', function (req, res) {
-    var counties = regions[req.params.region];
-    if (util.isPresent(counties)) {
-        var startDate = moment().add(-1, 'd').format(sqlize.momentFormat);
-        var endDate = sqlize.endOfWeek(startDate)
-        renderListingsInRange(res, startDate, endDate, req.params.region);
-    } else {
-        res.redirect('/');
-    }
+app.get('/login', function (req, res) {
+    var scope = {};
+    res.render('login', scope);
 });
 
 app.get('/:region/next-week', function (req, res) {
@@ -157,8 +149,6 @@ app.get('/:region/all', function (req, res) {
             .where(sqlCounties)
             .toString();
 
-        console.log("1. " + sqlGetForeclosures);
-
         db.query(sqlGetForeclosures, function(err, foreclosures) {
             if (err) throw err;
             foreclosures = foreclosures || {};
@@ -167,6 +157,17 @@ app.get('/:region/all', function (req, res) {
             scope.foreclosures = JSON.stringify(foreclosures);
             res.render('region/index', scope);
         });
+    } else {
+        res.redirect('/');
+    }
+});
+
+app.get('/:region', function (req, res) {
+    var counties = regions[req.params.region];
+    if (util.isPresent(counties)) {
+        var startDate = moment().add(-1, 'd').format(sqlize.momentFormat);
+        var endDate = sqlize.endOfWeek(startDate)
+        renderListingsInRange(res, startDate, endDate, req.params.region);
     } else {
         res.redirect('/');
     }
@@ -234,15 +235,10 @@ app.post('/update', function(req, res) {
         .where("uid = " + db.escape(uid))
         .toString();
 
-    console.log("2. "  + sqlUpdate);
-
     db.query(sqlUpdate, function (err) {
         if (err) throw err;
 
-        console.log('UPDATED!')
-
         var sqlSelect = squel.select().from(table).where("uid = " + db.escape(uid)).toString();
-        console.log("3. " + sqlSelect)
 
         db.query(sqlSelect, function(err, results) {
             if (err) throw err;
@@ -260,9 +256,6 @@ app.post('/delete', function(req, res) {
         .from(table)
         .where("uid = " + uid)
         .toString();
-
-    console.log("1. "  + sqlDelete);
-
 
     db.query(sqlDelete, function (err) {
         if (err) throw err;
