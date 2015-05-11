@@ -6,7 +6,7 @@ var app = express();
 var port = 3000;
 
 function addStaticPath (path) { return express.static(process.cwd() + path); }
-app.use("/resources",   addStaticPath('/resources') );
+app.use("/resources",   addStaticPath('/app/resources') );
 app.use("/angular",     addStaticPath('/node_modules/angular'));
 app.use("/angular-sanitize",     addStaticPath('/node_modules/angular-sanitize'));
 app.use("/ng-table",    addStaticPath('/node_modules/ng-table'));
@@ -16,7 +16,7 @@ app.use("/bootstrap",   addStaticPath('/node_modules/bootstrap'));
 app.use("/font-awesome",   addStaticPath('/node_modules/font-awesome'));
 app.use("/jquery",   addStaticPath('/node_modules/jquery'));
 
-app.set('views', './server/app/views');
+app.set('views', './app/views');
 app.set('view engine',  'jade');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.locals.pretty = true;
