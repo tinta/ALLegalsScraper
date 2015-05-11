@@ -16,7 +16,7 @@ app.use("/bootstrap",   addStaticPath('/node_modules/bootstrap'));
 app.use("/font-awesome",   addStaticPath('/node_modules/font-awesome'));
 app.use("/jquery",   addStaticPath('/node_modules/jquery'));
 
-app.set('views', './server/app/views');
+app.set('views', './app/views');
 app.set('view engine',  'jade');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.locals.pretty = true;
