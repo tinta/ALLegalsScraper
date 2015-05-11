@@ -22,19 +22,28 @@ html
             div.spacer-xs
             div.container.clearfix
                 div.pull-left
+                    div.spacer-xxs
                     h2
                         a.text-thin.pad-l(href="/") Mortgage Foreclosure Sales in Alabama
 
                 if region
                     div.pull-right
-                        div.spacer-xs
-                        h4.text-thin.pad-lr
+                        - var selectedClass = 'bg-white text-red';
+                        - var currentClass =  page === 'current' ? selectedClass : '';
+                        - var nextWeekClass = page === 'next-week' ? selectedClass : '';
+                        - var allClass =      page === 'all' ? selectedClass : '';
+                        h4.text-thin.pad(class=currentClass)
                             a(href="/#{region}") Current
-                        h4.text-thin.pad-lr
+                        h4.text-thin.pad(class=nextWeekClass)
                             a(href="/#{region}/next-week") Next Week
-                        h4.text-thin.pad-lr
+                        h4.text-thin.pad(class=allClass)
                             a(href="/#{region}/all") All
-            div.spacer-xs
+
+                        h4= foo
+                        div.spacer-xs
+
+            if !region
+                div.spacer-xs
 
         div.spacer-md
 

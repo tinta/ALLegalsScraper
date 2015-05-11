@@ -94,7 +94,7 @@ sqlize.counties = function (counties) {
     return _counties.join(' OR ');
 };
 
-function renderListingsInRange (res, sqlStart, sqlEnd, region) {
+function renderListingsInRange (page, res, sqlStart, sqlEnd, region) {
     var counties = regions[region];
     var sqlCounties = sqlize.counties(counties);
     var sqlInRange = squel
@@ -111,11 +111,17 @@ function renderListingsInRange (res, sqlStart, sqlEnd, region) {
         if (err) throw err;
         results = results || {};
         var scope = {};
+        scope.page = page;
         scope.region = region;
         scope.counties = counties;
         scope.foreclosures = JSON.stringify(results);
         res.render('region/index', scope);
     });
+}
+
+function renderListingsUntilEndOfWeek (page, res, sqlStart, region) {
+    var sqlEnd = sqlize.endOfWeek(sqlStart)
+    renderListingsInRange(page, res, sqlStart, sqlEnd, region);
 }
 
 app.get('/', function (req, res) {
@@ -128,8 +134,7 @@ app.get('/:region', function (req, res) {
     var counties = regions[req.params.region];
     if (util.isPresent(counties)) {
         var startDate = moment().add(-1, 'd').format(sqlize.momentFormat);
-        var endDate = sqlize.endOfWeek(startDate)
-        renderListingsInRange(res, startDate, endDate, req.params.region);
+        renderListingsUntilEndOfWeek('current', res, startDate, req.params.region);
     } else {
         res.redirect('/');
     }
@@ -139,8 +144,7 @@ app.get('/:region/next-week', function (req, res) {
     var counties = regions[req.params.region];
     if (util.isPresent(counties)) {
         var startDate = moment().day(8).format(sqlize.momentFormat);
-        var endDate = sqlize.endOfWeek(startDate);
-        renderListingsInRange(res, startDate, endDate, req.params.region);
+        renderListingsUntilEndOfWeek('next-week', res, startDate, req.params.region);
     } else {
         res.redirect('/');
     }
@@ -163,6 +167,7 @@ app.get('/:region/all', function (req, res) {
             if (err) throw err;
             foreclosures = foreclosures || {};
             var scope = {};
+            scope.page = 'all';
             scope.region = req.params.region;
             scope.foreclosures = JSON.stringify(foreclosures);
             res.render('region/index', scope);
