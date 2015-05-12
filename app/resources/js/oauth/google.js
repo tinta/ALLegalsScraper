@@ -45,7 +45,7 @@ angular
                 this.loading = true;
                 this.makeApiCall();
             } else {
-                $rootScope.$broadcast("oauthgoogle:unauthorized", authResult);
+                $rootScope.$broadcast("oauth:google:unauthorized", authResult);
             }
         };
 
@@ -88,7 +88,7 @@ angular
                 var expectedDomain = 'prompt.ly';
                 if (emailDomain === expectedDomain) {
                     this.user = res;
-                    $rootScope.$broadcast("oauthgoogle:authorized", res);
+                    $rootScope.$broadcast("oauth:google:authorized", res);
                 }
             }.bind(this));
         };
