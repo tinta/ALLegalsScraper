@@ -1,4 +1,4 @@
-angular.module('ControllerListings', [
+angular.module('Controller:Listings', [
 // Dependencies
     'ngTable',
     'RowModel',
@@ -7,7 +7,7 @@ angular.module('ControllerListings', [
     $interpolateProvider.startSymbol('[[');
     $interpolateProvider.endSymbol(']]');
 })
-.controller('ControllerListings', function(
+.controller('Controller:Listings', function(
 // Dependency Injections
     $scope,
     $http,
@@ -22,9 +22,11 @@ angular.module('ControllerListings', [
     // Format data
     var dateFormat = 'M/D/YYYY';
 
+    // User
     $scope.user = {};
     $scope.user.isLoggedIn = false;
 
+    // Listings
     $scope.listings = setAll($window.listings);
 
     function setAll (listings) {
@@ -45,7 +47,7 @@ angular.module('ControllerListings', [
         return row;
     }
 
-    // `ng-table` stuff
+    // `ng-table` config
     var initTableOptions = {};
     initTableOptions.page = 1;      // Show first page
     initTableOptions.count = 15;    // Amount of rows per page
@@ -89,12 +91,13 @@ angular.module('ControllerListings', [
         }
     });
 
+    // Set `county` field to value of hash if hash argument exists
     var hash = window.location.hash;
     if (hash.substring(0,2) == '#/') {
         $scope.tableParams.filter()['county'] = hash.substring(2, hash.length);
     }
 
-    // Detail modal stuff
+    // Detail modal
     $scope.modal = (function() {
         var modal = {};
         modal.data = null;

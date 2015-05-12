@@ -6,8 +6,8 @@ var squel = require("squel").useFlavour('mysql');
 var Q = require('q');
 
 // Custom scripts
-var db = require('./../db-connect.js')();
-var util = require('./../util.js');
+var db = require('./../common/db-connect.js')();
+var util = require('./../common/util.js');
 var scrapeSaleDate = require('./scrapeSaleDate.js');
 var scrapeAddress = require('./scrapeAddress.js');
 
