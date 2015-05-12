@@ -64,11 +64,8 @@ angular
 
         oauth.prototype.makeApiCall = function() {
             // Step 3: Load the Google+ API
-            console.log(1)
             gapi.client.load('plus', 'v1').then(function() {
-                console.log(2)
                 // Step 4: Assemble the API request
-                console.log('asdfd')
                 var request = gapi.client.plus.people.get({
                     'userId': 'me'
                 });
@@ -89,8 +86,6 @@ angular
 
         oauth.prototype.revokeAccess = function () {
             var revokeUrl = 'https://accounts.google.com/o/oauth2/revoke?token=' + gapi.auth.getToken().access_token;
-
-            console.log(revokeUrl);
 
             $http({
                 url: revokeUrl,

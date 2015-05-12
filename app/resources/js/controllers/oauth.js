@@ -21,8 +21,6 @@ angular.module('Controller:OAuth', [
     // $scope.oauth.fb = new OAuthFB(window.promptlyConfig.fbAppID);
     $scope.oauth.google = new OAuthGoogle(window.googleAppID);
 
-    $scope.foo = '/resources/ng-templates/login-popover.html';
-
     $scope.user = {};
     $scope.user.isLoggedIn = false;
 
