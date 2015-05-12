@@ -21,6 +21,8 @@ angular.module('Controller:OAuth', [
     // $scope.oauth.fb = new OAuthFB(window.promptlyConfig.fbAppID);
     $scope.oauth.google = new OAuthGoogle(window.googleAppID);
 
+    $scope.foo = '/resources/ng-templates/login-popover.html';
+
     $scope.user = {};
     $scope.user.isLoggedIn = false;
 
@@ -29,6 +31,11 @@ angular.module('Controller:OAuth', [
         $scope.user.isLoggedIn = true;
         $scope.user.firstName = $scope.user.displayName.split(' ')[0];
         $scope.$apply();
+    });
+
+    $scope.$on("oauth:google:deauthorized", function(response, user) {
+        $scope.user = {};
+        $scope.user.isLoggedIn = false;
     });
 
     // Dev

@@ -90,9 +90,19 @@ angular
         oauth.prototype.revokeAccess = function () {
             var revokeUrl = 'https://accounts.google.com/o/oauth2/revoke?token=' + gapi.auth.getToken().access_token;
 
-            $http.get(revokeUrl).success(function(nullResponse) {
+            console.log(revokeUrl);
+
+            $http({
+                url: revokeUrl,
+                method: 'GET',
+                dataType: 'jsonp'
+            }).success(function(nullResponse) {
+                $rootScope.$broadcast("oauth:google:deauthorized");
+                console.log(nullResponse)
                 this.user = undefined;
             }.bind(this)).error(function(error) {
+                $rootScope.$broadcast("oauth:google:deauthorized");
+                console.log(error)
                 this.user = undefined;
             }.bind(this));
         };

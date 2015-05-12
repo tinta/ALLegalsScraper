@@ -8,6 +8,8 @@ var port = 3000;
 function addStaticPath (path) { return express.static(process.cwd() + path); }
 app.use("/resources",   addStaticPath('/app/resources') );
 app.use("/angular",     addStaticPath('/node_modules/angular'));
+app.use("/angular-bootstrap",     addStaticPath('/node_modules/angular-bootstrap'));
+app.use("/template",   addStaticPath('/node_modules/angular-bootstrap/template'));
 app.use("/angular-sanitize",     addStaticPath('/node_modules/angular-sanitize'));
 app.use("/ng-table",    addStaticPath('/node_modules/ng-table'));
 app.use("/lodash",      addStaticPath('/node_modules/lodash'));

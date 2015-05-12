@@ -15,6 +15,7 @@ html
         link(rel="stylesheet" type="text/css" href="/resources/css/modal.css")
         link(rel="stylesheet" type="text/css" href="/resources/css/form.css")
         link(rel="stylesheet" type="text/css" href="/resources/css/circle.css")
+        link(rel="stylesheet" type="text/css" href="/resources/css/round.css")
         link(rel="stylesheet" type="text/css" href="/resources/css/pad.css")
 
         //- JS libs
@@ -22,6 +23,7 @@ html
         script(type='text/javascript', src="/moment/moment.js")
         script(type='text/javascript', src="/jquery/dist/jquery.min.js")
         script(type='text/javascript', src="/angular/angular.js")
+        script(type='text/javascript', src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.0/ui-bootstrap-tpls.js")
         script(type='text/javascript', src="/angular-sanitize/angular-sanitize.js")
         script(type='text/javascript', src="/ng-table/dist/ng-table.js")
         script(type='text/javascript', src="https://connect.facebook.net/en_US/sdk.js")
@@ -44,13 +46,13 @@ html
     body.text-center(ng-app="app")
         div.spacer-md
 
-        div.page-column.text-white.bg-red
+        div.page-column.bg-red
             div.spacer-xs
             div.container.clearfix
                 div.pull-left
                     div.spacer-xxs
                     h2
-                        a.text-thin.pad-l(href="/") Mortgage Foreclosure Sales in Alabama
+                        a.text-thin.pad-l.text-white(href="/") Mortgage Foreclosure Sales in Alabama
 
                 div.pull-right(
                     ng-controller="Controller:OAuth"
@@ -58,12 +60,20 @@ html
                 )
                     div(ng-if="!user.isLoggedIn")
                         div.spacer-sm
-                        h4.text-thin.pad-lr
+                        h4.text-thin.text-white.pad-lr
                             a(ng-click="oauth.google.handleAuthClick()") Login
-                    div.valign-top(ng-if="user.isLoggedIn")
-                        div.pad-lr
+
+                    div#user-popup.valign-top.text-gray-dark(
+                        ng-if="user.isLoggedIn"
+                        popover-template="foo"
+                        popover-placement="bottom"
+                        popover-trigger="click"
+                        popover-title="[[user.displayName]]"
+                    )
+                        div.pad-lr.text-white
                             div.spacer-sm
                             h4.text-thin [[user.firstName]]
+
                         div.pad-l
                             img.circle-sm(src="[[user.image.url]]")
 

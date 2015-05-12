@@ -1,0 +1,19 @@
+[class*="round-"] {
+  overflow: auto;
+}
+
+.round-md-tl, .round-md-top, .round-md, .round-md-left {
+  border-top-left-radius: 8px;
+}
+
+.round-md-tr, .round-md-top, .round-md, .round-md-right {
+  border-top-right-radius: 8px;
+}
+
+.round-md-bl, .round-md-bottom, .round-md, .round-md-left {
+  border-bottom-left-radius: 8px;
+}
+
+.round-md-br, .round-md-bottom, .round-md, .round-md-right {
+  border-bottom-right-radius: 8px;
+}

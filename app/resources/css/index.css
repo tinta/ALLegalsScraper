@@ -26,6 +26,10 @@ label,
     background-color: #ffffff;
 }
 
+.bg-gray-dark {
+    background-color: #414141;
+}
+
 .bg-gray {
     background-color: #888;
 }
@@ -104,4 +108,14 @@ h3,
 h4,
 h5 {
     margin: 0;
+}
+
+#user-popup ~ .popover {
+    left: auto !important;
+    right: 0;
+}
+
+#user-popup ~ .popover .arrow {
+    left: auto;
+    right: 8px;
 }
