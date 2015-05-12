@@ -1,0 +1,31 @@
+<div class="text-center text-white">
+    <h4
+        class="width-full"
+        ng-repeat="region in regions.all"
+    >
+        <a href="[[ '/' + region.name ]]">
+            <div>
+                <button
+                    tooltip-html-unsafe="
+                        <h5 class='text-thin pad-t pad-lr'>Counties</h5>
+                        <div class='spacer-xxs'></div>
+                        <div class='spacer-1 bg-white'></div>
+                        <div class='spacer-xxs'></div>
+                        <h5><p class='text-thin'>[[ region.counties.join(', ')  + ' counties']]</p></h5>
+                        <div class='spacer-xxs'></div>"
+                    tooltip-placement="right"
+                    tooltip-class="caps text-gray-dark"
+                    tooltip-popup-delay="100"
+                    class="round-md text-thin pad caps"
+                    ng-class="{
+                        'bg-blue': region.isCurrent,
+                        'bg-gray': !region.isCurrent
+                    }"
+                >
+                    <span>&nbsp;&nbsp;[[ region.name ]]&nbsp;&nbsp;</span>
+                </button>
+            </div>
+        </a>
+        <div class="spacer-xs"></div>
+    </h4>
+</div>

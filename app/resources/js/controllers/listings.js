@@ -31,6 +31,11 @@ angular.module('Controller:Listings', [
     $scope.views.all = window.views;
     $scope.views.current = _.findWhere(window.views, {isCurrent: true});
 
+    // Regions
+    $scope.regions = {};
+    $scope.regions.all = window.regions;
+    $scope.regions.current = _.findWhere(window.regions, {isCurrent: true});
+
     // Listings
     $scope.listings = setAll($window.listings);
 

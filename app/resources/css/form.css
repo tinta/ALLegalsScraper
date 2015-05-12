@@ -55,13 +55,6 @@ input[type=email].invis {
     font-weight: 400;
 }
 
-.input-invis {
-    background: transparent;
-    border: none;
-    padding: 0;
-    box-shadow: none;
-}
-
-.input-invis:focus {
+button:focus {
     outline: none;
 }

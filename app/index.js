@@ -1,6 +1,7 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var moment = require('moment');
+var _ = require('lodash');
 var squel = require("squel").useFlavour('mysql');
 var app = express();
 var port = 3000;
@@ -32,28 +33,47 @@ var util = require('./../common/util.js');
 var table = "foreclosures";
 
 var regions = {};
-regions.northwest = [
+regions.all = {};
+regions.set = function (name, counties) {
+    var region = {};
+    region.name = name;
+    region.isCurrent = false;
+    region.counties = counties;
+    this.all[name] = region;
+    return this;
+};
+regions.setCurrent = function (name) {
+    _.each(this.all, function(region) {
+        if (region.name == name) {
+            region.isCurrent = true;
+            return;
+        }
+
+        region.isCurrent = false;
+    });
+};
+regions.set('northwest', [
     'colbert',
     'lauderdale',
     'franklin',
     'lawrence'
-];
-regions.northeast = [
+]);
+regions.set('northeast', [
     'limestone',
     'madison',
     'jackson',
     'morgan',
     'marshall',
     'dekalb'
-];
-regions.mid = [
+]);
+regions.set('mid', [
     'cullman',
     'blount',
     'jefferson',
     'walker',
     'shelby',
-];
-regions.midwest = [
+]);
+regions.set('midwest', [
     'marion',
     'lamar',
     'fayette',
@@ -61,8 +81,8 @@ regions.midwest = [
     'walker',
     'pickens',
     'tuscaloosa'
-];
-regions.mideast = [
+]);
+regions.set('mideast', [
     'cherokee',
     'etowah',
     'talladega',
@@ -70,7 +90,7 @@ regions.mideast = [
     'clay',
     'randolph',
     'cleburne'
-];
+]);
 
 var views = {};
 views.all = [];
@@ -134,8 +154,9 @@ sqlize.counties = function (counties) {
 };
 
 function renderListingsInRange (viewName, res, sqlStart, sqlEnd, region) {
-    var counties = regions[region];
-    var sqlCounties = sqlize.counties(counties);
+    regions.setCurrent(region);
+    var currentRegion = _.findWhere(regions.all, {isCurrent: true});
+    var sqlCounties = sqlize.counties(currentRegion.counties);
     var sqlInRange = squel
         .select()
         .from(table)
@@ -150,7 +171,7 @@ function renderListingsInRange (viewName, res, sqlStart, sqlEnd, region) {
         var scope = {};
         scope.views = views.setCurrent(viewName).setRegion(region).stringify();
         scope.region = region;
-        scope.counties = counties;
+        scope.regions = JSON.stringify(regions.all);
         scope.foreclosures = JSON.stringify(results);
         res.render('region/index', scope);
     });
@@ -173,8 +194,7 @@ app.get('/login', function (req, res) {
 });
 
 app.get('/:region', function (req, res) {
-    var counties = regions[req.params.region];
-    if (util.isPresent(counties)) {
+    if (util.isPresent(regions.all[req.params.region])) {
         var startDate = moment().add(-1, 'd').format(sqlize.momentFormat);
         renderListingsUntilEndOfWeek('Current', res, startDate, req.params.region);
     } else {
@@ -183,7 +203,7 @@ app.get('/:region', function (req, res) {
 });
 
 app.get('/:region/next-week', function (req, res) {
-    var counties = regions[req.params.region];
+    var counties = regions.all[req.params.region].counties;
     if (util.isPresent(counties)) {
         var startDate = moment().day(8).format(sqlize.momentFormat);
         renderListingsUntilEndOfWeek('Next Week', res, startDate, req.params.region);
@@ -193,9 +213,9 @@ app.get('/:region/next-week', function (req, res) {
 });
 
 app.get('/:region/all', function (req, res) {
-    var counties = regions[req.params.region];
+    var counties = regions.all[req.params.region].counties;
     if (util.isPresent(counties)) {
-        var counties = regions[req.params.region];
+        var counties = regions.all[req.params.region];
         var sqlCounties = sqlize.counties(counties);
         var sqlGetForeclosures = squel
             .select()
@@ -218,7 +238,7 @@ app.get('/:region/all', function (req, res) {
 });
 
 app.get('/:region', function (req, res) {
-    var counties = regions[req.params.region];
+    var counties = regions.all[req.params.region];
     if (util.isPresent(counties)) {
         var startDate = moment().add(-1, 'd').format(sqlize.momentFormat);
         var endDate = sqlize.endOfWeek(startDate)

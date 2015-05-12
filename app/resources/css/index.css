@@ -50,6 +50,10 @@ label,
     background-color: #D19452;
 }
 
+.bg-none {
+    background-color: transparent;
+}
+
 body .bg-orange-hover:hover {
     background-color: #D19452;
 }
@@ -114,7 +118,6 @@ h5 {
     width: 200px;
 }
 
-
 #login-popup ~ .popover,
 #user-popup ~ .popover {
     left: auto !important;
@@ -127,6 +130,11 @@ h5 {
     right: 8px;
 }
 
-body {
-    white-space-collapsing:discard
+p {
+    margin: 0;
+    line-height: 1.4em;
+}
+
+body .popover {
+    max-width: none;
 }

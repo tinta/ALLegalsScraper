@@ -1,20 +1,21 @@
 extends layout
 
 block content
-    div.row.text-white
+    div.row
         div.spacer-xs
-        each counties, region in regions
-            a(href="/#{region}").col-xs-6.caps
-                div.bg-blue.bg-orange-hover
+        each region, regionName in regions.all
+
+            a(href="/#{regionName}").col-xs-6.caps
+                div.bg-blue.bg-orange-hover.text-white
                     div
                         div.spacer-xs
-                        h3.text-thin #{region} Counties
+                        h3.text-thin #{regionName} Counties
                         div.spacer-xxs
                     div.spacer-1.bg-white
                     div.pad-lr
                         div.spacer-sm
                         h4.pad-lr
-                            for county, i in counties
+                            for county, i in region.counties
                                 if i !== 0
                                     span.text-thin &nbsp;|&nbsp;
                                 span.pad-b.text-thin #{county}

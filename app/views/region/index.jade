@@ -6,6 +6,7 @@ block head
     script(type='text/javascript').
         window.listings = !{ foreclosures };
         window.views = !{ views };
+        window.regions = !{ regions };
 
 block content
     div.row(
@@ -16,15 +17,31 @@ block content
             div.spacer-sm
             div.row
                 div.col-xs-6
-                    button.bg-gray-dark.text-white.pad-none.round-md.pull-left(
-                        popover-template="'/resources/ng-templates/view-toggle.html'"
-                        popover-placement="bottom"
-                        popover-trigger="click"
-                        popover-title="Change View"
-                    )
-                        h4
-                            div.pad-l.pad-tb.text-thin &nbsp;View&nbsp;
-                            div.pad.bg-blue.text-thin &nbsp;[[views.current.name]]&nbsp;
+                    div.text-left
+                        button.bg-gray-dark.text-white.pad-none.round-md(
+                            popover-template="'/resources/ng-templates/region-toggle.html'"
+                            popover-placement="bottom"
+                            popover-trigger="focus"
+                            popover-title="Change View"
+                        )
+                            h4
+                                div.pad-l.pad-tb.text-thin &nbsp;Region&nbsp;
+                                div.pad.bg-blue.text-thin
+                                    span &nbsp;
+                                    span.caps [[ regions.current.name ]]
+                                    span &nbsp;
+
+                        div.pad-l &nbsp;
+
+                        button.bg-gray-dark.text-white.pad-none.round-md(
+                            popover-template="'/resources/ng-templates/view-toggle.html'"
+                            popover-placement="bottom"
+                            popover-trigger="focus"
+                            popover-title="Change View"
+                        )
+                            h4
+                                div.pad-l.pad-tb.text-thin &nbsp;View&nbsp;
+                                div.pad.bg-blue.text-thin &nbsp;[[views.current.name]]&nbsp;
 
                 div.col-xs-6
                     div.text-right
@@ -57,17 +74,17 @@ block content
 
         div.col-xs-12
             div
-                if counties
-                    div
-                        span &nbsp;in&nbsp;
-                        span
-                            each county, i in counties
-                                if i === counties.length - 1
-                                    span and&nbsp;
-                                span.caps #{county}
-                                if i !== counties.length - 1
-                                    span ,&nbsp;
-                            span &nbsp;Counties
+                //- if counties
+                //-     div
+                //-         span &nbsp;in&nbsp;
+                //-         span
+                //-             each county, i in counties
+                //-                 if i === counties.length - 1
+                //-                     span and&nbsp;
+                //-                 span.caps #{county}
+                //-                 if i !== counties.length - 1
+                //-                     span ,&nbsp;
+                //-             span &nbsp;Counties
             div.spacer-sm
         div.col-xs-12
             table.table.table-striped.table-bordered.table-hover.bg-white(
