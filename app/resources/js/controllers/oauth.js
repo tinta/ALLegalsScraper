@@ -21,7 +21,7 @@ angular.module('Controller:OAuth', [
     // $scope.oauth.fb = new OAuthFB(window.promptlyConfig.fbAppID);
     $scope.oauth.google = new OAuthGoogle(window.googleAppID);
 
-    $rootScope.$on("oauth:google:authorized", function(a, b) {
+    $scope.$on("oauth:google:authorized", function(a, b) {
         console.log(a, b)
     });
 

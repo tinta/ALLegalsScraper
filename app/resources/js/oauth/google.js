@@ -82,14 +82,8 @@ angular
         oauth.prototype.onApiSuccess = function (res) {
             this.loading = false;
             res.emails.forEach(function(email) {
-                var domainStart = email.value.indexOf('@') + 1;
-                var domainEnd = email.value.length;
-                var emailDomain = email.value.slice(domainStart, domainEnd);
-                var expectedDomain = 'prompt.ly';
-                if (emailDomain === expectedDomain) {
-                    this.user = res;
-                    $rootScope.$broadcast("oauth:google:authorized", res);
-                }
+                this.user = res;
+                $rootScope.$broadcast("oauth:google:authorized", res);
             }.bind(this));
         };
 
