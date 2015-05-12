@@ -20,20 +20,45 @@ var startDate = moment().add(-1, 'day').format('MM-DD-YYYY');
 var endDate = moment().add(0, 'day').format('MM-DD-YYYY');
 var scrapeUrl = 'http://www.alabamalegals.com/index.cfm?fuseaction=home';
 var counties = [
-    60, // colbert
-    1,  // jefferson
-    59, // franklin
-    4,  // lauderdale
-    56, // blount
-    57, // cullman
+    // Northeast
     65, // deKalb
     66, // jackson
-    61, // lawrence
     67, // limestone
     5,  // madison
     63, // marshall
     62, // morgan
-    '', // placholder. the last query always fails due to `Cannot enqueue Query after invoking quit.`
+
+    // Northwest
+    59, // franklin
+    60, // colbert
+    4,  // lauderdale
+    61, // lawrence
+
+    // Mid
+    56, // blount
+    57, // cullman
+    1,  // jefferson
+    36, // Shelby
+
+    // Midwest
+    23, // Tuscaloosa
+    20, // Marion
+    6,  // Lamar
+    21, // Fayette
+    58, // Winston
+    22, // Walker
+    19, // Pickens
+
+    // Mideast
+    64, // Cherokee
+    55, // Etowah
+    38, // Talladega
+    54, // Calhoun
+    3, // Clay
+    52, // Randolph
+    53, // Cleburne
+
+    '' // placholder. the last query always fails due to `Cannot enqueue Query after invoking quit.`
 ];
 
 function promiseSql (query) {
