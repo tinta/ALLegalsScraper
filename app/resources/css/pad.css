@@ -1,4 +1,4 @@
-.pad-t, .pad-tb, .pad, .pad-r, .pad-lr, .pad-b, .pad-l {
+.pad-t, .pad-tb, .pad, .pad-r, .pad-lr, .pad-b, .pad-l, .pad-none {
   display: inline-block;
 }
 
@@ -16,4 +16,8 @@
 
 .pad-l, .pad-lr, .pad {
   padding-left: 0.5em;
+}
+
+.pad-none {
+    padding: 0;
 }

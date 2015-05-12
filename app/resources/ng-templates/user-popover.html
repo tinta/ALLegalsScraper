@@ -1,7 +1,10 @@
 <div>
-    <div class="pad-lr">Email</div>
+    <div class="pad-lr">Emails</div>
     <div class="spacer-1 bg-gray-dark"></div>
-    <span class="pad-lr">[[ user.model.emails[0].value ]]</span>
+    <span
+        class="pad-lr"
+        ng-repeat="email in user.model.emails"
+    >[[ email.value ]]</span>
 
     <div class="spacer-xs"></div>
 

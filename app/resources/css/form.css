@@ -54,3 +54,14 @@ input[type=email].invis {
 ::-webkit-input-placeholder { /* WebKit browsers */
     font-weight: 400;
 }
+
+.input-invis {
+    background: transparent;
+    border: none;
+    padding: 0;
+    box-shadow: none;
+}
+
+.input-invis:focus {
+    outline: none;
+}

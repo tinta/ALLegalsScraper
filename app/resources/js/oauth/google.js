@@ -45,12 +45,11 @@ angular
                 this.loading = true;
                 this.makeApiCall();
             } else {
-                $rootScope.$broadcast("oauth:google:unauthorized", authResult);
+                $rootScope.$broadcast("oauth:google:deauthorized", authResult);
             }
         };
 
         oauth.prototype.handleAuthClick = function() {
-            console.log('asdf')
             var This = this;
             var authObj = {
                 client_id: This.keys.clientId,
@@ -78,10 +77,8 @@ angular
 
         oauth.prototype.onApiSuccess = function (res) {
             this.loading = false;
-            res.emails.forEach(function(email) {
-                this.user = res;
-                $rootScope.$broadcast("oauth:google:authorized", res);
-            }.bind(this));
+            this.user = res;
+            $rootScope.$broadcast("oauth:google:authorized", res);
         };
 
         oauth.prototype.revokeAccess = function () {

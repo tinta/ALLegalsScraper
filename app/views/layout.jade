@@ -47,33 +47,45 @@ html
         div.spacer-md
 
         div.page-column.bg-red
-            div.spacer-xs
+            div.spacer-xxs
             div.container.clearfix
                 div.pull-left
                     div.spacer-xxs
-                    h2
-                        a.text-thin.pad-l.text-white(href="/") Mortgage Foreclosure Sales in Alabama
+                    h2.text-white
+                        a.text-thin.pad-l(href="/") Mortgage Foreclosure Sales in Alabama
+                    div.spacer-xxs
 
                 div.pull-right(
                     ng-controller="Controller:OAuth"
                     ng-cloak
                     ng-click
                 )
-                    div#login-popup(
+                    button.input-invis#login-popup(
                         ng-if="!user.model.isLoggedIn"
                         popover-template="'/resources/ng-templates/login-popover.html'"
                         popover-placement="bottom"
-                        popover-trigger="click"
+                        popover-trigger="focus"
                         popover-title="Log in using..."
                     )
-                        div.spacer-sm
-                        h4.text-thin.text-white.pad-lr Log In
+                        div.text-thin.text-white.pad-lr
+                            div(ng-if="oauth.google.loading === false")
+                                div.spacer-sm
+                                h4.text-thin Log In
+                            div.valign-top(ng-if="oauth.google.loading === true")
+                                h4.pad-r
+                                    div.spacer-xxs
+                                    i.fa.fa-cog.fa-spin
+                                h2.pad-r
+                                    div.spacer-xxs
+                                    i.fa.fa-cog.fa-spin
+                                h5.pad-b
+                                    i.fa.fa-cog.fa-spin
 
-                    div#user-popup.valign-top.text-gray-dark(
+                    button.input-invis#user-popup.valign-top.text-gray-dark(
                         ng-if="user.model.isLoggedIn"
                         popover-template="'/resources/ng-templates/user-popover.html'"
                         popover-placement="bottom"
-                        popover-trigger="click"
+                        popover-trigger="focus"
                         popover-title="[[user.model.displayName]]"
                     )
                         div.pad-lr.text-white
@@ -82,8 +94,6 @@ html
 
                         div.pad-l
                             img.circle-sm(src="[[user.model.image.url]]")
-
-            div.spacer-xs
 
         if region
             div.spacer-xs

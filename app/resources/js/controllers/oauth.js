@@ -10,7 +10,6 @@ angular.module('Controller:OAuth', [
     OAuthFB,
     OAuthGoogle
 ){
-
     window.googleAppID = {};
     window.googleAppID.clientId = "555054377171-n8geoctm8268uummgi35cb86uon8nusk.apps.googleusercontent.com";
     window.googleAppID.apiKey = "AIzaSyBaNq1KkYSljTYu_xTLCOYN9O84_6FLq48";
@@ -38,11 +37,12 @@ angular.module('Controller:OAuth', [
 
     $scope.$on("oauth:google:authorized", function(response, user) {
         $scope.user.set(user);
-        $scope.$apply();
+        if (!$scope.$$phase) $scope.$apply();
     });
 
     $scope.$on("oauth:google:deauthorized", function(response, user) {
         $scope.user.reset();
+        if (!$scope.$$phase) $scope.$apply();
     });
 
     // Dev
