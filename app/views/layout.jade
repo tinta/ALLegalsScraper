@@ -93,22 +93,7 @@ html
                             h4.text-thin [[user.model.firstName]]
 
                         div.pad-l
-                            img.circle-sm(src="[[user.model.image.url]]")
-
-        if region
-            div.spacer-xs
-            div.page-column.container
-                div.text-left
-                    - var selectedClass = 'bg-white text-red';
-                    - var currentClass =  page === 'current' ? selectedClass : '';
-                    - var nextWeekClass = page === 'next-week' ? selectedClass : '';
-                    - var allClass =      page === 'all' ? selectedClass : '';
-                    h4.text-thin.pad(class=currentClass)
-                        a(href="/#{region}") Current
-                    h4.text-thin.pad(class=nextWeekClass)
-                        a(href="/#{region}/next-week") Next Week
-                    h4.text-thin.pad(class=allClass)
-                        a(href="/#{region}/all") All
+                            img.circle-sm(ng-src="[[user.model.image.url]]")
 
         div.page-column.container
             block content

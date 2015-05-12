@@ -54,7 +54,7 @@ var counties = [
     55, // Etowah
     38, // Talladega
     54, // Calhoun
-    3, // Clay
+    3,  // Clay
     52, // Randolph
     53, // Cleburne
 

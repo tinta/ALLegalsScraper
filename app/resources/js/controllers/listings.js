@@ -26,6 +26,11 @@ angular.module('Controller:Listings', [
     $scope.user = {};
     $scope.user.isLoggedIn = false;
 
+    // Views
+    $scope.views = {};
+    $scope.views.all = window.views;
+    $scope.views.current = _.findWhere(window.views, {isCurrent: true});
+
     // Listings
     $scope.listings = setAll($window.listings);
 

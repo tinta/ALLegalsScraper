@@ -55,7 +55,7 @@ body .bg-orange-hover:hover {
 }
 
 .bg-blue {
-    background-color: #416873;
+    background-color: #538594;
 }
 
 .bg-yellow {
@@ -92,12 +92,12 @@ body .bg-orange-hover:hover {
 }
 
 .text-blue {
-    color: #416873;
+    color: #538594;
 }
 
 .text-thin {
     font-weight: 200;
-    letter-spacing: 0.03em;
+    letter-spacing: 0.035em;
 }
 
 .lead,
@@ -125,4 +125,8 @@ h5 {
 #user-popup ~ .popover .arrow {
     left: auto;
     right: 8px;
+}
+
+body {
+    white-space-collapsing:discard
 }

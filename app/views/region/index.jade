@@ -5,12 +5,26 @@ include mixins/editableTHead
 block head
     script(type='text/javascript').
         window.listings = !{ foreclosures };
+        window.views = !{ views };
 
 block content
     div.row(
         ng-controller="Controller:Listings"
         ng-cloak
     )
+        div.col-xs-12
+            if region
+                div.spacer-xs
+                button.text-white.pad-none.bg-gray-dark.round-md.pull-left(
+                    popover-template="'/resources/ng-templates/view-toggle.html'"
+                    popover-placement="bottom"
+                    popover-trigger="click"
+                    popover-title="Change View"
+                )
+                    h4
+                        div.pad-l.pad-tb.bg-gray-dark.text-thin &nbsp;View&nbsp;
+                        div.pad.bg-blue.text-thin &nbsp;[[views.current.name]]&nbsp;
+
         include detail-modal/index
         script(type="text/ng-template" id="ng-table/filters/county.html")
             input.input-filter.form-control(
@@ -27,7 +41,6 @@ block content
                 placeholder="m/d/yyyy"
                 ng-model="params.filter()[name]"
             )
-
 
         div.col-xs-12
             div

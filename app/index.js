@@ -72,6 +72,44 @@ regions.mideast = [
     'cleburne'
 ];
 
+var views = {};
+views.all = [];
+
+views.add = function (name, urlEnd) {
+    if (!urlEnd) urlEnd = '';
+    var view = {};
+    view.name = name;
+    view.link = undefined;
+    view.urlEnd = urlEnd;
+    view.isCurrent = false;
+    this.all.push(view);
+    return this;
+};
+
+views.setCurrent = function (name) {
+    this.all.forEach(function(view) {
+        if (view.name == name) {
+            view.isCurrent = true;
+        } else {
+            view.isCurrent = false;
+        }
+    });
+    return this;
+};
+
+views.setRegion = function (region) {
+    this.all.forEach(function(view) {
+        view.link = '/' + region + '/' + view.urlEnd;
+    });
+    return this;
+}
+
+views.stringify = function () {
+    return JSON.stringify(this.all);
+}
+
+views.add('Current').add('Next Week', 'next-week').add('All', 'all');
+
 var sqlize = {};
 sqlize.momentFormat = 'YYYY-MM-DD';
 sqlize.endOfWeek = function (yyyymmdd) {
@@ -95,7 +133,7 @@ sqlize.counties = function (counties) {
     return _counties.join(' OR ');
 };
 
-function renderListingsInRange (page, res, sqlStart, sqlEnd, region) {
+function renderListingsInRange (viewName, res, sqlStart, sqlEnd, region) {
     var counties = regions[region];
     var sqlCounties = sqlize.counties(counties);
     var sqlInRange = squel
@@ -110,7 +148,7 @@ function renderListingsInRange (page, res, sqlStart, sqlEnd, region) {
         if (err) throw err;
         results = results || {};
         var scope = {};
-        scope.page = page;
+        scope.views = views.setCurrent(viewName).setRegion(region).stringify();
         scope.region = region;
         scope.counties = counties;
         scope.foreclosures = JSON.stringify(results);
@@ -138,7 +176,7 @@ app.get('/:region', function (req, res) {
     var counties = regions[req.params.region];
     if (util.isPresent(counties)) {
         var startDate = moment().add(-1, 'd').format(sqlize.momentFormat);
-        renderListingsUntilEndOfWeek('current', res, startDate, req.params.region);
+        renderListingsUntilEndOfWeek('Current', res, startDate, req.params.region);
     } else {
         res.redirect('/');
     }
@@ -148,7 +186,7 @@ app.get('/:region/next-week', function (req, res) {
     var counties = regions[req.params.region];
     if (util.isPresent(counties)) {
         var startDate = moment().day(8).format(sqlize.momentFormat);
-        renderListingsUntilEndOfWeek('next-week', res, startDate, req.params.region);
+        renderListingsUntilEndOfWeek('Next Week', res, startDate, req.params.region);
     } else {
         res.redirect('/');
     }
@@ -169,7 +207,7 @@ app.get('/:region/all', function (req, res) {
             if (err) throw err;
             foreclosures = foreclosures || {};
             var scope = {};
-            scope.page = 'all';
+            scope.views = views.setCurrent('All').setRegion(req.params.region).stringify();
             scope.region = req.params.region;
             scope.foreclosures = JSON.stringify(foreclosures);
             res.render('region/index', scope);

@@ -1,0 +1,16 @@
+<div class="text-center text-white">
+    <h4
+        ng-repeat="view in views.all"
+    >
+        <a href="[[view.link]]">
+            <button
+                class="round-md text-thin width-full pad"
+                ng-class="{
+                    'bg-blue': view.isCurrent,
+                    'bg-gray': !view.isCurrent
+                }"
+            >&nbsp;&nbsp;[[view.name]]&nbsp;&nbsp;</button>
+        </a>
+        <div class="spacer-xs"></div>
+    </h4>
+</div>
