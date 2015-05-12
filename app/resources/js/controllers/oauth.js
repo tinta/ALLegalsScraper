@@ -21,10 +21,15 @@ angular.module('Controller:OAuth', [
     // $scope.oauth.fb = new OAuthFB(window.promptlyConfig.fbAppID);
     $scope.oauth.google = new OAuthGoogle(window.googleAppID);
 
-    $scope.$on("oauth:google:authorized", function(a, b) {
-        console.log(a, b)
-    });
+    $scope.user = {};
+    $scope.user.isLoggedIn = false;
 
+    $scope.$on("oauth:google:authorized", function(response, user) {
+        $scope.user = _.extend($scope.user, user);
+        $scope.user.isLoggedIn = true;
+        $scope.user.firstName = $scope.user.displayName.split(' ')[0];
+        $scope.$apply();
+    });
 
     // Dev
     $window.logScope2 = function () {

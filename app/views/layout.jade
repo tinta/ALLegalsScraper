@@ -14,6 +14,7 @@ html
         link(rel="stylesheet" type="text/css" href="/resources/css/spacer.css")
         link(rel="stylesheet" type="text/css" href="/resources/css/modal.css")
         link(rel="stylesheet" type="text/css" href="/resources/css/form.css")
+        link(rel="stylesheet" type="text/css" href="/resources/css/circle.css")
         link(rel="stylesheet" type="text/css" href="/resources/css/pad.css")
 
         //- JS libs
@@ -51,10 +52,20 @@ html
                     h2
                         a.text-thin.pad-l(href="/") Mortgage Foreclosure Sales in Alabama
 
-                div.pull-right(ng-controller="Controller:OAuth")
-                    div.spacer-sm
-                    h4.text-thin.pad-lr
-                        a(ng-click="oauth.google.handleAuthClick()") Login
+                div.pull-right(
+                    ng-controller="Controller:OAuth"
+                    ng-cloak
+                )
+                    div(ng-if="!user.isLoggedIn")
+                        div.spacer-sm
+                        h4.text-thin.pad-lr
+                            a(ng-click="oauth.google.handleAuthClick()") Login
+                    div.valign-top(ng-if="user.isLoggedIn")
+                        div.pad-lr
+                            div.spacer-sm
+                            h4.text-thin [[user.firstName]]
+                        div.pad-l
+                            img.circle-sm(src="[[user.image.url]]")
 
             div.spacer-xs
 

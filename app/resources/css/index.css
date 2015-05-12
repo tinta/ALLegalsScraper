@@ -6,6 +6,10 @@
     width: 100%;
 }
 
+.valign-top > * {
+    vertical-align: top;
+}
+
 a,
 label,
 [ng-click],
