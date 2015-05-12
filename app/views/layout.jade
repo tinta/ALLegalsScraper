@@ -52,7 +52,7 @@ html
                 div.pull-left
                     div.spacer-xxs
                     h2.text-white
-                        a.text-thin.pad-l(href="/") Mortgage Foreclosure Sales in Alabama
+                        a.text-thin(href="/") Mortgage Foreclosure Sales in Alabama
                     div.spacer-xxs
 
                 div.pull-right(
@@ -95,5 +95,6 @@ html
                         div.pad-l
                             img.circle-sm(ng-src="[[user.model.image.url]]")
 
-        div.page-column.container
-            block content
+        div.page-column
+            div.container
+                block content

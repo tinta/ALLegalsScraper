@@ -13,17 +13,30 @@ block content
         ng-cloak
     )
         div.col-xs-12
-            if region
-                div.spacer-xs
-                button.text-white.pad-none.bg-gray-dark.round-md.pull-left(
-                    popover-template="'/resources/ng-templates/view-toggle.html'"
-                    popover-placement="bottom"
-                    popover-trigger="click"
-                    popover-title="Change View"
-                )
-                    h4
-                        div.pad-l.pad-tb.bg-gray-dark.text-thin &nbsp;View&nbsp;
-                        div.pad.bg-blue.text-thin &nbsp;[[views.current.name]]&nbsp;
+            div.spacer-sm
+            div.row
+                div.col-xs-6
+                    button.bg-gray-dark.text-white.pad-none.round-md.pull-left(
+                        popover-template="'/resources/ng-templates/view-toggle.html'"
+                        popover-placement="bottom"
+                        popover-trigger="click"
+                        popover-title="Change View"
+                    )
+                        h4
+                            div.pad-l.pad-tb.text-thin &nbsp;View&nbsp;
+                            div.pad.bg-blue.text-thin &nbsp;[[views.current.name]]&nbsp;
+
+                div.col-xs-6
+                    div.text-right
+                        button.text-white.pad-none.bg-gray-dark.round-md
+                            h4
+                                div.pad-l.pad-tb.text-thin &nbsp;Total Listings&nbsp;
+                                div.pad.bg-gray.text-thin &nbsp;[[tableParams.total()]]&nbsp;
+                        div.pad-l &nbsp;
+                        button.text-white.pad-none.bg-gray-dark.round-md
+                            h4
+                                div.pad-l.pad-tb.text-thin &nbsp;Displayed Listings&nbsp;
+                                div.pad.bg-gray.text-thin &nbsp;[[tableParams.data.length]]&nbsp;
 
         include detail-modal/index
         script(type="text/ng-template" id="ng-table/filters/county.html")
@@ -44,7 +57,6 @@ block content
 
         div.col-xs-12
             div
-                span Displaying [[ tableParams.data.length ]] of [[ tableParams.total() ]] Listings
                 if counties
                     div
                         span &nbsp;in&nbsp;
