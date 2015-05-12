@@ -110,11 +110,18 @@ h5 {
     margin: 0;
 }
 
+#login-popup ~ .popover {
+    width: 200px;
+}
+
+
+#login-popup ~ .popover,
 #user-popup ~ .popover {
     left: auto !important;
     right: 0;
 }
 
+#login-popup ~ .popover .arrow,
 #user-popup ~ .popover .arrow {
     left: auto;
     right: 8px;

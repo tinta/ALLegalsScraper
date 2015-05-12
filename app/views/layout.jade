@@ -57,25 +57,31 @@ html
                 div.pull-right(
                     ng-controller="Controller:OAuth"
                     ng-cloak
+                    ng-click
                 )
-                    div(ng-if="!user.isLoggedIn")
-                        div.spacer-sm
-                        h4.text-thin.text-white.pad-lr
-                            a(ng-click="oauth.google.handleAuthClick()") Login
-
-                    div#user-popup.valign-top.text-gray-dark(
-                        ng-if="user.isLoggedIn"
+                    div#login-popup(
+                        ng-if="!user.model.isLoggedIn"
                         popover-template="'/resources/ng-templates/login-popover.html'"
                         popover-placement="bottom"
                         popover-trigger="click"
-                        popover-title="[[user.displayName]]"
+                        popover-title="Log in using..."
+                    )
+                        div.spacer-sm
+                        h4.text-thin.text-white.pad-lr Log In
+
+                    div#user-popup.valign-top.text-gray-dark(
+                        ng-if="user.model.isLoggedIn"
+                        popover-template="'/resources/ng-templates/user-popover.html'"
+                        popover-placement="bottom"
+                        popover-trigger="click"
+                        popover-title="[[user.model.displayName]]"
                     )
                         div.pad-lr.text-white
                             div.spacer-sm
-                            h4.text-thin [[user.firstName]]
+                            h4.text-thin [[user.model.firstName]]
 
                         div.pad-l
-                            img.circle-sm(src="[[user.image.url]]")
+                            img.circle-sm(src="[[user.model.image.url]]")
 
             div.spacer-xs
 

@@ -1,14 +1,10 @@
-<div>
-    Email
-    <div class="spacer-1 bg-gray-dark"></div>
-    <span>[[ user.emails[0].value ]]</span>
-    <div class="spacer-md"></div>
-    <div class="text-center">
-        <div
-            ng-click="oauth.google.revokeAccess()"
-            class="pad round-md bg-gray-dark text-white"
-        >
-            <span>&nbsp;Logout&nbsp;</span>
-        </div>
+<div class="text-center">
+    <div
+        class="pad"
+        ng-click="oauth.google.handleAuthClick()"
+    >
+        <h4 class="pad round-md bg-gray-dark text-white">
+            <i class="fa fa-google pad-lr"></i><span class="pad-lr">Google</span>
+        </h4>
     </div>
 </div>

@@ -22,18 +22,27 @@ angular.module('Controller:OAuth', [
     $scope.oauth.google = new OAuthGoogle(window.googleAppID);
 
     $scope.user = {};
-    $scope.user.isLoggedIn = false;
+    $scope.user.set = function (user) {
+        this.model = _.extend(this.model, user);
+        this.model.isLoggedIn = true;
+        this.model.firstName = this.model.displayName.split(' ')[0];
+
+    };
+    $scope.user.reset = function () {
+        this.model = {};
+        this.model.isLoggedIn = false;
+        this.model.accountType = 'Inactive';
+    };
+
+    $scope.user.reset();
 
     $scope.$on("oauth:google:authorized", function(response, user) {
-        $scope.user = _.extend($scope.user, user);
-        $scope.user.isLoggedIn = true;
-        $scope.user.firstName = $scope.user.displayName.split(' ')[0];
+        $scope.user.set(user);
         $scope.$apply();
     });
 
     $scope.$on("oauth:google:deauthorized", function(response, user) {
-        $scope.user = {};
-        $scope.user.isLoggedIn = false;
+        $scope.user.reset();
     });
 
     // Dev
