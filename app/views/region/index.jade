@@ -30,84 +30,89 @@ block content
         div.row(
             ng-if="!isLoading.google"
         )
-            div.col-xs-12
-                div.spacer-sm
-                div.row
-                    div.col-xs-4.text-left
-                        div.text-left
-                            button.bg-gray-dark.text-white.pad-none.round-md(
-                                ng-click
-                                popover-template="'/resources/ng-templates/region-toggle.html'"
-                                popover-placement="bottom"
-                                popover-trigger="focus"
-                                popover-title="Change Region"
-                            )
-                                h4.valign-mid
-                                    div.pad-l.pad-tb.text-thin &nbsp;Region&nbsp;
-                                    div.pad.bg-blue.text-thin.valign-mid
-                                        span &nbsp;
-                                        span.caps [[ regions.current.name ]]
-                                        span &nbsp;&nbsp;
-                                        i.fa.fa-caret-down
-                                        span &nbsp;
-
-                            div.spacer-xs
-
-                            button.bg-gray-dark.text-white.pad-none.round-md(
-                                ng-click
-                                popover-template="'/resources/ng-templates/view-toggle.html'"
-                                popover-placement="bottom"
-                                popover-trigger="focus"
-                                popover-title="Change Timeframe"
-                            )
-                                h4
-                                    div.pad-l.pad-tb.text-thin &nbsp;Timeframe&nbsp;
-                                    div.pad.bg-blue.text-thin.valign-mid
-                                        span &nbsp;
-                                        span.caps [[ timeframes.current.name ]]
-                                        span &nbsp;&nbsp;
-                                        i.fa.fa-caret-down
-                                        span &nbsp;
-
-                    div.col-xs-4
-                        div.text-center
-                            button.text-white.pad-none.bg-gray-dark.round-md
-                                h4
-                                    div.pad-l.pad-tb.text-thin &nbsp;Total Listings&nbsp;
-                                    div.pad.bg-gray.text-thin &nbsp;[[listings.length]]&nbsp;
-
-                    div.col-xs-4
-                        div.text-right
-                            button.text-white.pad-none.bg-gray-dark.round-md
-                                h4
-                                    div.pad-l.pad-tb.text-thin &nbsp;Filtered Listings&nbsp;
-                                    div.pad.bg-gray.text-thin &nbsp;[[tableParams.total()]]&nbsp;
-                            div.spacer-xs
-
-                            button.text-white.pad-none.bg-gray-dark.round-md
-                                h4
-                                    div.pad-l.pad-tb.text-thin &nbsp;Displayed Listings&nbsp;
-                                    div.pad.bg-gray.text-thin &nbsp;[[tableParams.data.length]]&nbsp;
-
             include detail-modal/index
-            script(type="text/ng-template" id="ng-table/filters/county.html")
+            script(type="text/ng-template" id="ng-table/filters/name.html")
                 input.input-filter.form-control(
                     type="text"
-                    name="[[ name ]]"
-                    placeholder="ex. Madison"
+                    ng-name="[[name]]"
+                    placeholder="ex. Jordan"
+                    ng-model="params.filter()[name]"
+                )
+
+            script(type="text/ng-template" id="ng-table/filters/money.html")
+                input.input-filter.form-control(
+                    type="text"
+                    ng-name="[[name]]"
+                    placeholder="$"
                     ng-model="params.filter()[name]"
                 )
 
             script(type="text/ng-template" id="ng-table/filters/date.html")
                 input.input-filter.form-control(
                     type="text"
-                    name="[[ name ]]"
-                    placeholder="m/d/yyyy"
+                    ng-name="[[name]]"
+                    placeholder="M/D/YYYY"
                     ng-model="params.filter()[name]"
                 )
 
-            div.col-xs-12
+            div.col-xs-12.text-left
+                div.spacer-md
+                div
+                    button.bg-gray-dark.text-white.pad-none.round-md(
+                        ng-click
+                        popover-template="'/resources/ng-templates/region-toggle.html'"
+                        popover-placement="bottom"
+                        popover-trigger="focus"
+                        popover-title="Change Region"
+                    )
+                        h4.valign-mid
+                            div.pad-l.pad-tb.text-thin &nbsp;Region&nbsp;
+                            div.pad.bg-blue.text-thin.valign-mid
+                                span &nbsp;
+                                span.caps [[ regions.current.name ]]
+                                span &nbsp;&nbsp;
+                                i.fa.fa-caret-down
+                                span &nbsp;
+
+                    div.pad-l &nbsp;
+
+                    button.bg-gray-dark.text-white.pad-none.round-md(
+                        ng-click
+                        popover-template="'/resources/ng-templates/view-toggle.html'"
+                        popover-placement="bottom"
+                        popover-trigger="focus"
+                        popover-title="Change Timeframe"
+                    )
+                        h4
+                            div.pad-l.pad-tb.text-thin &nbsp;Timeframe&nbsp;
+                            div.pad.bg-blue.text-thin.valign-mid
+                                span &nbsp;
+                                span.caps [[ timeframes.current.name ]]
+                                span &nbsp;&nbsp;
+                                i.fa.fa-caret-down
+                                span &nbsp;
+
                 div.spacer-sm
+                div
+                    button.text-white.pad-none.bg-gray-dark.round-md-top
+                        h4
+                            div.pad-l.pad-tb.text-thin &nbsp;Total Listings&nbsp;
+                            div.pad.bg-gray.text-thin &nbsp;[[listings.length]]&nbsp;
+
+                    div.pad-l &nbsp;
+
+                    button.text-white.pad-none.bg-gray-dark.round-md-top
+                        h4
+                            div.pad-l.pad-tb.text-thin &nbsp;Filtered Listings&nbsp;
+                            div.pad.bg-gray.text-thin &nbsp;[[tableParams.total()]]&nbsp;
+
+                    div.pad-l &nbsp;
+
+                    button.text-white.pad-none.bg-gray-dark.round-md-top
+                        h4
+                            div.pad-l.pad-tb.text-thin &nbsp;Displayed Listings&nbsp;
+                            div.pad.bg-gray.text-thin &nbsp;[[tableParams.data.length]]&nbsp;
+
             div.col-xs-12
                 table.table.table-striped.table-bordered.table-hover.bg-white(
                     ng-table="tableParams"
@@ -135,22 +140,22 @@ block content
                         td(
                             data-title="'County'"
                             sortable="'county'"
-                            filter="{ 'county': 'county' }"
+                            filter="{ 'county': 'text' }"
                         ) [[ listing.county ]]
                         td(
                             data-title="'Primary Mortgagee'"
                             sortable="'name1'"
-                            filter="{ 'name1': 'text' }"
+                            filter="{ 'name1': 'name' }"
                         ) [[ listing.name1 ]]
                         td(
                             data-title="'Mortgage Value'"
                             sortable="'buy_price'"
-                            filter="{ 'buy_price': 'text' }"
+                            filter="{ 'buy_price': 'money' }"
                         ) [[ listing.buy_price ]]
                         td(
                             data-title="'Appraisal Value'"
                             sortable="'appraisal_price'"
-                            filter="{ 'appraisal_price': 'text' }"
+                            filter="{ 'appraisal_price': 'money' }"
                         ) [[ listing.appraisal_price ]]
                         td(
                             data-title="'Foreclosure Attorney'"
