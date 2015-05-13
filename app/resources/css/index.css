@@ -10,6 +10,10 @@
     vertical-align: top;
 }
 
+.valign-mid > * {
+    vertical-align: middle;
+}
+
 a,
 label,
 [ng-click],
@@ -138,4 +142,10 @@ p {
 
 body .popover {
     max-width: none;
+}
+
+button .fa-caret-down {
+    display: inline-block;
+    margin-top: -4px;
+    margin-bottom: -4px;
 }

@@ -39,13 +39,15 @@ block content
                                 popover-template="'/resources/ng-templates/region-toggle.html'"
                                 popover-placement="bottom"
                                 popover-trigger="focus"
-                                popover-title="Change View"
+                                popover-title="Change Region"
                             )
-                                h4
+                                h4.valign-mid
                                     div.pad-l.pad-tb.text-thin &nbsp;Region&nbsp;
-                                    div.pad.bg-blue.text-thin
+                                    div.pad.bg-blue.text-thin.valign-mid
                                         span &nbsp;
                                         span.caps [[ regions.current.name ]]
+                                        span &nbsp;&nbsp;
+                                        i.fa.fa-caret-down
                                         span &nbsp;
 
                             div.spacer-xs
@@ -54,11 +56,16 @@ block content
                                 popover-template="'/resources/ng-templates/view-toggle.html'"
                                 popover-placement="bottom"
                                 popover-trigger="focus"
-                                popover-title="Change View"
+                                popover-title="Change Timeframe"
                             )
                                 h4
-                                    div.pad-l.pad-tb.text-thin &nbsp;View&nbsp;
-                                    div.pad.bg-blue.text-thin &nbsp;[[views.current.name]]&nbsp;
+                                    div.pad-l.pad-tb.text-thin &nbsp;Timeframe&nbsp;
+                                    div.pad.bg-blue.text-thin.valign-mid
+                                        span &nbsp;
+                                        span.caps [[ views.current.name ]]
+                                        span &nbsp;&nbsp;
+                                        i.fa.fa-caret-down
+                                        span &nbsp;
 
                     div.col-xs-4
                         div.text-center
