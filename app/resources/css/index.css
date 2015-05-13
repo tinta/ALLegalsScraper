@@ -161,3 +161,24 @@ button .fa-caret-down {
 body .tooltip {
     width: 100%;
 }
+
+body .ng-table th.sortable {
+    vertical-align: middle;
+}
+
+body .ng-table th.sortable .sort-indicator {
+    position: static;
+}
+
+body .ng-table th.sortable .sort-indicator:after,
+body .ng-table th.sortable .sort-indicator:before {
+    right: 0;
+}
+
+body .ng-table th.sortable .sort-indicator {
+    padding-right: 0;
+}
+
+body .table > thead > tr > th {
+    padding: 8px 10px;
+}
