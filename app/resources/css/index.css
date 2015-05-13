@@ -144,6 +144,10 @@ body .popover {
     max-width: none;
 }
 
+button {
+    cursor: default;
+}
+
 button .fa-caret-down {
     display: inline-block;
     margin-top: -4px;

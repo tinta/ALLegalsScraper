@@ -29,10 +29,10 @@ angular.module('Controller:Listings', [
     $scope.user = {};
     $scope.user.isLoggedIn = false;
 
-    // Views
-    $scope.views = {};
-    $scope.views.all = window.views;
-    $scope.views.current = _.findWhere(window.views, {isCurrent: true});
+    // Timeframes
+    $scope.timeframes = {};
+    $scope.timeframes.all = window.timeframes;
+    $scope.timeframes.current = _.findWhere(window.timeframes, {isCurrent: true});
 
     // Regions
     $scope.regions = {};

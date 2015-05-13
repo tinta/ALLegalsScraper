@@ -1,22 +1,22 @@
 <div class="text-center text-white">
     <h4
-        ng-repeat="view in views.all"
+        ng-repeat="timeframe in timeframes.all"
     >
-        <a href="[[view.link]]">
+        <a href="[[timeframe.link]]">
             <button
                 tooltip-html-unsafe="
                     <div class='spacer-xxs'></div>
-                    <div>[[view.description]]</div>
+                    <div>[[timeframe.description]]</div>
                     <div class='spacer-xxs'></div>
                 "
                 tooltip-placement="right"
                 tooltip-popup-delay="100"
                 class="round-md text-thin width-full pad"
                 ng-class="{
-                    'bg-blue': view.isCurrent,
-                    'bg-gray': !view.isCurrent
+                    'bg-blue': timeframe.isCurrent,
+                    'bg-gray': !timeframe.isCurrent
                 }"
-            >&nbsp;&nbsp;[[view.name]]&nbsp;&nbsp;</button>
+            >&nbsp;&nbsp;[[timeframe.name]]&nbsp;&nbsp;</button>
         </a>
         <div class="spacer-xs"></div>
     </h4>

@@ -29,29 +29,12 @@ console.log('Now watching connections to port ' + port + '...');
 // Custom requires
 var db = require('./../common/db-connect.js')();
 var util = require('./../common/util.js');
+var timeframes = require('./server/timeframes.js');
+var regions = require('./server/regions.js');
+var sqlize = require('./server/sqlize.js');
 
 var table = "foreclosures";
 
-var regions = {};
-regions.all = {};
-regions.set = function (name, counties) {
-    var region = {};
-    region.name = name;
-    region.isCurrent = false;
-    region.counties = counties;
-    this.all[name] = region;
-    return this;
-};
-regions.setCurrent = function (name) {
-    _.each(this.all, function(region) {
-        if (region.name == name) {
-            region.isCurrent = true;
-            return;
-        }
-
-        region.isCurrent = false;
-    });
-};
 regions.set('northwest', [
     'colbert',
     'lauderdale',
@@ -92,70 +75,9 @@ regions.set('mideast', [
     'cleburne'
 ]);
 
-var views = {};
-views.all = [];
-
-views.add = function (name, description, urlEnd) {
-    if (!urlEnd) urlEnd = '';
-    if (!description) description = '';
-    var view = {};
-    view.name = name;
-    view.link = undefined;
-    view.urlEnd = urlEnd;
-    view.description = description;
-    view.isCurrent = false;
-    this.all.push(view);
-    return this;
-};
-
-views.setCurrent = function (name) {
-    this.all.forEach(function(view) {
-        if (view.name == name) {
-            view.isCurrent = true;
-        } else {
-            view.isCurrent = false;
-        }
-    });
-    return this;
-};
-
-views.setRegion = function (region) {
-    this.all.forEach(function(view) {
-        view.link = '/' + region + '/' + view.urlEnd;
-    });
-    return this;
-}
-
-views.stringify = function () {
-    return JSON.stringify(this.all);
-}
-
-views.add('Current', 'Display sales occurring until end of this week');
-views.add('Next Week', 'Display sales occurring next week', 'next-week');
-views.add('All', 'Display all sales', 'all');
-
-var sqlize = {};
-sqlize.momentFormat = 'YYYY-MM-DD';
-sqlize.endOfWeek = function (yyyymmdd) {
-    var startMoment = moment(yyyymmdd, this.momentFormat).add(-1, 'd');
-    var eowDay = 6;
-    var eowMoment = moment(startMoment);
-    var inWeekend = (
-        startMoment.day() == 5 ||
-        startMoment.day() == 6
-    );
-
-    if (inWeekend) eowDay = 13;
-
-    return eowMoment.day(eowDay).format(this.momentFormat);
-};
-sqlize.counties = function (counties) {
-    var _counties = [];
-    counties.forEach(function(county) {
-        _counties.push('county = ' + db.escape(county));
-    });
-    return _counties.join(' OR ');
-};
+timeframes.add('Current', 'Display sales occurring until end of this week');
+timeframes.add('Next Week', 'Display sales occurring next week', 'next-week');
+timeframes.add('All', 'Display all sales', 'all');
 
 function renderListingsInRange (viewName, res, sqlStart, sqlEnd, region) {
     regions.setCurrent(region);
@@ -173,7 +95,7 @@ function renderListingsInRange (viewName, res, sqlStart, sqlEnd, region) {
         if (err) throw err;
         results = results || {};
         var scope = {};
-        scope.views = views.setCurrent(viewName).setRegion(region).stringify();
+        scope.timeframes = timeframes.setCurrent(viewName).setRegion(region).stringify();
         scope.region = region;
         scope.regions = JSON.stringify(regions.all);
         scope.foreclosures = JSON.stringify(results);
@@ -233,7 +155,7 @@ app.get('/:region/all', function (req, res) {
             if (err) throw err;
             foreclosures = foreclosures || {};
             var scope = {};
-            scope.views = views.setCurrent('All').setRegion(req.params.region).stringify();
+            scope.timeframes = timeframes.setCurrent('All').setRegion(req.params.region).stringify();
             scope.regions = JSON.stringify(regions.all);
             scope.foreclosures = JSON.stringify(foreclosures);
             res.render('region/index', scope);

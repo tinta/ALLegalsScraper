@@ -5,7 +5,7 @@ include mixins/editableTHead
 block head
     script(type='text/javascript').
         window.listings = !{ foreclosures };
-        window.views = !{ views };
+        window.timeframes = !{ timeframes };
         window.regions = !{ regions };
 
 block content
@@ -36,6 +36,7 @@ block content
                     div.col-xs-4.text-left
                         div.text-left.pad-b
                             button.bg-gray-dark.text-white.pad-none.round-md(
+                                ng-click
                                 popover-template="'/resources/ng-templates/region-toggle.html'"
                                 popover-placement="bottom"
                                 popover-trigger="focus"
@@ -53,6 +54,7 @@ block content
                             div.spacer-xs
 
                             button.bg-gray-dark.text-white.pad-none.round-md(
+                                ng-click
                                 popover-template="'/resources/ng-templates/view-toggle.html'"
                                 popover-placement="bottom"
                                 popover-trigger="focus"
@@ -62,7 +64,7 @@ block content
                                     div.pad-l.pad-tb.text-thin &nbsp;Timeframe&nbsp;
                                     div.pad.bg-blue.text-thin.valign-mid
                                         span &nbsp;
-                                        span.caps [[ views.current.name ]]
+                                        span.caps [[ timeframes.current.name ]]
                                         span &nbsp;&nbsp;
                                         i.fa.fa-caret-down
                                         span &nbsp;
