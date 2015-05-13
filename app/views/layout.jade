@@ -58,13 +58,13 @@ html
                 div.pull-right(
                     ng-controller="Controller:OAuth"
                     ng-cloak
-                    ng-click
                 )
                     div(
                         ng-if="!user.model.isLoggedIn && oauth.google.isLoading === false"
                     )
                         div.spacer-xs
                         button.bg-white.text-gray-dark#login-popup(
+                            ng-click
                             popover-template="'/resources/ng-templates/login-popover.html'"
                             popover-placement="bottom"
                             popover-trigger="focus"
