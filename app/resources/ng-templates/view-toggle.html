@@ -4,6 +4,13 @@
     >
         <a href="[[view.link]]">
             <button
+                tooltip-html-unsafe="
+                    <div class='spacer-xxs'></div>
+                    <div>[[view.description]]</div>
+                    <div class='spacer-xxs'></div>
+                "
+                tooltip-placement="right"
+                tooltip-popup-delay="100"
                 class="round-md text-thin width-full pad"
                 ng-class="{
                     'bg-blue': view.isCurrent,

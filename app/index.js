@@ -95,12 +95,14 @@ regions.set('mideast', [
 var views = {};
 views.all = [];
 
-views.add = function (name, urlEnd) {
+views.add = function (name, description, urlEnd) {
     if (!urlEnd) urlEnd = '';
+    if (!description) description = '';
     var view = {};
     view.name = name;
     view.link = undefined;
     view.urlEnd = urlEnd;
+    view.description = description;
     view.isCurrent = false;
     this.all.push(view);
     return this;
@@ -128,7 +130,9 @@ views.stringify = function () {
     return JSON.stringify(this.all);
 }
 
-views.add('Current').add('Next Week', 'next-week').add('All', 'all');
+views.add('Current', 'Display sales occurring until end of this week');
+views.add('Next Week', 'Display sales occurring next week', 'next-week');
+views.add('All', 'Display all sales', 'all');
 
 var sqlize = {};
 sqlize.momentFormat = 'YYYY-MM-DD';
