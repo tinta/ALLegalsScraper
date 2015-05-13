@@ -75,7 +75,7 @@ regions.set('mideast', [
     'cleburne'
 ]);
 
-timeframes.add('Current', 'Display sales occurring until end of this week');
+timeframes.add('Current', 'Display sales occurring between yesterday and the end of this week');
 timeframes.add('Next Week', 'Display sales occurring next week', 'next-week');
 timeframes.add('All', 'Display all sales', 'all');
 
