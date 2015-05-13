@@ -1,3 +1,6 @@
+var moment = require('moment');
+var mysql = require('mysql');
+
 // Helpers for SQL interactions
 var sqlize = {};
 sqlize.momentFormat = 'YYYY-MM-DD';
@@ -17,7 +20,7 @@ sqlize.endOfWeek = function (yyyymmdd) {
 sqlize.counties = function (counties) {
     var _counties = [];
     counties.forEach(function(county) {
-        _counties.push('county = ' + db.escape(county));
+        _counties.push('county = ' + mysql.escape(county));
     });
     return _counties.join(' OR ');
 };

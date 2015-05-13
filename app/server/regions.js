@@ -1,4 +1,6 @@
 // A collection for regions
+var _ = require('lodash');
+
 var regions = {};
 regions.all = {};
 regions.set = function (name, counties) {
