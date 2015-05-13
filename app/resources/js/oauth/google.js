@@ -9,7 +9,7 @@ angular
     var oauth = (function(){
         var oauth = function (keys) {
             this.keys = keys;
-            this.loading = true;
+            this.isLoading = true;
             this.user = undefined; // Declared in auth.onApiSuccess
 
             this.init();
@@ -39,10 +39,10 @@ angular
         };
 
         oauth.prototype.handleAuthResult = function (authResult) {
-            this.loading = false;
+            this.isLoading = false;
 
             if (authResult && !authResult.error) {
-                this.loading = true;
+                this.isLoading = true;
                 this.makeApiCall();
             } else {
                 $rootScope.$broadcast("oauth:google:deauthorized", authResult);
@@ -76,7 +76,7 @@ angular
         };
 
         oauth.prototype.onApiSuccess = function (res) {
-            this.loading = false;
+            this.isLoading = false;
             this.user = res;
             $rootScope.$broadcast("oauth:google:authorized", res);
         };

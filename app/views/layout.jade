@@ -60,28 +60,19 @@ html
                     ng-cloak
                     ng-click
                 )
-                    button.bg-none#login-popup(
-                        ng-if="!user.model.isLoggedIn"
-                        popover-template="'/resources/ng-templates/login-popover.html'"
-                        popover-placement="bottom"
-                        popover-trigger="focus"
-                        popover-title="Log in using..."
+                    div(
+                        ng-if="!user.model.isLoggedIn && oauth.google.isLoading === false"
                     )
-                        div.text-thin.text-white.pad-lr
-                            div(ng-if="oauth.google.loading === false")
-                                div.spacer-sm
-                                h4.text-thin Log In
-                            div.valign-top(ng-if="oauth.google.loading === true")
-                                h4.pad-r
-                                    div.spacer-xxs
-                                    i.fa.fa-cog.fa-spin
-                                h2.pad-r
-                                    div.spacer-xxs
-                                    i.fa.fa-cog.fa-spin
-                                h5.pad-b
-                                    i.fa.fa-cog.fa-spin
+                        div.spacer-xs
+                        button.bg-white.text-gray-dark#login-popup(
+                            popover-template="'/resources/ng-templates/login-popover.html'"
+                            popover-placement="bottom"
+                            popover-trigger="focus"
+                            popover-title="Log in using..."
+                        )
+                            h5.text-thin.pad-lr Log In
 
-                    button.input-invis#user-popup.valign-top.text-gray-dark(
+                    button.bg-none#user-popup.valign-top.text-gray-dark(
                         ng-if="user.model.isLoggedIn"
                         popover-template="'/resources/ng-templates/user-popover.html'"
                         popover-placement="bottom"
@@ -89,12 +80,11 @@ html
                         popover-title="[[user.model.displayName]]"
                     )
                         div.pad-lr.text-white
-                            div.spacer-sm
+                            div.spacer-xs
                             h4.text-thin [[user.model.firstName]]
 
                         div.pad-l
                             img.circle-sm(ng-src="[[user.model.image.url]]")
 
         div.page-column
-            div.container
-                block content
+            block content
