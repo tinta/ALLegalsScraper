@@ -217,9 +217,11 @@ app.get('/:region/next-week', function (req, res) {
 });
 
 app.get('/:region/all', function (req, res) {
-    var counties = regions.all[req.params.region].counties;
-    if (util.isPresent(counties)) {
-        var counties = regions.all[req.params.region];
+    var region = regions.all[req.params.region];
+
+    if (util.isPresent(region)) {
+        regions.setCurrent(region.name);
+        var counties = region.counties;
         var sqlCounties = sqlize.counties(counties);
         var sqlGetForeclosures = squel
             .select()
@@ -232,7 +234,7 @@ app.get('/:region/all', function (req, res) {
             foreclosures = foreclosures || {};
             var scope = {};
             scope.views = views.setCurrent('All').setRegion(req.params.region).stringify();
-            scope.region = req.params.region;
+            scope.regions = JSON.stringify(regions.all);
             scope.foreclosures = JSON.stringify(foreclosures);
             res.render('region/index', scope);
         });
