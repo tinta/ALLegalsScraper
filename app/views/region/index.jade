@@ -58,39 +58,39 @@ block content
             div.col-xs-12.text-left
                 div.spacer-md
                 div.valign-mid
-                    button.bg-gray-dark.text-white.pad-none.round-md(
+                    button.bg-gray-dark.text-white.pad-none.round-md.valign-mid(
                         ng-click
                         popover-template="'/resources/ng-templates/region-toggle.html'"
                         popover-placement="bottom"
                         popover-trigger="focus"
                         popover-title="Change Region"
                     )
-                        h4.valign-mid
-                            div.pad-l.pad-tb.text-thin &nbsp;Region&nbsp;
-                            div.pad.bg-blue.text-thin.valign-mid
-                                span &nbsp;
-                                span.caps [[ regions.current.name ]]
-                                span &nbsp;&nbsp;
-                                i.fa.fa-caret-down
-                                span &nbsp;
+                        h4.pad-l.pad-tb
+                            div.text-thin &nbsp;Region&nbsp;
+                        h4.pad.bg-blue.text-thin.valign-mid
+                            span &nbsp;
+                            span.text-thin.caps [[ regions.current.name ]]
+                            span &nbsp;&nbsp;
+                            i.fa.fa-caret-down
+                            span &nbsp;
 
                     div.pad-l &nbsp;
 
-                    button.bg-gray-dark.text-white.pad-none.round-md(
+                    button.bg-gray-dark.text-white.pad-none.round-md.valign-mid(
                         ng-click
                         popover-template="'/resources/ng-templates/view-toggle.html'"
                         popover-placement="bottom"
                         popover-trigger="focus"
                         popover-title="Change Timeframe"
                     )
-                        h4
-                            div.pad-l.pad-tb.text-thin &nbsp;Timeframe&nbsp;
-                            div.pad.bg-blue.text-thin.valign-mid
-                                span &nbsp;
-                                span.caps [[ timeframes.current.name ]]
-                                span &nbsp;&nbsp;
-                                i.fa.fa-caret-down
-                                span &nbsp;
+                        h4.pad-l.pad-tb
+                            div.text-thin &nbsp;Timeframe&nbsp;
+                        h4.pad.bg-blue.text-thin.valign-mid
+                            span &nbsp;
+                            span.text-thin.caps [[ timeframes.current.name ]]
+                            span &nbsp;&nbsp;
+                            i.fa.fa-caret-down
+                            span &nbsp;
 
                 div.spacer-sm
                 div

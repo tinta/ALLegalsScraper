@@ -74,6 +74,10 @@ body .bg-orange-hover:hover {
     background-color: #CFBC52;
 }
 
+.bg-google {
+    background-color: #567DEC;
+}
+
 .text-white {
     color: #FFFFFF;
 }
@@ -85,7 +89,6 @@ body .bg-orange-hover:hover {
 .text-gray-dark {
     color: #414141;
 }
-
 
 .text-gray-dark-hover:hover {
     color: #414141;
@@ -181,4 +184,8 @@ body .ng-table th.sortable .sort-indicator {
 
 body .table > thead > tr > th {
     padding: 8px 10px;
+}
+
+.border-l-white {
+    border-left: 1px solid #fff;
 }
