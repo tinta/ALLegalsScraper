@@ -189,3 +189,12 @@ body .table > thead > tr > th {
 .border-l-white {
     border-left: 1px solid #fff;
 }
+
+.btn-group-lg > .btn,
+.btn-lg {
+    border-radius: 0;
+}
+
+.btn .fa-wrapper {
+    margin: -4px 0;
+}

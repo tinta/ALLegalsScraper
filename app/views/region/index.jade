@@ -58,60 +58,49 @@ block content
             div.col-xs-12.text-left
                 div.spacer-md
                 div.valign-mid
-                    button.bg-gray-dark.text-white.pad-none.round-md.valign-mid(
+                    button.btn-group.btn-group-lg.pad-none.round-md-top(
                         ng-click
                         popover-template="'/resources/ng-templates/region-toggle.html'"
                         popover-placement="bottom"
                         popover-trigger="focus"
                         popover-title="Change Region"
                     )
-                        h4.pad-l.pad-tb
-                            div.text-thin &nbsp;Region&nbsp;
-                        h4.pad.bg-blue.text-thin.valign-mid
-                            span &nbsp;
-                            span.text-thin.caps [[ regions.current.name ]]
-                            span &nbsp;&nbsp;
-                            i.fa.fa-caret-down
-                            span &nbsp;
+                        div.btn.bg-gray-dark
+                            div.text-white.text-thin
+                                span &nbsp;Region&nbsp;&nbsp;&nbsp;
+                                h3.pad-none.fa-wrapper
+                                    i.fa.fa-map-marker
+                                span &nbsp;
 
-                    div.pad-l &nbsp;
+                        div.btn.bg-blue
+                            div.text-white
+                                span.text-thin.caps &nbsp;[[ regions.current.name ]]&nbsp;&nbsp;
+                                i.fa.fa-caret-down
+                                span &nbsp;
 
-                    button.bg-gray-dark.text-white.pad-none.round-md.valign-mid(
+                        div.btn.bg-gray
+                            div.text-white.text-thin &nbsp;[[ listings.length ]] listings&nbsp;
+
+                    button.btn-group.btn-group-lg.pad-none.round-md-top.pull-right(
                         ng-click
                         popover-template="'/resources/ng-templates/view-toggle.html'"
                         popover-placement="bottom"
                         popover-trigger="focus"
                         popover-title="Change Timeframe"
                     )
-                        h4.pad-l.pad-tb
-                            div.text-thin &nbsp;Timeframe&nbsp;
-                        h4.pad.bg-blue.text-thin.valign-mid
+                        div.btn.bg-gray-dark
+                            div.text-thin.text-white
+                                span &nbsp;Timeframe&nbsp;&nbsp;&nbsp;
+                                h3.pad-none.fa-wrapper
+                                    i.fa.fa-clock-o
+                                span &nbsp;
+
+                        div.btn.bg-blue
                             span &nbsp;
-                            span.text-thin.caps [[ timeframes.current.name ]]
+                            span.text-thin.text-white.caps [[ timeframes.current.name ]]
                             span &nbsp;&nbsp;
-                            i.fa.fa-caret-down
+                            i.fa.fa-caret-down.text-white
                             span &nbsp;
-
-                div.spacer-sm
-                div
-                    button.text-white.pad-none.bg-gray-dark.round-md-top
-                        h4
-                            div.pad-l.pad-tb.text-thin &nbsp;Total Listings&nbsp;
-                            div.pad.bg-gray.text-thin &nbsp;[[listings.length]]&nbsp;
-
-                    div.pad-l &nbsp;
-
-                    button.text-white.pad-none.bg-gray-dark.round-md-top
-                        h4
-                            div.pad-l.pad-tb.text-thin &nbsp;Filtered Listings&nbsp;
-                            div.pad.bg-gray.text-thin &nbsp;[[tableParams.total()]]&nbsp;
-
-                    div.pad-l &nbsp;
-
-                    button.text-white.pad-none.bg-gray-dark.round-md-top
-                        h4
-                            div.pad-l.pad-tb.text-thin &nbsp;Displayed Listings&nbsp;
-                            div.pad.bg-gray.text-thin &nbsp;[[tableParams.data.length]]&nbsp;
 
             div.col-xs-12
                 table.table.table-striped.table-bordered.table-hover.bg-white(
