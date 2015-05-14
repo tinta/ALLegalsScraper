@@ -17,11 +17,13 @@ angular
 
         oauth.prototype.init = function () {
             // Step 1: Reference the API key
+            console.log(gapi.client)
             if (gapi && gapi.client) {
                 gapi.client.setApiKey(this.keys.apiKey);
                 window.setTimeout(this.checkAuth.bind(this), 1);
             } else {
-                window.setTimeout(this.init.bind(this), 100);
+                // Recurse until `gapi` and `gapi.client` are defined
+                window.setTimeout(this.init.bind(this), 50);
             }
 
             return this;

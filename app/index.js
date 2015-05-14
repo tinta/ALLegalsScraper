@@ -1,5 +1,13 @@
 var express = require('express');
+var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var morgan = require('morgan');
+var methodOverride = require('method-override');
+var session = require('express-session');
+
+var passport = require('passport');
+var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+
 var moment = require('moment');
 var _ = require('lodash');
 var squel = require("squel").useFlavour('mysql');
@@ -7,20 +15,42 @@ var app = express();
 var port = 3000;
 
 function addStaticPath (path) { return express.static(process.cwd() + path); }
-app.use("/resources",   addStaticPath('/app/resources') );
-app.use("/angular",     addStaticPath('/node_modules/angular'));
-app.use("/angular-bootstrap",     addStaticPath('/node_modules/angular-bootstrap'));
-app.use("/angular-sanitize",     addStaticPath('/node_modules/angular-sanitize'));
-app.use("/ng-table",    addStaticPath('/node_modules/ng-table'));
-app.use("/lodash",      addStaticPath('/node_modules/lodash'));
-app.use("/moment",      addStaticPath('/node_modules/moment'));
-app.use("/bootstrap",   addStaticPath('/node_modules/bootstrap'));
-app.use("/font-awesome",   addStaticPath('/node_modules/font-awesome'));
-app.use("/jquery",   addStaticPath('/node_modules/jquery'));
 
-app.set('views', './app/views');
-app.set('view engine',  'jade');
-app.use(bodyParser.urlencoded({ extended: false }));
+// configure Express
+// app.configure(function() {
+    app.set('views', './app/views');
+    app.set('view engine',  'jade');
+    app.use(bodyParser.urlencoded({ extended: false }));
+    ////
+  app.use(morgan('combined'));
+  app.use(cookieParser());
+  // app.use(express.bodyParser());
+  app.use(methodOverride());
+  app.use(session({
+    secret: 'keyboard cat',
+    resave: false,
+    saveUninitialized: true
+  }));
+  // Initialize Passport!  Also use passport.session() middleware, to support
+  // persistent login sessions (recommended).
+  app.use(passport.initialize());
+  app.use(passport.session());
+  // app.use(express.static(__dirname + '/public'));
+
+    app.use("/resources",   addStaticPath('/app/resources') );
+    app.use("/angular",     addStaticPath('/node_modules/angular'));
+    app.use("/angular-bootstrap",     addStaticPath('/node_modules/angular-bootstrap'));
+    app.use("/angular-sanitize",     addStaticPath('/node_modules/angular-sanitize'));
+    app.use("/ng-table",    addStaticPath('/node_modules/ng-table'));
+    app.use("/lodash",      addStaticPath('/node_modules/lodash'));
+    app.use("/moment",      addStaticPath('/node_modules/moment'));
+    app.use("/bootstrap",   addStaticPath('/node_modules/bootstrap'));
+    app.use("/font-awesome",   addStaticPath('/node_modules/font-awesome'));
+    app.use("/jquery",   addStaticPath('/node_modules/jquery'));
+
+// });
+
+
 app.locals.pretty = true;
 app.listen(port);
 
@@ -32,6 +62,7 @@ var util = require('./../common/util.js');
 var timeframes = require('./server/timeframes.js');
 var regions = require('./server/regions.js');
 var sqlize = require('./server/sqlize.js');
+// var gOauth = require('./server/google-oauth.js');
 
 var table = "foreclosures";
 
@@ -265,3 +296,93 @@ app.post('/delete', function(req, res) {
         res.send(true);
     });
 });
+
+
+/////
+
+passport.serializeUser(function(user, done) {
+  done(null, user);
+});
+
+passport.deserializeUser(function(obj, done) {
+  done(null, obj);
+});
+
+var oauth = {};
+oauth.google = {};
+
+// Client ID, client secret and redirectUrl are defined at
+// https://code.google.com/apis/console
+oauth.google.clientId = '555054377171-n8geoctm8268uummgi35cb86uon8nusk.apps.googleusercontent.com';
+oauth.google.clientSecret = 'tUn5s9AkUNx3LICuWMgP4ka3';
+oauth.google.redirectUrl = 'http://127.0.0.1:3000/auth/google/callback';
+
+oauth.google.middleware = {};
+
+// .authenticate()
+// ===============
+// - Use passport.authenticate() as route middleware to authenticate the request
+
+// - This is the first step in Google authentication, which involves redirecting the client to google.com.
+
+oauth.google.middleware.authenticate = function () {
+    return passport.authenticate(
+        'google',
+        {
+            scope: ['https://www.googleapis.com/auth/plus.login']
+        }
+    )
+};
+
+
+passport.use(new GoogleStrategy({
+    clientID: oauth.google.clientId,
+    clientSecret: oauth.google.clientSecret,
+    callbackURL: oauth.google.redirectUrl
+  },
+  function(accessToken, refreshToken, profile, done) {
+    // User.findOrCreate({ googleId: profile.id }, function (err, user) {
+    // var user = {};
+    // user.googleId = profile.id;
+    // user.name = profile.displayName;
+    console.log(profile)
+    console.log(Array(40).join('==+'))
+    return done(false, profile);
+    // });
+  }
+));
+
+// GET /auth/google
+// ================
+// - After authorization, Google will redirect the user back to this app at /auth/google/callback
+
+// - The request will be redirected to Google for authentication, so provided function will not be called.
+
+app.get('/auth/google', oauth.google.middleware.authenticate(), function(){});
+
+// GET /auth/google/callback
+//   Use passport.authenticate() as route middleware to authenticate the
+//   request.  If authentication fails, the user will be redirected back to the
+//   login page.  Otherwise, the primary route function function will be called,
+//   which, in this example, will redirect the user to the home page.
+app.get('/auth/google/callback',
+    passport.authenticate('google', { failureRedirect: '/' }),
+    function(req, res) {
+        res.redirect('/');
+    }
+);
+
+app.get('/logout', function(req, res){
+  req.logout();
+  res.redirect('/');
+});
+
+// Simple route middleware to ensure user is authenticated.
+//   Use this route middleware on any resource that needs to be protected.  If
+//   the request is authenticated (typically via a persistent login session),
+//   the request will proceed.  Otherwise, the user will be redirected to the
+//   login page.
+function ensureAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) { return next(); }
+  res.redirect('/login');
+}
