@@ -17,6 +17,7 @@ var squel = require("squel").useFlavour('mysql');
 // Custom scipts
 var db = require('./../common/db-connect.js')();
 var util = require('./../common/util.js');
+var sql = require('./../common/sql.js');
 var timeframes = require('./server/timeframes.js');
 var regions = require('./server/regions.js');
 var sqlize = require('./server/sqlize.js');
@@ -74,38 +75,22 @@ app.listen(port);
 
 console.log('Now watching connections to port ' + port + '...');
 
-function prepareUser (user) {
-    user.accountIsActive = user.accountIsActive == 1 ? true : false;
-    user.firstName = user.name.split(' ')[0];
-    return user;
-}
-
 app.get('/', function (req, res) {
     var scope = {};
     scope.regions = regions;
     scope.user = false;
 
-    var idColumn = 'googleId';
+    util.print1(req.user);
 
-    var idValue;
-    if (req.user && req.user.id) idValue = req.user.id;
+    if (!req.user) {
+        res.render('index', scope);
+        return;
+    }
 
-    var sqlFindUser = squel
-        .select()
-        .from('users')
-        .where(idColumn + ' = ' + db.escape(idValue))
-        .toString();
-
-    db.query(sqlFindUser, function(err, users) {
-        if (err) throw err;
-        if (util.isPresent(users) && users[0]) scope.user = prepareUser(users[0]);
+    sql.findOrCreateUser('googleId', req.user.id).then(function(user){
+        scope.user = user;
         res.render('index', scope);
     });
-});
-
-app.get('/login', function (req, res) {
-    var scope = {};
-    res.render('login', scope);
 });
 
 app.get('/logout', function(req, res){
@@ -264,12 +249,17 @@ app.post('/delete', function(req, res) {
 // ================
 // - After authorization, Google will redirect the user back to this app at /auth/google/callback
 // - The request will be redirected to Google for authentication, so provided function will not be called.
-app.get('/auth/google', oauth.google.middleware.authenticate(), function(){});
+app.get(
+    '/auth/google',
+    oauth.google.middleware.authenticate(),
+    function(){}
+);
 
 // GET /auth/google/callback
 // - Use passport.authenticate() as route middleware to authenticate the request.
 // - Can be used to handle both failed and successful attempts to login
-app.get('/auth/google/callback',
+app.get(
+    '/auth/google/callback',
     passport.authenticate('google', { failureRedirect: '/' }),
     function(req, res) {
         res.redirect('/');

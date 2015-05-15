@@ -50,6 +50,12 @@ Util.isPresent = function (val) {
     return false;
 };
 
+Util.prepareUser = function (user) {
+    user.accountIsActive = user.accountIsActive == 1 ? true : false;
+    user.firstName = user.name.split(' ')[0];
+    return user;
+};
+
 Util._print = function (rowPattern, msg) {
     if (msg === undefined) msg = 'undefined';
     var row = Array(30).join(rowPattern);

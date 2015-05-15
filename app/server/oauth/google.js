@@ -27,6 +27,7 @@ google.middleware.authenticate = function () {
 };
 
 google.completeStrategy = function () {
+    util.print2()
     var options = {
         clientID: google.clientId,
         clientSecret: google.clientSecret,
@@ -39,6 +40,7 @@ google.completeStrategy = function () {
         profile, // User's google profile
         done // To be called once a user is found or created
     ) {
+        util.print3(profile.id)
         var table = 'users';
 
         var sqlFindUser = squel
