@@ -35,12 +35,10 @@ var regexi = [
     },
 ];
 
-function scrapeSaleDate (text) {
+function parseSaleDate (text) {
     var cleansedText = text
             .replace(/(the(?:\s))|(day\sof)|(the)/gi, '')
-            .replace(/(^\s)|(,)|(monday|tuesday|wednesday|thursday|friday)/gi, '')
-            .replace(/\s\s/gi, ' ')
-            .replace(/(^\s)/gi, '')
+            .replace(/(^\s)|(,)|(monday|tuesday|wednesday|thursday|friday)/gi, '');
 
     var moments = [];
 
@@ -73,7 +71,10 @@ function scrapeSaleDate (text) {
 
     if (maxFutureMoment.isBefore(saleMoment) && moments[1]) saleMoment = moments[1];
 
-    return saleMoment.format('YYYY-MM-DD')
+    var result = {};
+    result["sale_date"] = saleMoment.format('YYYY-MM-DD');
+
+    return result;
 }
 
-module.exports = scrapeSaleDate;
+module.exports = parseSaleDate;
