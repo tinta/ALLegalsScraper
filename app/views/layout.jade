@@ -26,7 +26,6 @@ html
         script(type='text/javascript', src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.0/ui-bootstrap-tpls.js")
         script(type='text/javascript', src="/angular-sanitize/angular-sanitize.js")
         script(type='text/javascript', src="/ng-table/dist/ng-table.js")
-        //- script(type='text/javascript', src="https://connect.facebook.net/en_US/sdk.js")
 
         //- JS custom
         script(type='text/javascript', src="/resources/js/app.js")
@@ -67,7 +66,20 @@ html
                         )
                             h5.text-thin.pad-lr Log In
                     else
-                        include userPopover
+                        button#user-popup.valign-top.text-gray-dark.bg-none(
+                            ng-click
+                            popover-template="'/resources/ng-templates/user-popover.html'"
+                            popover-placement="bottom"
+                            popover-trigger="click"
+                            popover-title="#{user.name}"
+                        )
+                            div.pad-lr.text-white
+                                div.spacer-xs
+                                h4.text-thin= user.firstName
+
+                            div.pad-l
+                                img.circle-sm(src="#{user.googleImageUrl}")
+
 
         div.page-column
             block content
