@@ -31,10 +31,14 @@ timeframes.setRegion = function (region) {
         view.link = '/' + region + '/' + view.urlEnd;
     });
     return this;
-}
+};
 
 timeframes.stringify = function () {
     return JSON.stringify(this.all);
-}
+};
+
+timeframes.add('Current', 'Display sales occurring between yesterday and the end of this week');
+timeframes.add('Next Week', 'Display sales occurring next week', 'next-week');
+timeframes.add('All', 'Display all sales', 'all');
 
 module.exports = timeframes;

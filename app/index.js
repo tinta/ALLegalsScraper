@@ -22,6 +22,7 @@ var timeframes = require('./server/timeframes.js');
 var regions = require('./server/regions.js');
 var sqlize = require('./server/sqlize.js');
 var oauth = require('./server/oauth');
+var renderListings = require('./server/renderListings');
 
 // Routing Setup
 var app = express();
@@ -68,88 +69,11 @@ passport.deserializeUser(function(obj, done) {
 // Middleware for finding/creating logged-in user
 passport.use(oauth.google.completeStrategy());
 
-
-
 // Server init
 app.locals.pretty = true;
 app.listen(port);
 
 console.log('Now watching connections to port ' + port + '...');
-
-var table = "foreclosures";
-
-regions.set('northwest', [
-    'colbert',
-    'lauderdale',
-    'franklin',
-    'lawrence'
-]);
-regions.set('northeast', [
-    'limestone',
-    'madison',
-    'jackson',
-    'morgan',
-    'marshall',
-    'dekalb'
-]);
-regions.set('mid', [
-    'cullman',
-    'blount',
-    'jefferson',
-    'walker',
-    'shelby',
-]);
-regions.set('midwest', [
-    'marion',
-    'lamar',
-    'fayette',
-    'winston',
-    'walker',
-    'pickens',
-    'tuscaloosa'
-]);
-regions.set('mideast', [
-    'cherokee',
-    'etowah',
-    'talladega',
-    'calhoun',
-    'clay',
-    'randolph',
-    'cleburne'
-]);
-
-timeframes.add('Current', 'Display sales occurring between yesterday and the end of this week');
-timeframes.add('Next Week', 'Display sales occurring next week', 'next-week');
-timeframes.add('All', 'Display all sales', 'all');
-
-function renderListingsInRange (viewName, res, sqlStart, sqlEnd, region) {
-    regions.setCurrent(region);
-    var currentRegion = _.findWhere(regions.all, {isCurrent: true});
-    var sqlCounties = sqlize.counties(currentRegion.counties);
-    var sqlInRange = squel
-        .select()
-        .from(table)
-        .where('sale_date > ' + db.escape(sqlStart))
-        .where('sale_date < ' + db.escape(sqlEnd))
-        .where(sqlCounties)
-        .toString();
-
-    db.query(sqlInRange, function(err, results) {
-        if (err) throw err;
-        results = results || {};
-        var scope = {};
-        scope.timeframes = timeframes.setCurrent(viewName).setRegion(region).stringify();
-        scope.region = region;
-        scope.regions = JSON.stringify(regions.all);
-        scope.foreclosures = JSON.stringify(results);
-        res.render('region/index', scope);
-    });
-}
-
-function renderListingsUntilEndOfWeek (page, res, sqlStart, region) {
-    var sqlEnd = sqlize.endOfWeek(sqlStart)
-    renderListingsInRange(page, res, sqlStart, sqlEnd, region);
-}
 
 function prepareUser (user) {
     user.accountIsActive = user.accountIsActive == 1 ? true : false;
@@ -158,7 +82,6 @@ function prepareUser (user) {
 }
 
 app.get('/', function (req, res) {
-    var table = 'users';
     var scope = {};
     scope.regions = regions;
     scope.user = false;
@@ -170,7 +93,7 @@ app.get('/', function (req, res) {
 
     var sqlFindUser = squel
         .select()
-        .from(table)
+        .from('users')
         .where(idColumn + ' = ' + db.escape(idValue))
         .toString();
 
@@ -186,10 +109,15 @@ app.get('/login', function (req, res) {
     res.render('login', scope);
 });
 
+app.get('/logout', function(req, res){
+    req.logOut();
+    res.redirect('/');
+});
+
 app.get('/:region', function (req, res) {
     if (util.isPresent(regions.all[req.params.region])) {
         var startDate = moment().add(-1, 'd').format(sqlize.momentFormat);
-        renderListingsUntilEndOfWeek('Current', res, startDate, req.params.region);
+        renderListings.untilEndOfWeek('Current', res, startDate, req.params.region);
     } else {
         res.redirect('/');
     }
@@ -199,7 +127,7 @@ app.get('/:region/next-week', function (req, res) {
     var counties = regions.all[req.params.region].counties;
     if (util.isPresent(counties)) {
         var startDate = moment().day(8).format(sqlize.momentFormat);
-        renderListingsUntilEndOfWeek('Next Week', res, startDate, req.params.region);
+        renderListings.untilEndOfWeek('Next Week', res, startDate, req.params.region);
     } else {
         res.redirect('/');
     }
@@ -214,7 +142,7 @@ app.get('/:region/all', function (req, res) {
         var sqlCounties = sqlize.counties(counties);
         var sqlGetForeclosures = squel
             .select()
-            .from(table)
+            .from("foreclosures")
             .where(sqlCounties)
             .toString();
 
@@ -237,7 +165,7 @@ app.get('/:region', function (req, res) {
     if (util.isPresent(counties)) {
         var startDate = moment().add(-1, 'd').format(sqlize.momentFormat);
         var endDate = sqlize.endOfWeek(startDate)
-        renderListingsInRange(res, startDate, endDate, req.params.region);
+        renderListings.inRange(res, startDate, endDate, req.params.region);
     } else {
         res.redirect('/');
     }
@@ -340,18 +268,11 @@ app.post('/delete', function(req, res) {
 app.get('/auth/google', oauth.google.middleware.authenticate(), function(){});
 
 // GET /auth/google/callback
-//   Use passport.authenticate() as route middleware to authenticate the
-//   request.  If authentication fails, the user will be redirected back to the
-//   login page.  Otherwise, the primary route function function will be called,
-//   which, in this example, will redirect the user to the home page.
+// - Use passport.authenticate() as route middleware to authenticate the request.
+// - Can be used to handle both failed and successful attempts to login
 app.get('/auth/google/callback',
     passport.authenticate('google', { failureRedirect: '/' }),
     function(req, res) {
         res.redirect('/');
     }
 );
-
-app.get('/logout', function(req, res){
-  req.logout();
-  res.redirect('/');
-});
