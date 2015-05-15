@@ -22,13 +22,6 @@ angular.module('Controller:Listings', [
     // Format data
     var dateFormat = 'M/D/YYYY';
 
-    $scope.isLoading = {};
-    $scope.isLoading.google = true;
-
-    // User
-    $scope.user = {};
-    $scope.user.isLoggedIn = false;
-
     // Timeframes
     $scope.timeframes = {};
     $scope.timeframes.all = window.timeframes;
@@ -200,18 +193,6 @@ angular.module('Controller:Listings', [
 
         return modal;
     })();
-
-    $scope.$root.$on("oauth:google:authorized", function(response, user) {
-        console.log('A')
-        $scope.isLoading.google = false;
-        if (!$scope.$$phase) $scope.$apply();
-    });
-
-    $scope.$root.$on("oauth:google:deauthorized", function(response, user) {
-        console.log('B')
-        $scope.isLoading.google = false;
-        if (!$scope.$$phase) $scope.$apply();
-    });
 
     // Dev
     window.logScope = function () {
