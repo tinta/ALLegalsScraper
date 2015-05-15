@@ -3,7 +3,6 @@
 var express = require('express');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var morgan = require('morgan');
 var methodOverride = require('method-override');
 var session = require('express-session');
 
@@ -44,7 +43,7 @@ app.use(session({
 
 app.use("/resources",   addStaticPath('/app/resources') );
 app.use("/angular",     addStaticPath('/node_modules/angular'));
-app.use("/angular-bootstrap",     addStaticPath('/node_modules/angular-bootstrap'));
+app.use("/angular-bootstrap-npm",     addStaticPath('/node_modules/angular-bootstrap-npm'));
 app.use("/angular-sanitize",     addStaticPath('/node_modules/angular-sanitize'));
 app.use("/ng-table",    addStaticPath('/node_modules/ng-table'));
 app.use("/lodash",      addStaticPath('/node_modules/lodash'));
