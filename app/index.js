@@ -148,11 +148,36 @@ function renderListingsUntilEndOfWeek (page, res, sqlStart, region) {
     renderListingsInRange(page, res, sqlStart, sqlEnd, region);
 }
 
+function prepareUser (user) {
+    user.accountIsActive = user.accountIsActive == 1 ? true : false;
+    user.firstName = user.name.split(' ')[0];
+    return user;
+}
+
 app.get('/', function (req, res) {
+    var table = 'users';
     var scope = {};
     scope.regions = regions;
+    scope.user = false;
+
     util.print1(req.user);
-    res.render('index', scope);
+    var idColumn = 'googleId';
+
+    var idValue;
+    if (req.user && req.user.id) idValue = req.user.id;
+
+    var sqlFindUser = squel
+        .select()
+        .from(table)
+        .where(idColumn + ' = ' + db.escape(idValue))
+        .toString();
+
+    db.query(sqlFindUser, function(err, users) {
+        if (err) throw err;
+        if (util.isPresent(users) && users[0]) scope.user = prepareUser(users[0]);
+        util.print4(scope.user)
+        res.render('index', scope);
+    });
 });
 
 app.get('/login', function (req, res) {
@@ -328,7 +353,7 @@ oauth.google.middleware.authenticate = function () {
     return passport.authenticate(
         'google',
         {
-            scope: ['https://www.googleapis.com/auth/plus.login']
+            scope: ['openid email']
         }
     )
 };
@@ -353,11 +378,7 @@ passport.use(new GoogleStrategy({
         .where('googleId = ' + db.escape(profile.id))
         .toString();
 
-    console.log('1');
-
     db.query(sqlFindUser, function(err, users) {
-        console.log('2');
-
         if (err) throw err;
 
         // If User already exists
@@ -368,7 +389,7 @@ passport.use(new GoogleStrategy({
         }
 
         // If User does not already exist
-        var image = (profile.image && profile.image.url) ? profile.image.url : null;
+        var image = (profile._json.image && profile._json.image.url) ? profile._json.image.url : null;
         var email = (
             util.isPresent(profile.emails) &&
             util.isPresent(profile.emails[0]) &&
@@ -382,6 +403,9 @@ passport.use(new GoogleStrategy({
         insertMap.googleEmail = email;
         insertMap.name = profile.displayName ||  null;
 
+        util.print1(insertMap);
+        util.print2(profile);
+
         var sqlInsertUser = squel
             .insert({replaceSingleQuotes: true})
             .into(table)
@@ -390,8 +414,6 @@ passport.use(new GoogleStrategy({
 
         db.query(sqlInsertUser, function(err, insertObj) {
             if (err) throw err;
-            console.log('3');
-            console.log(insertObj);
             done(null, insertMap);
         });
     });

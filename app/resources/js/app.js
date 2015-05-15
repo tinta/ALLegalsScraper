@@ -2,6 +2,6 @@ angular
 .module('app', [
 // Dependencies
     'Controller:Listings',
-    'Controller:OAuth',
+    'Controller:User',
     'ui.bootstrap'
 ]);

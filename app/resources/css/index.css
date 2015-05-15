@@ -198,3 +198,14 @@ body .table > thead > tr > th {
 .btn .fa-wrapper {
     margin: -4px 0;
 }
+
+#user-popup ~ .tooltip {
+    width: auto;
+    left: auto;
+    right: 0;
+}
+
+#user-popup ~ .tooltip .tooltip-arrow {
+    left: auto;
+    right: 10%;
+}

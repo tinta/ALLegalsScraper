@@ -1,16 +1,15 @@
 <div>
-    <div class="pad-lr">Emails</div>
+    <div class="pad-lr">Email</div>
     <div class="spacer-1 bg-gray-dark"></div>
-    <span
-        class="pad-lr"
-        ng-repeat="email in user.model.emails"
-    >[[ email.value ]]</span>
+    <div class="spacer-xxs"></div>
+    <div class="pad-lr">[[ user.googleEmail ]]</div>
 
-    <div class="spacer-xs"></div>
+    <div class="spacer-sm"></div>
 
     <div class="pad-lr">Account Type</div>
     <div class="spacer-1 bg-gray-dark"></div>
-    <span class="pad-lr">[[ user.model.accountType ]]</span>
+    <div class="spacer-xxs"></div>
+    <span class="pad-lr">[[ user.accountIsActive ? 'Active' : 'Inactive' ]]</span>
     <div class="spacer-md"></div>
 
     <div class="text-center">
