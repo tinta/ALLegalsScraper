@@ -1,3 +1,5 @@
+var _ = require('lodash');
+
 var Util = {};
 
 function encase (casing, text) {
@@ -47,5 +49,18 @@ Util.isPresent = function (val) {
 
     return false;
 };
+
+Util._print = function (rowPattern, msg) {
+    if (msg === undefined) msg = 'undefined';
+    var row = Array(30).join(rowPattern);
+    console.log(row);
+    console.log(msg);
+};
+
+_.each([1,2,3,4,5], function(item) {
+    Util['print' + item] = function (msg) {
+        Util._print(item + '-', msg);
+    }
+})
 
 module.exports = Util;

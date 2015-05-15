@@ -26,20 +26,20 @@ html
         script(type='text/javascript', src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.0/ui-bootstrap-tpls.js")
         script(type='text/javascript', src="/angular-sanitize/angular-sanitize.js")
         script(type='text/javascript', src="/ng-table/dist/ng-table.js")
-        script(type='text/javascript', src="https://connect.facebook.net/en_US/sdk.js")
-        script(type='text/javascript', src="https://apis.google.com/js/client.js")
+        //- script(type='text/javascript', src="https://connect.facebook.net/en_US/sdk.js")
 
         //- JS custom
         script(type='text/javascript', src="/resources/js/app.js")
         script(type='text/javascript', src="/resources/js/controllers/listings.js")
-        script(type='text/javascript', src="/resources/js/controllers/oauth.js")
+        script(type='text/javascript', src="/resources/js/controllers/user.js")
         script(type='text/javascript', src="/resources/js/classes/Model.js")
         script(type='text/javascript', src="/resources/js/models/FieldModel.js")
         script(type='text/javascript', src="/resources/js/models/RowModel.js")
-        script(type='text/javascript', src="/resources/js/oauth/google.js")
-        script(type='text/javascript', src="/resources/js/oauth/fb.js")
         script(type='text/javascript', src="/resources/js/Util.js")
         script(type='text/javascript', src="/resources/js/Highlight.js")
+
+        script(type='text/javascript').
+            window.user = !{ user ? JSON.stringify(user) : JSON.stringify({}) };
 
         block head
 
@@ -55,13 +55,8 @@ html
                         a.text-thin(href="/") Mortgage Foreclosure Sales in Alabama
                     div.spacer-xs
 
-                div.pull-right(
-                    ng-controller="Controller:OAuth"
-                    ng-cloak
-                )
-                    div(
-                        ng-if="!user.model.isLoggedIn && oauth.google.isLoading === false"
-                    )
+                div.pull-right(ng-controller="Controller:User")
+                    if !user
                         div.spacer-xs
                         button.bg-white.text-gray-dark#login-popup(
                             ng-click
@@ -71,21 +66,8 @@ html
                             popover-title="Log in using..."
                         )
                             h5.text-thin.pad-lr Log In
-
-                    button.bg-none#user-popup.valign-top.text-gray-dark(
-                        ng-if="user.model.isLoggedIn"
-                        ng-click
-                        popover-template="'/resources/ng-templates/user-popover.html'"
-                        popover-placement="bottom"
-                        popover-trigger="focus"
-                        popover-title="[[user.model.displayName]]"
-                    )
-                        div.pad-lr.text-white
-                            div.spacer-xs
-                            h4.text-thin [[user.model.firstName]]
-
-                        div.pad-l
-                            img.circle-sm(ng-src="[[user.model.image.url]]")
+                    else
+                        include userPopover
 
         div.page-column
             block content
