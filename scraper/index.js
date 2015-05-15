@@ -8,6 +8,7 @@ var Q = require('q');
 // Custom scripts
 var db = require('./../common/db-connect.js')();
 var util = require('./../common/util.js');
+var sql = require('./../common/sql.js');
 var parseSaleDate = require('./parseSaleDate.js');
 var parseAddress= require('./parseAddress.js');
 var parseOwners= require('./parseOwners.js');
@@ -18,7 +19,7 @@ var parseBank= require('./parseBank.js');
 var page = new Nightmare();
 
 var table = "foreclosures";
-var startDate = moment().add(-1, 'day').format('MM-DD-YYYY');
+var startDate = moment().add(-10, 'day').format('MM-DD-YYYY');
 var endDate = moment().add(0, 'day').format('MM-DD-YYYY');
 var scrapeUrl = 'http://www.alabamalegals.com/index.cfm?fuseaction=home';
 var counties = [
@@ -60,10 +61,6 @@ var counties = [
     52, // Randolph
     53 // Cleburne
 ];
-
-function promiseSql (query) {
-    return Q.nbind(db.query, db)(query);
-}
 
 scrapeCounty(0);
 
@@ -238,7 +235,7 @@ function writeToDB (listings) {
                     .where("body LIKE ?", insertMap["body"])
                     .toString();
 
-                promiseSql(sqlFindDuplicates).then(function(duplicates) {
+                sql.promise(sqlFindDuplicates).then(function(duplicates) {
                     if (!util.isPresent(duplicates[0])) {
                         insertMap["case_id"] = parseInt(absentForeclosure.caseId);
                         insertMap["county"] = absentForeclosure.county;
@@ -257,7 +254,7 @@ function writeToDB (listings) {
                             .setFields(insertMap)
                             .toString();
 
-                        return promiseSql(sqlInsertListing);
+                        return sql.promise(sqlInsertListing);
                     }
 
                     count.duplicates += 1;

@@ -14,7 +14,6 @@ sql.promise = function (query) {
 };
 
 sql.findOrCreateUser = function (idColumn, idValue) {
-    util.print4('foo ' + idColumn + ' ' + idValue);
     var sqlFindUser = squel
         .select()
         .from('users')
