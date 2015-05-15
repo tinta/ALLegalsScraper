@@ -20,7 +20,6 @@ var util = require('./../common/util.js');
 var sql = require('./../common/sql.js');
 var timeframes = require('./server/timeframes.js');
 var regions = require('./server/regions.js');
-var sqlize = require('./server/sqlize.js');
 var oauth = require('./server/oauth');
 var renderListings = require('./server/renderListings');
 
@@ -100,7 +99,7 @@ app.get('/logout', function(req, res){
 
 app.get('/:region', function (req, res) {
     if (util.isPresent(regions.all[req.params.region])) {
-        var startDate = moment().add(-1, 'd').format(sqlize.momentFormat);
+        var startDate = moment().add(-1, 'd').format(sql.momentFormat);
         renderListings.untilEndOfWeek('Current', res, startDate, req.params.region);
     } else {
         res.redirect('/');
@@ -110,7 +109,7 @@ app.get('/:region', function (req, res) {
 app.get('/:region/next-week', function (req, res) {
     var counties = regions.all[req.params.region].counties;
     if (util.isPresent(counties)) {
-        var startDate = moment().day(8).format(sqlize.momentFormat);
+        var startDate = moment().day(8).format(sql.momentFormat);
         renderListings.untilEndOfWeek('Next Week', res, startDate, req.params.region);
     } else {
         res.redirect('/');
@@ -123,7 +122,7 @@ app.get('/:region/all', function (req, res) {
     if (util.isPresent(region)) {
         regions.setCurrent(region.name);
         var counties = region.counties;
-        var sqlCounties = sqlize.counties(counties);
+        var sqlCounties = sql.cast.counties(counties);
         var sqlGetForeclosures = squel
             .select()
             .from("foreclosures")
@@ -147,8 +146,8 @@ app.get('/:region/all', function (req, res) {
 app.get('/:region', function (req, res) {
     var counties = regions.all[req.params.region];
     if (util.isPresent(counties)) {
-        var startDate = moment().add(-1, 'd').format(sqlize.momentFormat);
-        var endDate = sqlize.endOfWeek(startDate)
+        var startDate = moment().add(-1, 'd').format(sql.momentFormat);
+        var endDate = sql.cast.endOfWeek(startDate)
         renderListings.inRange(res, startDate, endDate, req.params.region);
     } else {
         res.redirect('/');

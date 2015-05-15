@@ -2,7 +2,7 @@
 var squel = require("squel").useFlavour('mysql');
 var _ = require('lodash');
 var db = require('./../../common/db-connect.js')();
-var sqlize = require('./../server/sqlize.js');
+var sql = require('./../../common/sql.js');
 var timeframes = require('./../server/timeframes.js');
 var regions = require('./../server/regions.js');
 
@@ -12,7 +12,7 @@ renderListings.inRange = function (viewName, res, sqlStart, sqlEnd, region) {
     regions.setCurrent(region);
     var table = "foreclosures";
     var currentRegion = _.findWhere(regions.all, {isCurrent: true});
-    var sqlCounties = sqlize.counties(currentRegion.counties);
+    var sqlCounties = sql.cast.counties(currentRegion.counties);
     var sqlInRange = squel
         .select()
         .from(table)
@@ -34,7 +34,7 @@ renderListings.inRange = function (viewName, res, sqlStart, sqlEnd, region) {
 };
 
 renderListings.untilEndOfWeek = function (page, res, sqlStart, region) {
-    var sqlEnd = sqlize.endOfWeek(sqlStart)
+    var sqlEnd = sql.cast.endOfWeek(sqlStart)
     renderListings.inRange(page, res, sqlStart, sqlEnd, region);
 };
 
