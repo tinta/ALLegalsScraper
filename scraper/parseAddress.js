@@ -1,4 +1,4 @@
-function scrapeAddress (body) {
+function parseAddress(body) {
     var addrRe = /(?:for\sinformational\spurposes.*\:|property is commonly known as)\s?(.*?)\,\s*(.*?)\,\s*(?:Alabama|AL)\s*(3\d{4})/ig;
     var addressParts = addrRe.exec(body);
     var address = {};
@@ -19,4 +19,4 @@ function scrapeAddress (body) {
     return address;
 }
 
-module.exports = scrapeAddress;
+module.exports = parseAddress;

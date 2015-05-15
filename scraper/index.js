@@ -8,9 +8,11 @@ var Q = require('q');
 // Custom scripts
 var db = require('./../common/db-connect.js')();
 var util = require('./../common/util.js');
-var scrapeSaleDate = require('./scrapeSaleDate.js');
-var scrapeAddress = require('./scrapeAddress.js');
-
+var parseSaleDate = require('./parseSaleDate.js');
+var parseAddress= require('./parseAddress.js');
+var parseOwners= require('./parseOwners.js');
+var parseAttorneys= require('./parseAttorneys.js');
+var parseBank= require('./parseBank.js');
 
 // Initializations
 var page = new Nightmare();
@@ -56,9 +58,7 @@ var counties = [
     54, // Calhoun
     3,  // Clay
     52, // Randolph
-    53, // Cleburne
-
-    '' // placholder. the last query always fails due to `Cannot enqueue Query after invoking quit.`
+    53 // Cleburne
 ];
 
 function promiseSql (query) {
@@ -80,6 +80,7 @@ function scrapeCounty (index) {
     }, function () {}, county, startDate, endDate)
     .click('[onclick="newSearch()"]')
     .wait()
+    // client side envaluation
     .evaluate(function() {
         var foreclosures = {};
         var $rows = $('.jqgrow');
@@ -221,14 +222,16 @@ function writeToDB (listings) {
                     }
                 }
 
+                // elminate double spaces
                 var body = absentForeclosure.body;
-                var pubDate = moment(absentForeclosure.pubDate, 'MM-DD-YYYY').format('YYYY-MM-DD');
-                var saleDate = scrapeSaleDate(body);
+                var body_parts  = body.trim().split(/\s+/);
+                body = body_parts.join(" ");
 
                 var insertMap = {};
-                insertMap["body"] = (body.length > 10000) ? body.substring(0,10000) : body;
+                insertMap["body"] = body;
 
-                // ensure that this foreclosures doesn't already exist in the database, and if it does, return.
+                // ensure that this foreclosures doesn't already exist
+                // in the database, and if it does, return
                 var sqlFindDuplicates = squel
                     .select({replaceSingleQuotes: true})
                     .from(table)
@@ -240,10 +243,13 @@ function writeToDB (listings) {
                         insertMap["case_id"] = parseInt(absentForeclosure.caseId);
                         insertMap["county"] = absentForeclosure.county;
                         insertMap["source"] = absentForeclosure.source;
-                        insertMap["pub_date"] = pubDate;
-                        insertMap["sale_date"] = saleDate;
+                        insertMap["pub_date"] = moment(
+                                absentForeclosure.pubDate, 'MM-DD-YYYY'
+                                ).format('YYYY-MM-DD');
 
-                        insertMap = _.merge(insertMap, scrapeAddress(body));
+                        insertMap = _.merge(insertMap, parseAddress(body),
+                                parseOwners(body), parseAttorneys(body),
+                                parseSaleDate(body), parseBank(body));
 
                         var sqlInsertListing = squel
                             .insert({replaceSingleQuotes: true})
