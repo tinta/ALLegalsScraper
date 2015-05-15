@@ -9,7 +9,6 @@ var session = require('express-session');
 
 //      Oauth scripts
 var passport = require('passport');
-var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
 //      Other
 var moment = require('moment');
@@ -22,6 +21,7 @@ var util = require('./../common/util.js');
 var timeframes = require('./server/timeframes.js');
 var regions = require('./server/regions.js');
 var sqlize = require('./server/sqlize.js');
+var oauth = require('./server/oauth');
 
 // Routing Setup
 var app = express();
@@ -54,17 +54,20 @@ app.use("/jquery",   addStaticPath('/node_modules/jquery'));
 
 // Oauth setup
 app.use(passport.initialize());
-// Use passport.session() middleware to persist login sessions
+//      Use passport.session() middleware to persist login sessions
 app.use(passport.session());
+
 passport.serializeUser(function(user, done) {
-    util.print2(user)
-  done(null, user);
+    done(null, user);
 });
 
 passport.deserializeUser(function(obj, done) {
-    util.print3(obj)
-  done(null, obj);
+    done(null, obj);
 });
+
+// Middleware for finding/creating logged-in user
+passport.use(oauth.google.completeStrategy());
+
 
 
 // Server init
@@ -160,7 +163,6 @@ app.get('/', function (req, res) {
     scope.regions = regions;
     scope.user = false;
 
-    util.print1(req.user);
     var idColumn = 'googleId';
 
     var idValue;
@@ -175,7 +177,6 @@ app.get('/', function (req, res) {
     db.query(sqlFindUser, function(err, users) {
         if (err) throw err;
         if (util.isPresent(users) && users[0]) scope.user = prepareUser(users[0]);
-        util.print4(scope.user)
         res.render('index', scope);
     });
 });
@@ -332,103 +333,10 @@ app.post('/delete', function(req, res) {
     });
 });
 
-var oauth = {};
-oauth.google = {};
-
-// Client ID, client secret and redirectUrl are defined at
-// https://code.google.com/apis/console
-oauth.google.clientId = '555054377171-n8geoctm8268uummgi35cb86uon8nusk.apps.googleusercontent.com';
-oauth.google.clientSecret = 'tUn5s9AkUNx3LICuWMgP4ka3';
-oauth.google.redirectUrl = 'http://127.0.0.1:3000/auth/google/callback';
-
-oauth.google.middleware = {};
-
-// .authenticate()
-// ===============
-// - Use passport.authenticate() as route middleware to authenticate the request
-
-// - This is the first step in Google authentication, which involves redirecting the client to google.com.
-
-oauth.google.middleware.authenticate = function () {
-    return passport.authenticate(
-        'google',
-        {
-            scope: ['openid email']
-        }
-    )
-};
-
-
-passport.use(new GoogleStrategy({
-    clientID: oauth.google.clientId,
-    clientSecret: oauth.google.clientSecret,
-    callbackURL: oauth.google.redirectUrl
-  },
-  function(accessToken, refreshToken, profile, done) {
-    // User.findOrCreate({ googleId: profile.id }, function (err, user) {
-    // var user = {};
-    // user.googleId = profile.id;
-    // user.name = profile.displayName;
-
-    var table = 'users';
-
-    var sqlFindUser = squel
-        .select()
-        .from(table)
-        .where('googleId = ' + db.escape(profile.id))
-        .toString();
-
-    db.query(sqlFindUser, function(err, users) {
-        if (err) throw err;
-
-        // If User already exists
-        var userDoesExist = util.isPresent(users) && util.isPresent(users[0])
-        if (userDoesExist) {
-            done(null, users[0]);
-            return;
-        }
-
-        // If User does not already exist
-        var image = (profile._json.image && profile._json.image.url) ? profile._json.image.url : null;
-        var email = (
-            util.isPresent(profile.emails) &&
-            util.isPresent(profile.emails[0]) &&
-            util.isPresent(profile.emails[0].value)
-        ) ? profile.emails[0].value : null;
-
-        var insertMap = {};
-        insertMap.accountIsActive = false;
-        insertMap.googleId = profile.id;
-        insertMap.googleImageUrl = image;
-        insertMap.googleEmail = email;
-        insertMap.name = profile.displayName ||  null;
-
-        util.print1(insertMap);
-        util.print2(profile);
-
-        var sqlInsertUser = squel
-            .insert({replaceSingleQuotes: true})
-            .into(table)
-            .setFields(insertMap)
-            .toString();
-
-        db.query(sqlInsertUser, function(err, insertObj) {
-            if (err) throw err;
-            done(null, insertMap);
-        });
-    });
-
-    console.log(profile)
-    console.log(Array(40).join('==+'))
-    return done(false, profile);
-}));
-
 // GET /auth/google
 // ================
 // - After authorization, Google will redirect the user back to this app at /auth/google/callback
-
 // - The request will be redirected to Google for authentication, so provided function will not be called.
-
 app.get('/auth/google', oauth.google.middleware.authenticate(), function(){});
 
 // GET /auth/google/callback
@@ -447,13 +355,3 @@ app.get('/logout', function(req, res){
   req.logout();
   res.redirect('/');
 });
-
-// Simple route middleware to ensure user is authenticated.
-//   Use this route middleware on any resource that needs to be protected.  If
-//   the request is authenticated (typically via a persistent login session),
-//   the request will proceed.  Otherwise, the user will be redirected to the
-//   login page.
-function ensureAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) { return next(); }
-  res.redirect('/login');
-}

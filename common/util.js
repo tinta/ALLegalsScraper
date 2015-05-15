@@ -57,7 +57,7 @@ Util._print = function (rowPattern, msg) {
     console.log(msg);
 };
 
-_.each([1,2,3,4], function(item) {
+_.each([1,2,3,4,5], function(item) {
     Util['print' + item] = function (msg) {
         Util._print(item + '-', msg);
     }

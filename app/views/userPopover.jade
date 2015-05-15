@@ -1,0 +1,13 @@
+button#user-popup.valign-top.text-gray-dark.bg-none(
+    ng-click
+    popover-template="'/resources/ng-templates/user-popover.html'"
+    popover-placement="bottom"
+    popover-trigger="click"
+    popover-title="#{user.name}"
+)
+    div.pad-lr.text-white
+        div.spacer-xs
+        h4.text-thin= user.firstName
+
+    div.pad-l
+        img.circle-sm(src="#{user.googleImageUrl}")
