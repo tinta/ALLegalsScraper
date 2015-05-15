@@ -1,3 +1,5 @@
+// Third party scripts
+//      Routing-related scripts
 var express = require('express');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
@@ -5,64 +7,71 @@ var morgan = require('morgan');
 var methodOverride = require('method-override');
 var session = require('express-session');
 
+//      Oauth scripts
 var passport = require('passport');
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
+//      Other
 var moment = require('moment');
 var _ = require('lodash');
 var squel = require("squel").useFlavour('mysql');
-var app = express();
-var port = 3000;
 
-function addStaticPath (path) { return express.static(process.cwd() + path); }
-
-// configure Express
-// app.configure(function() {
-    app.set('views', './app/views');
-    app.set('view engine',  'jade');
-    app.use(bodyParser.urlencoded({ extended: false }));
-    ////
-  app.use(morgan('combined'));
-  app.use(cookieParser());
-  // app.use(express.bodyParser());
-  app.use(methodOverride());
-  app.use(session({
-    secret: 'keyboard cat',
-    resave: false,
-    saveUninitialized: true
-  }));
-  // Initialize Passport!  Also use passport.session() middleware, to support
-  // persistent login sessions (recommended).
-  app.use(passport.initialize());
-  app.use(passport.session());
-  // app.use(express.static(__dirname + '/public'));
-
-    app.use("/resources",   addStaticPath('/app/resources') );
-    app.use("/angular",     addStaticPath('/node_modules/angular'));
-    app.use("/angular-bootstrap",     addStaticPath('/node_modules/angular-bootstrap'));
-    app.use("/angular-sanitize",     addStaticPath('/node_modules/angular-sanitize'));
-    app.use("/ng-table",    addStaticPath('/node_modules/ng-table'));
-    app.use("/lodash",      addStaticPath('/node_modules/lodash'));
-    app.use("/moment",      addStaticPath('/node_modules/moment'));
-    app.use("/bootstrap",   addStaticPath('/node_modules/bootstrap'));
-    app.use("/font-awesome",   addStaticPath('/node_modules/font-awesome'));
-    app.use("/jquery",   addStaticPath('/node_modules/jquery'));
-
-// });
-
-
-app.locals.pretty = true;
-app.listen(port);
-
-console.log('Now watching connections to port ' + port + '...');
-
-// Custom requires
+// Custom scipts
 var db = require('./../common/db-connect.js')();
 var util = require('./../common/util.js');
 var timeframes = require('./server/timeframes.js');
 var regions = require('./server/regions.js');
 var sqlize = require('./server/sqlize.js');
-// var gOauth = require('./server/google-oauth.js');
+
+// Routing Setup
+var app = express();
+var port = 3000;
+
+function addStaticPath (path) { return express.static(process.cwd() + path); }
+
+app.set('views', './app/views');
+app.set('view engine',  'jade');
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(methodOverride());
+app.use(session({
+    secret: 'keyboard cat',
+    resave: false,
+    saveUninitialized: true
+}));
+
+app.use("/resources",   addStaticPath('/app/resources') );
+app.use("/angular",     addStaticPath('/node_modules/angular'));
+app.use("/angular-bootstrap",     addStaticPath('/node_modules/angular-bootstrap'));
+app.use("/angular-sanitize",     addStaticPath('/node_modules/angular-sanitize'));
+app.use("/ng-table",    addStaticPath('/node_modules/ng-table'));
+app.use("/lodash",      addStaticPath('/node_modules/lodash'));
+app.use("/moment",      addStaticPath('/node_modules/moment'));
+app.use("/bootstrap",   addStaticPath('/node_modules/bootstrap'));
+app.use("/font-awesome",   addStaticPath('/node_modules/font-awesome'));
+app.use("/jquery",   addStaticPath('/node_modules/jquery'));
+
+// Oauth setup
+app.use(passport.initialize());
+// Use passport.session() middleware to persist login sessions
+app.use(passport.session());
+passport.serializeUser(function(user, done) {
+    util.print2(user)
+  done(null, user);
+});
+
+passport.deserializeUser(function(obj, done) {
+    util.print3(obj)
+  done(null, obj);
+});
+
+
+// Server init
+app.locals.pretty = true;
+app.listen(port);
+
+console.log('Now watching connections to port ' + port + '...');
 
 var table = "foreclosures";
 
@@ -142,6 +151,7 @@ function renderListingsUntilEndOfWeek (page, res, sqlStart, region) {
 app.get('/', function (req, res) {
     var scope = {};
     scope.regions = regions;
+    util.print1(req.user);
     res.render('index', scope);
 });
 
@@ -297,17 +307,6 @@ app.post('/delete', function(req, res) {
     });
 });
 
-
-/////
-
-passport.serializeUser(function(user, done) {
-  done(null, user);
-});
-
-passport.deserializeUser(function(obj, done) {
-  done(null, obj);
-});
-
 var oauth = {};
 oauth.google = {};
 
@@ -345,12 +344,62 @@ passport.use(new GoogleStrategy({
     // var user = {};
     // user.googleId = profile.id;
     // user.name = profile.displayName;
+
+    var table = 'users';
+
+    var sqlFindUser = squel
+        .select()
+        .from(table)
+        .where('googleId = ' + db.escape(profile.id))
+        .toString();
+
+    console.log('1');
+
+    db.query(sqlFindUser, function(err, users) {
+        console.log('2');
+
+        if (err) throw err;
+
+        // If User already exists
+        var userDoesExist = util.isPresent(users) && util.isPresent(users[0])
+        if (userDoesExist) {
+            done(null, users[0]);
+            return;
+        }
+
+        // If User does not already exist
+        var image = (profile.image && profile.image.url) ? profile.image.url : null;
+        var email = (
+            util.isPresent(profile.emails) &&
+            util.isPresent(profile.emails[0]) &&
+            util.isPresent(profile.emails[0].value)
+        ) ? profile.emails[0].value : null;
+
+        var insertMap = {};
+        insertMap.accountIsActive = false;
+        insertMap.googleId = profile.id;
+        insertMap.googleImageUrl = image;
+        insertMap.googleEmail = email;
+        insertMap.name = profile.displayName ||  null;
+
+        var sqlInsertUser = squel
+            .insert({replaceSingleQuotes: true})
+            .into(table)
+            .setFields(insertMap)
+            .toString();
+
+        db.query(sqlInsertUser, function(err, insertObj) {
+            if (err) throw err;
+            console.log('3');
+            console.log(insertObj);
+            done(null, insertMap);
+        });
+    });
+
     console.log(profile)
     console.log(Array(40).join('==+'))
     return done(false, profile);
-    // });
-  }
-));
+}));
 
 // GET /auth/google
 // ================

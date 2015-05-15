@@ -51,6 +51,5 @@ angular
         return false;
     };
 
-
     return Util;
 });
