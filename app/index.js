@@ -126,8 +126,6 @@ app.get('/:region', function (req, res) {
         .then(function(results) {
             var user = results[0];
             var listings = results[1];
-            util.print1(user);
-            util.print2(listings);
             if (util.isPresent(user)) scope.user = user;
             scope.listings = listings;
             res.render('region/index', scope);
@@ -170,8 +168,6 @@ app.get('/:region/next-week', function (req, res) {
         .then(function(results) {
             var user = results[0];
             var listings = results[1];
-            util.print1(user);
-            util.print2(listings);
             if (util.isPresent(user)) scope.user = user;
             scope.listings = listings;
             res.render('region/index', scope);
@@ -185,26 +181,41 @@ app.get('/:region/next-week', function (req, res) {
 });
 
 app.get('/:region/all', function (req, res) {
-    var region = regions.all[req.params.region];
+    var region = req.params.region;
+    var promiseUser;
+    var scope = {};
 
-    if (util.isPresent(region)) {
-        regions.setCurrent(region.name);
-        var counties = region.counties;
-        var sqlCounties = sql.cast.counties(counties);
+    if (regions.contains(region)) {
+
+        scope.region = regions.setCurrent(region);
+        scope.regions = regions.all;
+        scope.timeframe = timeframes.setRegion(region).setCurrent('All');
+        scope.timeframes = timeframes.all;
+
+        var sqlCounties = sql.cast.counties(scope.region.counties);
         var sqlGetForeclosures = squel
             .select()
             .from("foreclosures")
             .where(sqlCounties)
             .toString();
 
-        db.query(sqlGetForeclosures, function(err, foreclosures) {
-            if (err) throw err;
-            foreclosures = foreclosures || {};
-            var scope = {};
-            scope.timeframes = timeframes.setCurrent('All').setRegion(req.params.region).stringify();
-            scope.regions = JSON.stringify(regions.all);
-            scope.foreclosures = JSON.stringify(foreclosures);
+        promiseUser = (req.user && req.user.id) ?
+            sql.user.findOrCreate('googleId', req.user.id) :
+            Q(false);
+
+        Q.all([
+            promiseUser,
+            sql.promise(sqlGetForeclosures)
+        ])
+        .then(function(results) {
+            var user = results[0];
+
+            if (util.isPresent(user)) scope.user = user;
+            scope.listings = results[1][0];
+
             res.render('region/index', scope);
+        }, function(err) {
+            if (err) throw err;
         });
     } else {
         res.redirect('/');
