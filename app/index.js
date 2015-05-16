@@ -237,8 +237,8 @@ app.get('/:region', function (req, res) {
         scope.timeframe = timeframes.setRegion(region).setCurrent('Current');
         scope.timeframes = timeframes.all;
 
-        if (req.user && req.user.id) {
-            promiseUser = sql.user.findOrCreate('googleId', req.user.id);
+        if (req.user && req.user.googleId) {
+            promiseUser = sql.user.findOrCreate('googleId', req.user.googleId);
         } else {
             promiseUser = Q(false);
         }
@@ -279,8 +279,8 @@ app.get('/:region/next-week', function (req, res) {
         scope.timeframe = timeframes.setRegion(region).setCurrent('Next Week');
         scope.timeframes = timeframes.all;
 
-        if (req.user && req.user.id) {
-            promiseUser = sql.user.findOrCreate('googleId', req.user.id);
+        if (req.user && req.user.googleId) {
+            promiseUser = sql.user.findOrCreate('googleId', req.user.googleId);
         } else {
             promiseUser = Q(false);
         }
@@ -323,8 +323,8 @@ app.get('/:region/all', function (req, res) {
             .where(sqlCounties)
             .toString();
 
-        promiseUser = (req.user && req.user.id) ?
-            sql.user.findOrCreate('googleId', req.user.id) :
+        promiseUser = (req.user && req.user.googleId) ?
+            sql.user.findOrCreate('googleId', req.user.googleId) :
             Q(false);
 
         Q.all([
