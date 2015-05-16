@@ -141,10 +141,44 @@ app.get('/:region', function (req, res) {
 });
 
 app.get('/:region/next-week', function (req, res) {
-    var counties = regions.all[req.params.region].counties;
-    if (util.isPresent(counties)) {
-        var startDate = moment().day(8).format(sql.momentFormat);
-        renderListings.untilEndOfWeek('Next Week', res, startDate, req.params.region);
+    var region = req.params.region;
+    var scope = {};
+    var startDate;
+    var promiseUser;
+
+    if (regions.contains(region)) {
+
+        startDate = moment()
+            .day(8)
+            .format(sql.momentFormat);
+
+        scope.region = regions.setCurrent(region);
+        scope.regions = regions.all;
+        scope.timeframe = timeframes.setRegion(region).setCurrent('Next Week');
+        scope.timeframes = timeframes.all;
+
+        if (req.user && req.user.id) {
+            promiseUser = sql.user.findOrCreate('googleId', req.user.id);
+        } else {
+            promiseUser = Q(false);
+        }
+
+        Q.all([
+            promiseUser,
+            sql.listings.findUntilEndOfWeek(scope.region, startDate)
+        ])
+        .then(function(results) {
+            var user = results[0];
+            var listings = results[1];
+            util.print1(user);
+            util.print2(listings);
+            if (util.isPresent(user)) scope.user = user;
+            scope.listings = listings;
+            res.render('region/index', scope);
+        }, function(err) {
+            res.redirect('/');
+            if (err) throw err;
+        });
     } else {
         res.redirect('/');
     }
