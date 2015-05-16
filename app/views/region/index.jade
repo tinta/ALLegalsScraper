@@ -4,9 +4,9 @@ include mixins/editableTHead
 
 block head
     script(type='text/javascript').
-        window.listings = !{ foreclosures };
-        window.timeframes = !{ timeframes };
-        window.regions = !{ regions };
+        window.listings = !{ listings ? JSON.stringify(listings) : JSON.stringify({}) };
+        window.timeframes = !{ timeframes ? JSON.stringify(timeframes) : JSON.stringify({}) };
+        window.regions = !{ regions ? JSON.stringify(regions) : JSON.stringify({}) };
 
 block content
     div.container(
@@ -74,12 +74,12 @@ block content
 
                         div.btn.bg-blue
                             div.text-white
-                                span.text-thin.caps &nbsp;[[ regions.current.name ]]&nbsp;&nbsp;
+                                span.text-thin.caps &nbsp;#{region.name}&nbsp;&nbsp;
                                 i.fa.fa-caret-down
                                 span &nbsp;
 
                         div.btn.bg-gray
-                            div.text-white.text-thin &nbsp;[[ listings.length ]] listings&nbsp;
+                            div.text-white.text-thin &nbsp;#{listings.length} listings&nbsp;
 
                     button.btn-group.btn-group-lg.pad-none.round-md-top.pull-right(
                         ng-click
@@ -97,7 +97,7 @@ block content
 
                         div.btn.bg-blue
                             span &nbsp;
-                            span.text-thin.text-white.caps [[ timeframes.current.name ]]
+                            span.text-thin.text-white.caps #{timeframe.name}
                             span &nbsp;&nbsp;
                             i.fa.fa-caret-down.text-white
                             span &nbsp;

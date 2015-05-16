@@ -1,5 +1,6 @@
 // A collection for regions
 var _ = require('lodash');
+var util = require('./../../common/util.js');
 
 var regions = {};
 regions.all = {};
@@ -11,15 +12,20 @@ regions.set = function (name, counties) {
     this.all[name] = region;
     return this;
 };
+regions.contains = function (region) {
+    return util.isPresent(regions.all[region]);
+};
 regions.setCurrent = function (name) {
+    var current;
     _.each(this.all, function(region) {
         if (region.name == name) {
+            current = region;
             region.isCurrent = true;
-            return;
         }
 
         region.isCurrent = false;
     });
+    return current;
 };
 
 regions.set('northwest', [

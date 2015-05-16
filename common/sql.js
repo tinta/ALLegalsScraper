@@ -1,9 +1,15 @@
 // Helpers for SQL interactions
+
+// Third-Party scripts
 var Q = require('q');
 var squel = require("squel").useFlavour('mysql');
 var moment = require('moment');
+var _ = require('lodash');
+
+// Custom scripts
 var db = require('./db-connect.js')();
 var util = require('./util.js');
+var regions = require('./../app/server/regions.js');
 
 var sql = {};
 
@@ -13,7 +19,8 @@ sql.promise = function (query) {
     return Q.nbind(db.query, db)(query);
 };
 
-sql.findOrCreateUser = function (idColumn, idValue) {
+sql.user = {};
+sql.user.findOrCreate = function (idColumn, idValue) {
     var sqlFindUser = squel
         .select()
         .from('users')
@@ -34,6 +41,28 @@ sql.findOrCreateUser = function (idColumn, idValue) {
         return Q(false);
     });
 };
+
+sql.listings = {};
+
+sql.listings.findInRange = function (currentRegion, sqlStart, sqlEnd) {
+    var table = "foreclosures";
+    var sqlCounties = sql.cast.counties(currentRegion.counties);
+    var sqlInRange = squel
+        .select()
+        .from(table)
+        .where('sale_date > ' + db.escape(sqlStart))
+        .where('sale_date < ' + db.escape(sqlEnd))
+        .where(sqlCounties)
+        .toString();
+
+    return sql.promise(sqlInRange);
+};
+
+sql.listings.findUntilEndOfWeek = function (region, sqlStart) {
+    var sqlEnd = sql.cast.endOfWeek(sqlStart)
+    return sql.listings.findInRange(region, sqlStart, sqlEnd);
+};
+
 
 sql.cast = {};
 
