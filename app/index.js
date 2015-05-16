@@ -86,7 +86,7 @@ app.get('/', function (req, res) {
         return;
     }
 
-    sql.user.findOrCreate('googleId', req.user.id).then(function(user){
+    sql.user.findOrCreate('googleId', req.user.googleId).then(function(user){
         scope.user = user;
         res.render('index', scope);
     });

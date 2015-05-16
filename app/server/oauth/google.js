@@ -3,6 +3,8 @@ var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 var squel = require("squel").useFlavour('mysql');
 var db = require('./../../../common/db-connect.js')();
 var util = require('./../../../common/util.js');
+var sql = require('./../../../common/sql.js');
+var Q = require('q');
 
 var google = {};
 
@@ -11,8 +13,8 @@ var google = {};
 google.clientId = '555054377171-n8geoctm8268uummgi35cb86uon8nusk.apps.googleusercontent.com';
 google.clientSecret = process.env.AL_GOOGLE_CLIENT_SECRET;
 google.redirectUrl = (process.env.NODE_ENV === 'production') ?
-    'http://www.vagabound.io/auth/google/callback' :
-    'http://127.0.0.1:3000/auth/google/callback';
+    'http://www.vagabound.io/auth/google/callback/' :
+    'http://127.0.0.1:3000/auth/google/callback/';
 
 google.middleware = {};
 
@@ -49,13 +51,22 @@ google.completeStrategy = function () {
             .where('googleId = ' + db.escape(profile.id))
             .toString();
 
-        db.query(sqlFindUser, function(err, users) {
-            if (err) throw err;
-
+        var promise = sql.promise(sqlFindUser)
+        .then(function(results) {
             // If User already exists
-            var userDoesExist = util.isPresent(users) && util.isPresent(users[0])
+            var userDoesExist = (
+                util.isPresent(results) &&
+                util.isPresent(results[0]) &&
+                util.isPresent(results[0][0])
+            );
             if (userDoesExist) {
-                return done(null, users[0]);
+                return Q(results[0][0]);
+            }
+
+            return Q(null);
+        }).then(function(user) {
+            if (user !== null) {
+                return Q(user);
             }
 
             // If User does not already exist
@@ -83,13 +94,20 @@ google.completeStrategy = function () {
                 .setFields(insertMap)
                 .toString();
 
-            db.query(sqlInsertUser, function(err, insertObj) {
-                if (err) throw err;
-                return done(null, insertMap);
+            var promiseInsert = sql.promise(sqlInsertUser)
+            .then(function(insertObj) {
+                if (util.isPresent(insertObj)) return Q(insertMap);
+                return Q(false);
             });
+
+            return promiseInsert;
+        }).then(function(user) {
+            return done(null, user);
         });
 
-        return done(null, profile); // This needs to be here. Idk why - WHR
+
+
+        // return done(null, promise); // This needs to be here. Idk why - WHR
 
     };
 
