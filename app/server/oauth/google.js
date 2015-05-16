@@ -27,7 +27,6 @@ google.middleware.authenticate = function () {
 };
 
 google.completeStrategy = function () {
-    util.print2()
     var options = {
         clientID: google.clientId,
         clientSecret: google.clientSecret,

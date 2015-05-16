@@ -4,7 +4,7 @@ var express = require('express');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
-var session = require('express-session');
+var clientSessions = require('client-sessions');
 
 //      Oauth scripts
 var passport = require('passport');
@@ -36,10 +36,11 @@ app.set('view engine',  'jade');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(methodOverride());
-app.use(session({
-    secret: 'keyboard cat',
-    resave: false,
-    saveUninitialized: true
+app.use(clientSessions({
+    cookieName: 'user',
+    secret: 'keyboard 1asud89fuasdjf asdsss0as9d9f8sad8',
+    duration: 24 * 60 * 60 * 1000,
+    activeDuration: 1000 * 60 * 5
 }));
 
 app.use("/resources",   addStaticPath('/app/resources') );
@@ -92,7 +93,19 @@ app.get('/', function (req, res) {
 });
 
 app.get('/logout', function(req, res){
-    req.logOut();
+    // Cut from passport/lib/http/request.js and mod'ed to set `this[property]`
+    //      to {} rather than `null`, which clientSessions requires.
+
+    var property = 'user';
+    if (req._passport && req._passport.instance) {
+        property = req._passport.instance._userProperty || 'user';
+    }
+    req[property]; // Required. Script doesnt work without this for some reason
+    req[property] = {};
+    if (req._passport && req._passport.session) {
+        delete req._passport.session.user;
+    }
+
     res.redirect('/');
 });
 
