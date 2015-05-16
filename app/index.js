@@ -249,7 +249,7 @@ app.get('/:region', function (req, res) {
         ])
         .then(function(results) {
             var user = results[0];
-            var listings = results[1];
+            var listings = results[1][0];
             if (util.isPresent(user)) scope.user = user;
             scope.listings = listings;
             res.render('region/index', scope);
@@ -291,7 +291,7 @@ app.get('/:region/next-week', function (req, res) {
         ])
         .then(function(results) {
             var user = results[0];
-            var listings = results[1];
+            var listings = results[1][0];
             if (util.isPresent(user)) scope.user = user;
             scope.listings = listings;
             res.render('region/index', scope);
