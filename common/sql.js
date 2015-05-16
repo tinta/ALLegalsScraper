@@ -67,7 +67,7 @@ sql.listings.findUntilEndOfWeek = function (region, sqlStart) {
 sql.cast = {};
 
 sql.cast.endOfWeek = function (yyyymmdd) {
-    var startMoment = moment(yyyymmdd, this.momentFormat).add(-1, 'd');
+    var startMoment = moment(yyyymmdd, this.momentFormat);
     var eowDay = 6;
     var eowMoment = moment(startMoment);
     var inWeekend = (
