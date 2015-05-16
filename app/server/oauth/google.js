@@ -10,7 +10,9 @@ var google = {};
 // https://code.google.com/apis/console
 google.clientId = '555054377171-n8geoctm8268uummgi35cb86uon8nusk.apps.googleusercontent.com';
 google.clientSecret = process.env.AL_GOOGLE_CLIENT_SECRET;
-google.redirectUrl = 'http://127.0.0.1:3000/auth/google/callback';
+google.redirectUrl = (process.env.NODE_ENV === 'production') ?
+    'http://www.vagabound.io/auth/google/callback' :
+    'http://127.0.0.1:3000/auth/google/callback';
 
 google.middleware = {};
 

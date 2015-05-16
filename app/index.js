@@ -109,6 +109,117 @@ app.get('/logout', function(req, res){
     res.redirect('/');
 });
 
+app.post('/update', function(req, res) {
+    var uid = req.body.uid;
+    var err;
+
+    if (!uid) {
+        err = '`uid` must be defined when attempting to update a row';
+        res.status(500).send(err)
+        throw err;
+        return;
+    }
+
+    var editableFields = [
+        'sale_location',
+        'sale_date',
+        'city',
+        'zip',
+        'street_addr',
+        'bed',
+        'bath',
+        'lot_area',
+        'indoor_area',
+        'build_year',
+        'appraisal_price',
+        'buy_price',
+        'name1',
+        'name2',
+        'last_sold_price',
+        'last_sold_year',
+        'notes',
+        'attorney',
+        'bank'
+    ];
+
+    var sqlColumnUpdateMap = (function() {
+        var _list = {};
+
+        editableFields.forEach(function(field) {
+            var value = req.body[field];
+            if (value != undefined) {
+                if (!util.isPresent(value)) {
+                    value = null;
+                }
+                if (field == 'pub_date' || field == 'sale_date') {
+                    value = moment(value).utcOffset(value).format('YYYY-MM-DD');
+                }
+
+                _list[field] = value;
+            }
+        });
+
+        return _list;
+    })();
+
+    if (Object.keys(sqlColumnUpdateMap).length === 0) return new Error('no editable fields were passed to endpoint')
+
+    var sqlUpdate = squel
+        .update({replaceSingleQuotes: true})
+        .table(table)
+        .setFields(sqlColumnUpdateMap)
+        .where("uid = " + db.escape(uid))
+        .toString();
+
+    db.query(sqlUpdate, function (err) {
+        if (err) throw err;
+
+        var sqlSelect = squel.select().from(table).where("uid = " + db.escape(uid)).toString();
+
+        db.query(sqlSelect, function(err, results) {
+            if (err) throw err;
+            if (!results[0]) throw 'Could not find updated row';
+            res.send(results[0]);
+        });
+    });
+});
+
+app.post('/delete', function(req, res) {
+    var uid = req.body.uid;
+
+    var sqlDelete = squel
+        .delete()
+        .from(table)
+        .where("uid = " + uid)
+        .toString();
+
+    db.query(sqlDelete, function (err) {
+        if (err) throw err;
+        res.send(true);
+    });
+});
+
+// GET /auth/google
+// ================
+// - After authorization, Google will redirect the user back to this app at /auth/google/callback
+// - The request will be redirected to Google for authentication, so provided function will not be called.
+app.get(
+    '/auth/google',
+    oauth.google.middleware.authenticate(),
+    function(){}
+);
+
+// GET /auth/google/callback
+// - Use passport.authenticate() as route middleware to authenticate the request.
+// - Can be used to handle both failed and successful attempts to login
+app.get(
+    '/auth/google/callback',
+    passport.authenticate('google', { failureRedirect: '/' }),
+    function(req, res) {
+        res.redirect('/');
+    }
+);
+
 app.get('/:region', function (req, res) {
     var region = req.params.region;
     var scope = {};
@@ -245,114 +356,3 @@ app.get('/:region', function (req, res) {
         res.redirect('/');
     }
 });
-
-app.post('/update', function(req, res) {
-    var uid = req.body.uid;
-    var err;
-
-    if (!uid) {
-        err = '`uid` must be defined when attempting to update a row';
-        res.status(500).send(err)
-        throw err;
-        return;
-    }
-
-    var editableFields = [
-        'sale_location',
-        'sale_date',
-        'city',
-        'zip',
-        'street_addr',
-        'bed',
-        'bath',
-        'lot_area',
-        'indoor_area',
-        'build_year',
-        'appraisal_price',
-        'buy_price',
-        'name1',
-        'name2',
-        'last_sold_price',
-        'last_sold_year',
-        'notes',
-        'attorney',
-        'bank'
-    ];
-
-    var sqlColumnUpdateMap = (function() {
-        var _list = {};
-
-        editableFields.forEach(function(field) {
-            var value = req.body[field];
-            if (value != undefined) {
-                if (!util.isPresent(value)) {
-                    value = null;
-                }
-                if (field == 'pub_date' || field == 'sale_date') {
-                    value = moment(value).utcOffset(value).format('YYYY-MM-DD');
-                }
-
-                _list[field] = value;
-            }
-        });
-
-        return _list;
-    })();
-
-    if (Object.keys(sqlColumnUpdateMap).length === 0) return new Error('no editable fields were passed to endpoint')
-
-    var sqlUpdate = squel
-        .update({replaceSingleQuotes: true})
-        .table(table)
-        .setFields(sqlColumnUpdateMap)
-        .where("uid = " + db.escape(uid))
-        .toString();
-
-    db.query(sqlUpdate, function (err) {
-        if (err) throw err;
-
-        var sqlSelect = squel.select().from(table).where("uid = " + db.escape(uid)).toString();
-
-        db.query(sqlSelect, function(err, results) {
-            if (err) throw err;
-            if (!results[0]) throw 'Could not find updated row';
-            res.send(results[0]);
-        });
-    });
-});
-
-app.post('/delete', function(req, res) {
-    var uid = req.body.uid;
-
-    var sqlDelete = squel
-        .delete()
-        .from(table)
-        .where("uid = " + uid)
-        .toString();
-
-    db.query(sqlDelete, function (err) {
-        if (err) throw err;
-        res.send(true);
-    });
-});
-
-// GET /auth/google
-// ================
-// - After authorization, Google will redirect the user back to this app at /auth/google/callback
-// - The request will be redirected to Google for authentication, so provided function will not be called.
-app.get(
-    '/auth/google',
-    oauth.google.middleware.authenticate(),
-    function(){}
-);
-
-// GET /auth/google/callback
-// - Use passport.authenticate() as route middleware to authenticate the request.
-// - Can be used to handle both failed and successful attempts to login
-app.get(
-    '/auth/google/callback',
-    passport.authenticate('google', { failureRedirect: '/' }),
-    function(req, res) {
-        res.redirect('/');
-    }
-);
