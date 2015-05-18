@@ -1,5 +1,7 @@
 # Alabama Legals Scraper
 
+[![Build Status](https://travis-ci.org/tinta/ALLegalsScraper.svg?branch=master)](https://travis-ci.org/tinta/ALLegalsScraper)
+
 ## Install
 
 1) The `phantomjs` binary is required. For you `brew` users, running `brew install phantomjs` will do the trick.
