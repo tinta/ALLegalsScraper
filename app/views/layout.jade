@@ -57,14 +57,27 @@ html
                 div.pull-right(ng-controller="Controller:User")
                     if !user
                         div.spacer-xs
-                        button.bg-white.text-gray-dark#login-popup(
-                            ng-click
-                            popover-template="'/resources/ng-templates/login-popover.html'"
-                            popover-placement="bottom"
-                            popover-trigger="focus"
-                            popover-title="Log in using..."
-                        )
-                            h5.text-thin.pad-lr Log In
+                        div
+                            div.pad-lr
+                                button.bg-white.text-gray-dark#login-popup(
+                                    ng-click
+                                    popover-template="'/resources/ng-templates/login-popover.html'"
+                                    popover-placement="bottom"
+                                    popover-trigger="focus"
+                                    popover-title="Log In with:"
+                                )
+                                    h5.text-thin.pad-lr Log In
+
+                            div.pad-lr
+                                button.bg-white.text-gray-dark#signup-popup(
+                                    ng-click
+                                    popover-template="'/resources/ng-templates/login-popover.html'"
+                                    popover-placement="bottom"
+                                    popover-trigger="focus"
+                                    popover-title="Create an Account with:"
+                                )
+                                    h5.text-thin.pad-lr Create Account
+
                     else
                         button#user-popup.valign-top.text-gray-dark.bg-none(
                             ng-click
