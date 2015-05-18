@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "/usr/local/bin/node app/index.js",
+    "test": "./node_modules/.bin/jasmine-node jasmine-node --coffee ./spec",
     "scraper": "/usr/local/bin/node scraper/index.js"
   },
   "author": "",
