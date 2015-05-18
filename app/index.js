@@ -22,7 +22,7 @@ var sql = require('./../common/sql.js');
 var timeframes = require('./server/timeframes.js');
 var regions = require('./server/regions.js');
 var oauth = require('./server/oauth');
-var renderListings = require('./server/renderListings');
+var render = require('./server/render');
 
 // Routing Setup
 var app = express();
@@ -221,87 +221,19 @@ app.get(
 );
 
 app.get('/:region', function (req, res) {
-    var region = req.params.region;
-    var scope = {};
-    var startDate;
-    var promiseUser;
-
-    if (regions.contains(region)) {
-
-        startDate = moment()
+    var startDate = moment()
             .add(-1, 'd')
             .format(sql.momentFormat);
 
-        scope.region = regions.setCurrent(region);
-        scope.regions = regions.all;
-        scope.timeframe = timeframes.setRegion(region).setCurrent('Current');
-        scope.timeframes = timeframes.all;
-
-        if (req.user && req.user.googleId) {
-            promiseUser = sql.user.findOrCreate('googleId', req.user.googleId);
-        } else {
-            promiseUser = Q(false);
-        }
-
-        Q.all([
-            promiseUser,
-            sql.listings.findUntilEndOfWeek(scope.region, startDate)
-        ])
-        .then(function(results) {
-            var user = results[0];
-            var listings = results[1][0];
-            if (util.isPresent(user)) scope.user = user;
-            scope.listings = listings;
-            res.render('region/index', scope);
-        }, function(err) {
-            res.redirect('/');
-            if (err) throw err;
-        });
-    } else {
-        res.redirect('/');
-    }
+    render.week(req, res, startDate, 'Current');
 });
 
 app.get('/:region/next-week', function (req, res) {
-    var region = req.params.region;
-    var scope = {};
-    var startDate;
-    var promiseUser;
-
-    if (regions.contains(region)) {
-
-        startDate = moment()
+    var startDate = moment()
             .day(8)
             .format(sql.momentFormat);
 
-        scope.region = regions.setCurrent(region);
-        scope.regions = regions.all;
-        scope.timeframe = timeframes.setRegion(region).setCurrent('Next Week');
-        scope.timeframes = timeframes.all;
-
-        if (req.user && req.user.googleId) {
-            promiseUser = sql.user.findOrCreate('googleId', req.user.googleId);
-        } else {
-            promiseUser = Q(false);
-        }
-
-        Q.all([
-            promiseUser,
-            sql.listings.findUntilEndOfWeek(scope.region, startDate)
-        ])
-        .then(function(results) {
-            var user = results[0];
-            var listings = results[1][0];
-            if (util.isPresent(user)) scope.user = user;
-            scope.listings = listings;
-            res.render('region/index', scope);
-        }, function(err) {
-            res.redirect('/');
-            if (err) throw err;
-        });
-    } else {
-        res.redirect('/');
-    }
+    render.week(req, res, startDate, 'Next Week');
 });
 
 app.get('/:region/all', function (req, res) {
