@@ -16,6 +16,8 @@ tests.false = [
     false
     NaN
     Infinity
+    1
+    0.1
     {}
     []
 ]
