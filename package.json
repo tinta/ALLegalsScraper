@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "/usr/local/bin/node app/index.js",
-    "test": "./node_modules/.bin/jasmine-node --coffee --matchall ./spec",
+    "test": "./node_modules/.bin/jasmine-node --coffee --matchall --verbose ./spec",
     "scraper": "/usr/local/bin/node scraper/index.js"
   },
   "author": "",
