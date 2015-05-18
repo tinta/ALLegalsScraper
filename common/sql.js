@@ -81,6 +81,10 @@ sql.cast.endOfWeek = function (yyyymmdd) {
 };
 
 sql.cast.counties = function (counties) {
+    if (!util.isPresent(counties)) {
+        throw "Please provide a populated Array"
+        return false;
+    }
     var _counties = [];
     counties.forEach(function(county) {
         _counties.push('county = ' + db.escape(county));
