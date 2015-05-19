@@ -19,7 +19,7 @@ var parseBank= require('./parseBank.js');
 var page = new Nightmare();
 
 var table = "foreclosures";
-var startDate = moment().add(-10, 'day').format('MM-DD-YYYY');
+var startDate = moment().add(-1, 'day').format('MM-DD-YYYY');
 var endDate = moment().add(0, 'day').format('MM-DD-YYYY');
 var scrapeUrl = 'http://www.alabamalegals.com/index.cfm?fuseaction=home';
 var counties = [

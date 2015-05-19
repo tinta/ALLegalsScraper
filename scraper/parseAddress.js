@@ -1,22 +1,33 @@
-function parseAddress(body) {
-    var addrRe = /(?:for\sinformational\spurposes.*\:|property is commonly known as)\s?(.*?)\,\s*(.*?)\,\s*(?:Alabama|AL)\s*(3\d{4})/ig;
-    var addressParts = addrRe.exec(body);
+function parseAddress (body) {
+    var addrRe = /(?:for\sinformational\spurposes.*\:|property is commonly known as)\s?(.*?)\s?\,\s*(.*?)\,\s*(?:Alabama|AL)\s*(3\d{4})/ig;
+    var addressMatch = addrRe.exec(body);
     var address = {};
-    var city, streetAddr;
 
-    if ((addressParts != null) && (addressParts.length === 4)) {
-        streetAddr = addressParts[1];
-        city = addressParts[2];
+    if ((addressMatch != null) && (addressMatch.length === 4)) {
 
-        if (streetAddr.length > 63) streetAddr = streetAddr.substring(0,63);
-        if (city.length > 63) city = city.substring(0,63);
+        address["city"] = truncate(addressMatch[2], 63);
+        address["street_addr"] = truncate(addressMatch[1], 63);
+        address["zip"] = addressMatch[3];
+    } else {
+        (function() {
+            var streetRe = /(?:the home and real estate known as )(.*)(?:\. This)/ig;
+            var cityRe = /(?:located in the City of )(.{2,20})(?:, Alabama)/ig;
+            var streetMatch = streetRe.exec(body);
+            var cityMatch = cityRe.exec(body);
 
-        address["city"] = city;
-        address["street_addr"] = streetAddr;
-        address["zip"] = addressParts[3];
+            if (streetMatch) address['street_addr'] = truncate(streetMatch[1], 63);
+            if (cityMatch) address['city'] = truncate(cityMatch[1], 63);
+
+        })();
     }
 
     return address;
+}
+
+function truncate (str, limit) {
+    var tooLong = str.length > limit;
+    if (tooLong) return str.substring(0, limit);
+    return str;
 }
 
 module.exports = parseAddress;
