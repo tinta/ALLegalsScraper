@@ -5,8 +5,8 @@ var Q = require('q');
 var db = require('./../../common/db-connect.js')();
 var sql = require('./../../common/sql.js');
 var util = require('./../../common/util.js');
-var timeframes = require('./../server/timeframes.js');
-var regions = require('./../server/regions.js');
+var timeframes = require('./../../common/collections/timeframes.js');
+var regions = require('./../../common/collections/regions.js');
 
 var render = {};
 

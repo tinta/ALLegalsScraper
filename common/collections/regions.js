@@ -19,12 +19,12 @@ regions.setCurrent = function (name) {
     var current;
     _.each(this.all, function(region) {
         if (region.name == name) {
+            region.isCurrent = true
             current = region;
-            region.isCurrent = true;
+        } else {
+            region.isCurrent = false;
         }
-
-        region.isCurrent = false;
-    });
+    }.bind(this));
     return current;
 };
 

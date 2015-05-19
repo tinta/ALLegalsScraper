@@ -9,7 +9,7 @@ var _ = require('lodash');
 // Custom scripts
 var db = require('./db-connect.js')();
 var util = require('./util.js');
-var regions = require('./../app/server/regions.js');
+var regions = require('./collections/regions.js');
 
 var sql = {};
 
