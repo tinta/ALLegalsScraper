@@ -1,13 +1,13 @@
-var mysql = require('mysql');
+var mysql = require('mysql')
 
 var connect = function () {
-    var options = {};
-    options.host = 'localhost';
-    options.database = 'alabamalegals';
-    options.user = 'scraper';
-    options.password = process.env.SCRAPERPASS;
+  var options = {}
+  options.host = 'localhost'
+  options.database = 'alabamalegals'
+  options.user = 'scraper'
+  options.password = process.env.SCRAPERPASS
 
-    return mysql.createConnection(options);
-};
+  return mysql.createConnection(options)
+}
 
-module.exports = connect;
+module.exports = connect
