@@ -6,7 +6,7 @@ angular
   .factory('Model', function (
     // Dependency Injections
   ) {
-    var Model = (function () {
+    var Model = function () {
       var Model = function (properties) {
         this.model = _.extend({}, properties)
       }
@@ -20,7 +20,6 @@ angular
       }
 
       return Model
-    })()
 
-    return Model
+    return Model()
   })

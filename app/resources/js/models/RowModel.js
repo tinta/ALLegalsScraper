@@ -13,7 +13,7 @@ angular
     Util,
     $rootScope
   ) {
-    var RowModel = (function () {
+    var RowModel = function () {
       var editableFields = [
         'sale_location',
         'sale_date',
@@ -268,7 +268,7 @@ angular
       }
 
       return RowModel
-    })()
+    }
 
-    return RowModel
+    return RowModel()
   })

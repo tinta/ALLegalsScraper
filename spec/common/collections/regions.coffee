@@ -36,7 +36,7 @@ describe "regions", ->
                 actualCurrentRegion = regions.setCurrent toBeCurrentRegion.name
 
                 expect toBeCurrentRegion.isCurrent
-                    .toBe true, "| toBeCurrentRegion = #{toBeCurrentRegion}"
+                    .toBe true, "| toBeCurrentRegion = #{JSON.stringify(toBeCurrentRegion)}"
 
     it ".setCurrent(regionName) should return the `current` region", ->
         for test in tests

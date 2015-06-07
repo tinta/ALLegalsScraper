@@ -24,7 +24,6 @@ regions.setCurrent = function (name) {
     } else {
       region.isCurrent = false
     }
-    region.isCurrent = false
   }.bind(this))
 
   return current

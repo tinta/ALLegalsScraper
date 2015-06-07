@@ -102,7 +102,7 @@ angular.module('Controller:Listings', [
     }
 
     // Detail modal
-    $scope.modal = (function () {
+    var Modal = function () {
       var modal = {}
       modal.data = null
       modal.isOpen = false
@@ -190,8 +190,9 @@ angular.module('Controller:Listings', [
       }
 
       return modal
-    })()
+    }
 
+    $scope.modal = new Modal()
     // Dev
     window.logScope = function () {
       window.$scope = $scope

@@ -7,7 +7,7 @@ angular
     // Dependency Injections
     $rootScope
   ) {
-    var Field = (function () {
+    var Field = function () {
       function Field (title) {
         this.title = title || _.random(100000, 999999)
         this.value = undefined
@@ -33,7 +33,7 @@ angular
       }
 
       return Field
-    })()
+    }
 
-    return Field
+    return Field()
   })
