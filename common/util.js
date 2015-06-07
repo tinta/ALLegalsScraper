@@ -23,7 +23,7 @@ Util.isString = function (val) {
 Util.isNumber = function (val) {
   if (!Util.isDefined(val)) return false
   if (typeof (val) === 'number') return true
-  if ((typeof (val) === 'string') && (parseFloat(val) === val)) return true
+  if ((typeof (val) === 'string') && (String(parseFloat(val)) === val)) return true
   return false
 }
 
