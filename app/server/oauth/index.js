@@ -1,4 +1,4 @@
-var oauth = {};
-oauth.google = require('./google');
+var oauth = {}
+oauth.google = require('./google')
 
-module.exports = oauth;
+module.exports = oauth
