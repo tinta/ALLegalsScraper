@@ -26,6 +26,7 @@ describe "sql.cast.counties", ->
             result = sql.cast.counties test.val
             expect(result).toBe test.expect
 
+    it "should only accept a Present Array as valid fo first argument", ->
         for test in tests.throwError
             expect( ->
                 sql.cast.counties test

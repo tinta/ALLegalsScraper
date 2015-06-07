@@ -66,21 +66,24 @@ sql.listings.findUntilEndOfWeek = function (region, sqlStart) {
 sql.cast = {}
 
 sql.cast.endOfWeek = function (yyyymmdd) {
-  var startMoment = moment(yyyymmdd, this.momentFormat)
+  var startMoment = moment(yyyymmdd, sql.momentFormat)
   var eowDay = 6
   var eowMoment = moment(startMoment)
   var inWeekend = (
-  startMoment.day() === 5 ||
+    startMoment.day() === 5 ||
     startMoment.day() === 6
   )
 
   if (inWeekend) eowDay = 13
-    return eowMoment.day(eowDay).format(this.momentFormat)
+    return eowMoment.day(eowDay).format(sql.momentFormat)
 }
 
 sql.cast.counties = function (counties) {
+  var invalidArgs = !util.isPresent(counties) || !Array.isArray(counties)
+  if (invalidArgs) throw "First argument must be an Array"
+
   var _counties = []
-  counties.forEach(function (county) {
+  _.each(counties, function (county) {
     _counties.push('county = ' + db.escape(county))
   })
   return _counties.join(' OR ')
