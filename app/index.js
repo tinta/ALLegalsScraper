@@ -18,8 +18,8 @@ var squel = require('squel').useFlavour('mysql')
 var db = require('./../common/db-connect.js')()
 var util = require('./../common/util.js')
 var sql = require('./../common/sql.js')
-var timeframes = require('./server/timeframes.js')
-var regions = require('./server/regions.js')
+var timeframes = require('./../common/collections/timeframes.js')
+var regions = require('./../common/collections/regions.js')
 var oauth = require('./server/oauth')
 var renderListings = require('./server/renderListings')
 
@@ -221,22 +221,6 @@ app.get(
 )
 
 app.get('/:region', function (req, res) {
-<<<<<<< HEAD
-    var startDate = moment()
-            .add(-1, 'd')
-            .format(sql.momentFormat);
-
-    render.week(req, res, startDate, 'Current');
-});
-
-app.get('/:region/next-week', function (req, res) {
-    var startDate = moment()
-            .day(8)
-            .format(sql.momentFormat);
-
-    render.week(req, res, startDate, 'Next Week');
-});
-=======
   var region = req.params.region
   var scope = {}
   var startDate
@@ -317,7 +301,6 @@ app.get('/:region/next-week', function (req, res) {
     res.redirect('/')
   }
 })
->>>>>>> Use standard syntax in index
 
 app.get('/:region/all', function (req, res) {
   var region = req.params.region

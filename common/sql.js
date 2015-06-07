@@ -7,15 +7,9 @@ var moment = require('moment')
 var _ = require('lodash')
 
 // Custom scripts
-<<<<<<< HEAD
-var db = require('./db-connect.js')();
-var util = require('./util.js');
-var regions = require('./collections/regions.js');
-=======
 var db = require('./db-connect.js')()
 var util = require('./util.js')
-var regions = require('./../app/server/regions.js')
->>>>>>> whole bunch o' lint changes
+var regions = require('./collections/regions.js')
 
 var sql = {}
 
@@ -72,15 +66,6 @@ sql.listings.findUntilEndOfWeek = function (region, sqlStart) {
 sql.cast = {}
 
 sql.cast.endOfWeek = function (yyyymmdd) {
-<<<<<<< HEAD
-    var startMoment = moment(yyyymmdd, sql.momentFormat);
-    var eowDay = 6;
-    var eowMoment = moment(startMoment);
-    var inWeekend = (
-        startMoment.day() == 5 ||
-        startMoment.day() == 6
-    );
-=======
   var startMoment = moment(yyyymmdd, this.momentFormat)
   var eowDay = 6
   var eowMoment = moment(startMoment)
@@ -88,29 +73,9 @@ sql.cast.endOfWeek = function (yyyymmdd) {
   startMoment.day() === 5 ||
     startMoment.day() === 6
   )
->>>>>>> whole bunch o' lint changes
 
   if (inWeekend) eowDay = 13
-
-<<<<<<< HEAD
-    return eowMoment.day(eowDay).format(sql.momentFormat);
-};
-
-sql.cast.counties = function (counties) {
-    if (!util.isPresent(counties)) {
-        throw "Please provide a populated Array"
-        return false;
-    }
-    var _counties = [];
-    counties.forEach(function(county) {
-        _counties.push('county = ' + db.escape(county));
-    });
-    return _counties.join(' OR ');
-};
-
-module.exports = sql;
-=======
-  return eowMoment.day(eowDay).format(this.momentFormat)
+    return eowMoment.day(eowDay).format(this.momentFormat)
 }
 
 sql.cast.counties = function (counties) {
@@ -122,4 +87,4 @@ sql.cast.counties = function (counties) {
 }
 
 module.exports = sql
->>>>>>> whole bunch o' lint changes
+
