@@ -20,6 +20,7 @@ angular
       }
 
       return Model
+    }
 
     return Model()
   })
