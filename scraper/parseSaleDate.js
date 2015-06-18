@@ -10,8 +10,8 @@ re.mm = '[01]\\d';
 var regexi = [
     {
         // 1st January 2016
-        re: new RegExp('\\d{1,2}..\\s(' + re.mmmm + ')\\s' + re.yyyy, 'gi'),
-        momentFormat: 'Do MMMM, YYYY',
+        re: new RegExp('\\d{1,2}.?.?\\s(' + re.mmmm + ')\\s' + re.yyyy, 'gi'),
+        momentFormat: 'Do MMMM YYYY',
     },
     {
         // January 01 2016 and January 1 2016
@@ -37,7 +37,7 @@ var regexi = [
 
 function parseSaleDate (text) {
     var cleansedText = text
-            .replace(/(the(?:\s))|(day\sof)|(the)/gi, '')
+            .replace(/(the(?:\s))|(day\sof)|(th\sday\sof)/gi, '')
             .replace(/(^\s)|(,)|(monday|tuesday|wednesday|thursday|friday)/gi, '');
 
     var moments = [];
@@ -49,7 +49,7 @@ function parseSaleDate (text) {
     });
 
     // This occurs if no dates were parsed (shouldn't happen)
-    if (!moments[0]) return null;
+    if (moments.length === 0) return null;
 
     function castToMoments (list, format) {
         var _moments = [];
