@@ -38,7 +38,8 @@ var regexi = [
 function parseSaleDate (text) {
     var cleansedText = text
             .replace(/(the(?:\s))|(day\sof)|(th\sday\sof)/gi, '')
-            .replace(/(^\s)|(,)|(monday|tuesday|wednesday|thursday|friday)/gi, '');
+            .replace(/(^\s)|(,)|(monday|tuesday|wednesday|thursday|friday)/gi, '')
+            .replace(/\s\s/gi, ' ');
 
     var moments = [];
 
@@ -49,7 +50,11 @@ function parseSaleDate (text) {
     });
 
     // This occurs if no dates were parsed (shouldn't happen)
-    if (moments.length === 0) return null;
+    if (moments.length === 0) {
+        console.log('not found')
+        console.log(cleansedText)
+        return null;
+    }
 
     function castToMoments (list, format) {
         var _moments = [];
