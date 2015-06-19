@@ -7,13 +7,14 @@ listings = []
 #     sale_date: undefined
 # )
 
-# YYYY-MM-DD'
 listings.push(
     body: "MORTGAGE FORECLOSURE SALE Default having been made in the payment of the indebtedness secured by that certain mortgage executed by Kimberly Webb Martin and Larry Todd Martin, wife and husband, originally in favor of Mortgage Electronic Registration Systems, Inc. acting solely as nominee for Quicken Loans Inc., on the 13th day of October, 2009, said mortgage recorded in the Office of the Judge of Probate of Calhoun County, Alabama, in Book 4564 Page 746; the undersigned Ocwen Loan Servicing, LLC, as Mortgagee/Transferee, under and by virtue of the power of sale contained in said mortgage, will sell at public outcry to the highest bidder for cash, in front of the main entrance of the Courthouse at Anniston, Calhoun County, Alabama, on March 23, 2015, during the legal hours of sale, all of its right, title, and interest in and to the following described real estate, situated in Calhoun County, Alabama, to-wit: Lot 3, Mountainview Subdivision, as recorded in Plat Book FF, Page 66, in the Office of the Judge of Probate of Calhoun County, Alabama, situated, lying and being in Calhoun County, Alabama. Property street address for informational purposes: 76 Liberty Ln, Anniston, AL 36207 THIS PROPERTY WILL BE SOLD ON AN \"AS IS, WHERE IS\" BASIS, SUBJECT TO ANY EASEMENTS, ENCUMBRANCES, AND EXCEPTIONS REFLECTED IN THE MORTGAGE AND THOSE CONTAINED IN THE RECORDS OF THE OFFICE OF THE JUDGE OF PROBATE OF THE COUNTY WHERE THE ABOVE-DESCRIBED PROPERTY IS SITUATED. THIS PROPERTY WILL BE SOLD WITHOUT WARRANTY OR RECOURSE, EXPRESSED OR IMPLIED AS TO TITLE, USE AND/OR ENJOYMENT AND WILL BE SOLD SUBJECT TO THE RIGHT OF REDEMPTION OF ALL PARTIES ENTITLED THERETO. This sale is made for the purpose of paying the indebtedness secured by said mortgage, as well as the expenses of foreclosure. The Mortgagee/Transferee reserves the right to bid for and purchase the real estate and to credit its purchase price against the expenses of sale and the indebtedness secured by the real estate. This sale is subject to postponement or cancellation. Ocwen Loan Servicing, LLC, Mortgagee/Transferee Elizabeth Loefgren SIROTE & PERMUTT, P.C. P. O. Box 55727 Birmingham, AL 35255-5727 Attorney for Mortgagee/Transferee www.sirote.com/foreclosures 338981 The above mortgage foreclosure sale has been postponed until 05/04/2015 during the legal hours of sale in front of the main entrance of the courthouse in the City of Anniston, Calhoun County, Alabama. The above mortgage foreclosure sale has been postponed until 06/29/2015 during the legal hours of sale in front of the main entrance of the courthouse in the City of Anniston, Calhoun County, Alabama. The Piedmont Journal Calhoun Co., AL May 13, 2015"
     city: 'Anniston'
     address: "76 Liberty Ln"
     zip: '36207'
     sale_date: '2015-06-29'
+    name1: 'Kimberly Webb Martin'
+    name2: 'Larry Todd Martin'
 )
 
 listings.push(
@@ -22,6 +23,8 @@ listings.push(
     address: '620 County Rd 50'
     zip: '36262'
     sale_date: '2015-06-15'
+    name1: 'Mickey J. McNeese'
+    name2: 'Starr McNeese'
 )
 
 listings.push(
@@ -30,6 +33,7 @@ listings.push(
     address: '857 Oakcrest Drive'
     zip: '36274'
     sale_date: '2015-06-15'
+    name1: 'Allie Robinson'
 )
 
 listings.push(
@@ -38,6 +42,8 @@ listings.push(
     address: '302 Anna Street'
     zip: '35661'
     sale_date: '2015-05-28'
+    name1: 'Gaither D Searcy'
+    name2: 'Stella F. Searcy'
 )
 
 listings.push(
@@ -46,6 +52,7 @@ listings.push(
     address: '1560 Pinetree Dr'
     zip: '35235'
     sale_date: '2015-05-07'
+    name1: 'Angela Granderson'
 )
 
 
@@ -55,6 +62,7 @@ listings.push(
     address: '522 Bullock Street'
     zip: undefined
     sale_date: '2015-06-16'
+    name1: 'Janice O\'Neal'
 )
 
 listings.push(
@@ -63,6 +71,7 @@ listings.push(
     address: undefined
     zip: undefined
     sale_date: '2015-05-13'
+    name1: 'Gwindle V. Rice'
 )
 
 listings.push(
@@ -71,6 +80,8 @@ listings.push(
     address: undefined
     zip: undefined
     sale_date: '2015-04-22'
+    name1: 'MARVIN HOLDEN'
+    name2: 'DARLENE HOLDEN'
 )
 
 listings.push(
@@ -79,6 +90,8 @@ listings.push(
     address: undefined
     zip: undefined
     sale_date: '2015-04-07'
+    name1: 'BILLY C. HUMPHREY'
+    name2: 'STEPHANIE S. HUMPHREY'
 )
 
 listings.push(
@@ -87,6 +100,8 @@ listings.push(
     address: undefined
     zip: undefined
     sale_date: '2015-07-09'
+    name1: 'BRIAN KEITH ECHOLS'
+    name2: 'WENDIE ECHOLS'
 )
 
 module.exports = listings

@@ -1,8 +1,8 @@
-parseSaleDate = require './../../../scraper/scrapers/scrapeSaleDate'
+scrapeSaleDate = require './../../../scraper/scrapers/scrapeSaleDate'
 stubbedListings = require './../stubbedListings'
 
-describe "scraper.parseSaleDate", ->
+describe "scraper.scrapeSaleDate", ->
     it "should successfully scrape `sale_date` from listing bodies", ->
         for listing in stubbedListings
-            result = parseSaleDate listing.body
+            result = scrapeSaleDate listing.body
             expect(result.sale_date).toBe listing.sale_date
