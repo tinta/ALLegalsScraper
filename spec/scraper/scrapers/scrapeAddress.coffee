@@ -1,4 +1,4 @@
-parseAddress = require './../../../scraper/parseAddress'
+parseAddress = require './../../../scraper/scrapers/scrapeAddress'
 stubbedListings = require './../stubbedListings'
 
 describe "scraper.parseAddress", ->

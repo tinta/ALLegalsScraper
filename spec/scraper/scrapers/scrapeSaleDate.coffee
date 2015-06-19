@@ -1,4 +1,4 @@
-parseSaleDate = require './../../../scraper/parseSaleDate'
+parseSaleDate = require './../../../scraper/scrapers/scrapeSaleDate'
 stubbedListings = require './../stubbedListings'
 
 describe "scraper.parseSaleDate", ->

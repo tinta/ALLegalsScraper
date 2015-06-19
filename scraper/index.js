@@ -9,11 +9,11 @@ var Q = require('q');
 var db = require('./../common/db-connect.js')();
 var util = require('./../common/util.js');
 var sql = require('./../common/sql.js');
-var parseSaleDate = require('./parseSaleDate.js');
-var parseAddress= require('./parseAddress.js');
-var parseOwners= require('./parseOwners.js');
-var parseAttorneys= require('./parseAttorneys.js');
-var parseBank= require('./parseBank.js');
+var parseSaleDate = require('./scrapers/scrapeSaleDate.js');
+var parseAddress= require('./scrapers/scrapeAddress.js');
+var parseOwners= require('./scrapers/scrapeOwners.js');
+var parseAttorneys= require('./scrapers/scrapeAttorneys.js');
+var parseBank= require('./scrapers/scrapeBank.js');
 
 // Initializations
 var page = new Nightmare();
