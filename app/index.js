@@ -142,7 +142,7 @@ app.post('/update', function (req, res) {
     'bank'
   ]
 
-  var sqlColumnUpdateMap = (function () {
+  var sqlColumnUpdateMap = function () {
     var _list = {}
 
     editableFields.forEach(function (field) {
@@ -160,7 +160,9 @@ app.post('/update', function (req, res) {
     })
 
     return _list
-  })()
+  }
+
+  sqlColumnUpdateMap = sqlColumnUpdateMap()
 
   if (Object.keys(sqlColumnUpdateMap).length === 0) return new Error('no editable fields were passed to endpoint')
 
