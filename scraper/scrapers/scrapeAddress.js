@@ -1,5 +1,5 @@
 function parseAddress (body) {
-    var addrRe = /(?:for\sinformational\spurposes.*\:|property is commonly known as)\s?(.*?)\s?\,\s*(.*?)\,\s*(?:Alabama|AL)\s*(3\d{4})/ig;
+    var addrRe = /(?:for\sinformational\spurposes.*\:|is commonly known as)\s(.*?)\s?\,\s?(?:\(the \"Real Property\"\) situated in\s?)?(.*?)\s?\,\s*(?:Alabama|AL)\s?(3\d{4})?/ig;
     var addressMatch = addrRe.exec(body);
     var address = {};
 

@@ -3,14 +3,11 @@ stubbedListings = require './../stubbedListings'
 
 describe "scraper.scrapeOwners", ->
     it "should successfully scrape `name1` from listing bodies", ->
-        for listing in stubbedListings
+        for listing, index in stubbedListings
             result = scrapeOwners listing.body
-            console.log('=====')
-            console.log(listing.sale_date)
-            console.log(result)
-            expect(result.name1).toBe listing.name1
+            expect(result.name1).toBe listing.name1, index
 
     it "should successfully scrape `name2` from listing bodies", ->
-        for listing in stubbedListings
+        for listing, index in stubbedListings
             result = scrapeOwners listing.body
-            expect(result.name2).toBe listing.name2
+            expect(result.name2).toBe listing.name2, index
