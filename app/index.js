@@ -142,27 +142,21 @@ app.post('/update', function (req, res) {
     'bank'
   ]
 
-  var sqlColumnUpdateMap = function () {
-    var _list = {}
+  var sqlColumnUpdateMap = {}
 
-    editableFields.forEach(function (field) {
-      var value = req.body[field]
-      if (value !== undefined) {
-        if (!util.isPresent(value)) {
-          value = null
-        }
-        if (field === 'pub_date' || field === 'sale_date') {
-          value = moment(value).utcOffset(value).format('YYYY-MM-DD')
-        }
-
-        _list[field] = value
+  editableFields.forEach(function (field) {
+    var value = req.body[field]
+    if (value !== undefined) {
+      if (!util.isPresent(value)) {
+        value = null
       }
-    })
+      if (field === 'pub_date' || field === 'sale_date') {
+        value = moment(value).utcOffset(value).format('YYYY-MM-DD')
+      }
 
-    return _list
-  }
-
-  sqlColumnUpdateMap = sqlColumnUpdateMap()
+      sqlColumnUpdateMap[field] = value
+    }
+  })
 
   if (Object.keys(sqlColumnUpdateMap).length === 0) return new Error('no editable fields were passed to endpoint')
 
@@ -347,7 +341,7 @@ app.get('/:region/implausible', function (req, res) {
   var pastStartDate, pastEndDate, futureStartDate, futureEndDate, promiseUser
 
   if (regions.contains(region)) {
-    pastStartDate = '0001-01-01';
+    pastStartDate = '0001-01-01'
     pastEndDate = '2015-03-01'
     futureStartDate = moment().add(1, 'year').format(sql.momentFormat)
     futureEndDate = '9999-12-31'
