@@ -193,6 +193,7 @@ angular.module('Controller:Listings', [
     }
 
     $scope.modal = new Modal()
+
     // Dev
     window.logScope = function () {
       window.$scope = $scope

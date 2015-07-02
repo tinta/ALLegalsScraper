@@ -66,8 +66,8 @@ div.page-column.modal-wrapper(
                             div [[ error ]]
                 div.spacer-lg
 
-            div.col-xs-12
-                div.clearfix(ng-if="user.isLoggedIn == true")
+            div.col-xs-12(ng-controller="Controller:User")
+                div.clearfix(ng-if="user.accountIsActive === true")
                     include action-buttons
 
                 div.spacer-xl
