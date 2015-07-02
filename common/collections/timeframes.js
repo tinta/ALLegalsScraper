@@ -54,6 +54,7 @@ timeframes.stringify = function () {
 // Values for timeframes
 timeframes.add('Current', 'Display sales occurring between yesterday and the end of this week')
 timeframes.add('Next Week', 'Display sales occurring next week', 'next-week')
-timeframes.add('All', 'Display all sales', 'all')
+timeframes.add('All', 'Display all sales within one year in past and future', 'all')
+timeframes.add('Implausible', 'Display all sales scraped with implausible dates', 'implausible')
 
 module.exports = timeframes

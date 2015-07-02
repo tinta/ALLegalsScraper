@@ -315,12 +315,8 @@ app.get('/:region/all', function (req, res) {
     scope.timeframe = timeframes.setRegion(region).setCurrent('All')
     scope.timeframes = timeframes.all
 
-    var sqlCounties = sql.cast.counties(scope.region.counties)
-    var sqlGetForeclosures = squel
-      .select()
-      .from('foreclosures')
-      .where(sqlCounties)
-      .toString()
+    var startDate = moment().subtract(1, 'year').format(sql.momentFormat)
+    var endDate = moment().add(1, 'year').format(sql.momentFormat)
 
     promiseUser = (req.user && req.user.googleId) ?
       sql.user.findOrCreate('googleId', req.user.googleId) :
@@ -328,7 +324,7 @@ app.get('/:region/all', function (req, res) {
 
     Q.all([
       promiseUser,
-      sql.promise(sqlGetForeclosures)
+      sql.listings.findInRange(scope.region, startDate, endDate)
     ])
       .then(function (results) {
         var user = results[0]
@@ -338,6 +334,47 @@ app.get('/:region/all', function (req, res) {
 
         res.render('region/index', scope)
       }, function (err) {
+        if (err) throw err
+      })
+  } else {
+    res.redirect('/')
+  }
+})
+
+app.get('/:region/implausible', function (req, res) {
+  var region = req.params.region
+  var scope = {}
+  var startDate
+  var promiseUser
+
+  if (regions.contains(region)) {
+    startDate = '0001-01-01'
+    endDate = '2015-03-01'
+
+    scope.region = regions.setCurrent(region)
+    scope.regions = regions.all
+    scope.timeframe = timeframes.setRegion(region).setCurrent('Implausible')
+    scope.timeframes = timeframes.all
+
+    if (req.user && req.user.googleId) {
+      promiseUser = sql.user.findOrCreate('googleId', req.user.googleId)
+    } else {
+      promiseUser = Q(false)
+    }
+
+    Q.all([
+      promiseUser,
+      sql.listings.findInRange(scope.region, startDate, endDate)
+    ])
+      .then(function (results) {
+        var user = results[0]
+        var listings = results[1][0]
+        if (util.isPresent(user)) scope.user = user
+        scope.listings = listings
+        res.render('region/index', scope)
+      }, function (err) {
+        console.log(err)
+        res.redirect('/')
         if (err) throw err
       })
   } else {

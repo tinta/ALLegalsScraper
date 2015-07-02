@@ -80,7 +80,7 @@ sql.cast.endOfWeek = function (yyyymmdd) {
 
 sql.cast.counties = function (counties) {
   var invalidArgs = !util.isPresent(counties) || !Array.isArray(counties)
-  if (invalidArgs) throw "First argument must be an Array"
+  if (invalidArgs) throw "sql.cast.counties: First argument must be an Array"
 
   var _counties = []
   _.each(counties, function (county) {
@@ -90,4 +90,3 @@ sql.cast.counties = function (counties) {
 }
 
 module.exports = sql
-
