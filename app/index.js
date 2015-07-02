@@ -344,12 +344,13 @@ app.get('/:region/all', function (req, res) {
 app.get('/:region/implausible', function (req, res) {
   var region = req.params.region
   var scope = {}
-  var startDate
-  var promiseUser
+  var pastStartDate, pastEndDate, futureStartDate, futureEndDate, promiseUser
 
   if (regions.contains(region)) {
-    startDate = '0001-01-01'
-    endDate = '2015-03-01'
+    pastStartDate = '0001-01-01';
+    pastEndDate = '2015-03-01'
+    futureStartDate = moment().add(1, 'year').format(sql.momentFormat)
+    futureEndDate = '9999-12-31'
 
     scope.region = regions.setCurrent(region)
     scope.regions = regions.all
@@ -364,13 +365,15 @@ app.get('/:region/implausible', function (req, res) {
 
     Q.all([
       promiseUser,
-      sql.listings.findInRange(scope.region, startDate, endDate)
+      sql.listings.findInRange(scope.region, pastStartDate, pastEndDate),
+      sql.listings.findInRange(scope.region, futureStartDate, futureEndDate)
     ])
       .then(function (results) {
         var user = results[0]
-        var listings = results[1][0]
+        var pastListings = results[1][0] || []
+        var futureListings = results[2][0] || []
         if (util.isPresent(user)) scope.user = user
-        scope.listings = listings
+        scope.listings = pastListings.concat(futureListings)
         res.render('region/index', scope)
       }, function (err) {
         console.log(err)
