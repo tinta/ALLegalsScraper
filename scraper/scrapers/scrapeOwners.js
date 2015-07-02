@@ -21,6 +21,8 @@ var regexes = [
     // that certain mortgage executed by J. Gary Monygomery and Mary
     /(?: dated .*?,)?\s(?:executed|certain Mortgage)(?: on .*)? (?:by|from) (.*?),? and (?:wife|spouse|husband|married),? (.*?),? to/i,
 
+    /(?: dated .*?,)?\s(?:executed|certain Mortgage)(?: on .*)? (?:by|from) (.*?),? and (.*?),?\s?(?:and|to)/i,
+
     // that certain mortgage executed by Jannette A. Walker, unmarried and Maurice Bland, married,
     /(?: dated .*?,)?\s(?:executed|certain Mortgage)(?: on .*)? (?:by|from) (.*?),? (?:married|unmarried) and (.*?),? (?:married|unmarried)/i,
 

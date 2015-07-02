@@ -5,7 +5,7 @@ var re = {};
 re.yyyy = '\\d\\d\\d\\d';
 re.mmmm = 'January|February|March|April|May|June|July|August|September|October|November|December';
 re.dd = '[0123]\\d';
-re.mm = '[01]\\d';
+re.mm = '([01]\\d|\\d)';
 
 var regexi = [
     {

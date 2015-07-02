@@ -135,4 +135,14 @@ listings.push(
     name2: "Janice T. Jones"
 )
 
+# 12
+listings.push(
+    body: "MORTGAGE FORECLOSURE NOTICE Default having been made in the terms of that certain Mortgage, executed on 03/04/2009, by CHRISTOPHER COLE MATHIS AND MARTHA ANN MATHIS AND JOINT TENANTS WITH RIGHT OF SURVIVORSHIP, as Mortgagor, to MORTGAGE ELECTRONIC REGISTRATION SYSTEMS, INC. AS NOMINEE FOR TAYLOR, BEAN & WHITAKER MORTGAGE CORP. as Mortgagee, which said Mortgage is recorded in the Office of the Judge of Probate, Madison County, Alabama, as Instrument 20090304000142220, on 03/04/2009, and subsequently assigned to CARRINGTON MORTGAGE SERVICES, LLC and recorded in the Office of the Judge of Probate, Madison County, Alabama on 5/5/2015 as Instrument 20150505000234130, and default having continued under the terms of said Mortgage, and by virtue of Alabama Code Section 35-10-3 and 35-10-2, the following described real property will be sold at public outcry, for cash, to the highest bidder, in front of the Courthouse door of said County, during the legal hours of sale, on 6/19/2015. LOT 3, ACCORDING TO THE PLAT OF THE LANDINGS, PHASE II, A RESUBDIVISION OF LOT 35 OF THE LANDINGS PHASE I RECORDED IN DOCUMENT NUMBER 20070216000119050, AS RECORDED AS DOCUMENT NUMBER 20071221000888540, IN THE OFFICE OF THE JUDGE OF PROBATE OF MADISON COUNTY, ALABAMA. Subject to all easements, restrictions and reservations appearing of record. Said sale will also be made subject to any Federal Tax Liens and/or Special Assessments of any nature, if any, which might adversely affect the title to the property. The property is being sold \"as is, where is\". Said property is sold without warranty or recourse, expressed or implied as to title, use or enjoyment. This sale is made for the purpose of paying the indebtedness secured by said mortgage, as well as the expenses of foreclosure. KENT D. MCPHAIL DUMAS & MCPHAIL, L.L.C. Attorney for Mortgage Holder 126 Government Street Mobile, AL 36602 251-438-2333 Huntsville Times: May 29, June 5, 12, 2015"
+    city: undefined
+    address: undefined
+    zip: undefined
+    sale_date: "2015-06-19"
+    name1: "CHRISTOPHER COLE MATHIS"
+    name2: "MARTHA ANN MATHIS"
+)
 module.exports = listings
