@@ -146,3 +146,15 @@ listings.push(
     name2: "MARTHA ANN MATHIS"
 )
 module.exports = listings
+
+# 13
+listings.push(
+    body: "PUBLIC NOTICE MORTGAGEFORECLOSURE SALE Default having been made in the payment of the indebtedness secured by a certain Mortgage made by Saundra F. Glover An Unmarried Woman (the â??Mortgagorâ??), in favor of Redstone Federal Credit Union dated May 23, 2012, and filed for record on May 29, 2012, in Document No. 20120529000332740, in the Probate Office of Madison County, Alabama (the â??Mortgageâ??), the undersigned Redstone Federal Credit Union (the â??Mortgageeâ??), as Mortgagee, under and by virtue of the power of sale contained in the Mortgage, will sell at public outcry to the highest bidder for cash in front of the main (North) entrance of the Madison County, Alabama, Courthouse in the City of Huntsville, Madison County, Alabama, on the 17th day of June, 2015, during the legal hours of sale, the following described real estate situated in Madison County, Alabama, to-wit: Lot 12, Block 3, according to the map of survey of Cherokee Hills Subdivision, Second Addition, Huntsville, Alabama, as recorded in the Office of the Judge of Probate of Madison County, Alabama, in Plat Book 14, Page 80. This property will be sold on an â??as is, where isâ?? basis, subject to any easements, encumbrances, and exceptions reflected in the Mortgage and those contained in the records of the Office of the Judge of Probate of the County where the above-described property is situated. This property will be sold without warranty or recourse, expressed or implied, as to title, use and/or enjoyment and will be sold subject to the right of redemption of all parties entitled thereto. This sale is made for the purpose of paying the indebtedness secured by the Mortgage, as well as the expenses of foreclosure. The Mortgagee reserves the right to bid for and purchase the real estate and to credit its purchase price against the expenses of sale and the indebtedness secured by the real estate. This sale is subject to postponement or cancellation; contact C. Howard Grisham at the phone number shown below prior to attendance at sale. REDSTONE FEDERAL CREDIT UNIONMortgagee C. HOWARD GRISHAM, ESQUIREAttorney for MortgageePost Office Box 5585Huntsville, Al 35814-5585(256) 837-5100 Madison County RecordMay 27, June 3and 10, 2015 FC/GLOVER, S."
+    city: undefined
+    address: undefined
+    zip: undefined
+    sale_date: "2015-06-17"
+    name1: "Saundra F. Glover"
+    name2: undefined
+)
+module.exports = listings
