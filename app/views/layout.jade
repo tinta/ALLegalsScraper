@@ -45,54 +45,48 @@ html
     body.text-center(ng-app="app")
         div.spacer-md
 
-        div.page-column.bg-red
-            div.spacer-xxs
-            div.container.clearfix
-                div.pull-left
-                    div.spacer-xxs
-                    h2.text-white
-                        a.text-thin(href="/") Mortgage Foreclosure Sales in Alabama
-                    div.spacer-xs
+        if user
+            div.page-column.bg-red
+                div.spacer-xxs
+                div.container.clearfix
+                    div.pull-left
+                        div.spacer-xxs
+                        h2.text-white
+                            a.text-thin(href="/") Mortgage Foreclosure Sales in Alabama
 
-                div.pull-right(ng-controller="Controller:User")
-                    if !user
                         div.spacer-xs
-                        div
-                            div.pad-lr
-                                button.bg-white.text-gray-dark#login-popup(
-                                    ng-click
-                                    popover-template="'/resources/ng-templates/login-popover.html'"
-                                    popover-placement="bottom"
-                                    popover-trigger="focus"
-                                    popover-title="Log In with:"
-                                )
-                                    h5.text-thin.pad-lr Log In
 
-                            div.pad-lr
-                                button.bg-white.text-gray-dark#signup-popup(
-                                    ng-click
-                                    popover-template="'/resources/ng-templates/login-popover.html'"
-                                    popover-placement="bottom"
-                                    popover-trigger="focus"
-                                    popover-title="Create an Account with:"
-                                )
-                                    h5.text-thin.pad-lr Create Account
+                    div.pull-right(ng-controller="Controller:User")
+                            button#user-popup.valign-top.text-gray-dark.bg-none(
+                                ng-click
+                                popover-template="'/resources/ng-templates/user-popover.html'"
+                                popover-placement="bottom"
+                                popover-trigger="focus"
+                                popover-title="#{user.name}"
+                            )
+                                div.pad-lr.text-white
+                                    div.spacer-xs
+                                    h4.text-thin= user.firstName
 
-                    else
-                        button#user-popup.valign-top.text-gray-dark.bg-none(
-                            ng-click
-                            popover-template="'/resources/ng-templates/user-popover.html'"
-                            popover-placement="bottom"
-                            popover-trigger="focus"
-                            popover-title="#{user.name}"
-                        )
-                            div.pad-lr.text-white
-                                div.spacer-xs
-                                h4.text-thin= user.firstName
-
-                            div.pad-l
-                                img.circle-sm(src="#{user.googleImageUrl}")
+                                div.pad-l
+                                    img.circle-sm(src="#{user.googleImageUrl}")
 
 
         div.page-column
-            block content
+            if user.accountIsActive === true
+                block content
+            else if !user
+                div.spacer-xs
+                div
+                    div.pad-lr
+                        button.bg-red.text-white#login-popup(
+                            ng-click
+                            popover-template="'/resources/ng-templates/login-popover.html'"
+                            popover-placement="bottom"
+                            popover-trigger="focus"
+                            popover-title="Log In with:"
+                        )
+                            h5.text-thin.pad-lr Log In
+            else
+                div.spacer-lg
+                div We've got nothing to show you!
