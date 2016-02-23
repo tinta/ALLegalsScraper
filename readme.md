@@ -15,3 +15,7 @@ Allows access to data interface on port 3000
 
 `npm run scraper`
 Runs scraper (takes a couple of minutes)
+
+## Production
+
+`forever start app/index.js`
