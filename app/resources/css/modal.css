@@ -41,10 +41,10 @@
     right: 0;
     height: 30px;
     z-index: 1;
+}
 
-    & > * {
-        height: 100%;
-    }
+.modal-bottom > * {
+    height: 100%;
 }
 
 .modal-bottom ~ .modal-content {
