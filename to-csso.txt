@@ -1,0 +1,11 @@
+app/resources/css/reset.css
+node_modules/bootstrap/dist/css/bootstrap.min.css
+node_modules/font-awesome/css/font-awesome.min.css
+node_modules/ng-table/dist/ng-table.min.css
+app/resources/css/index.css
+app/resources/css/spacer.css
+app/resources/css/modal.css
+app/resources/css/form.css
+app/resources/css/circle.css
+app/resources/css/round.css
+app/resources/css/pad.css

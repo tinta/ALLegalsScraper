@@ -42,15 +42,7 @@ app.use(clientSessions({
 
 app.use('/public', addStaticPath('/app/public'))
 app.use('/resources', addStaticPath('/app/resources'))
-app.use('/angular', addStaticPath('/node_modules/angular'))
-app.use('/angular-bootstrap-npm', addStaticPath('/node_modules/angular-bootstrap-npm'))
-app.use('/angular-sanitize', addStaticPath('/node_modules/angular-sanitize'))
-app.use('/ng-table', addStaticPath('/node_modules/ng-table'))
-app.use('/lodash', addStaticPath('/node_modules/lodash'))
-app.use('/moment', addStaticPath('/node_modules/moment'))
-app.use('/bootstrap', addStaticPath('/node_modules/bootstrap'))
-app.use('/font-awesome', addStaticPath('/node_modules/font-awesome'))
-app.use('/jquery', addStaticPath('/node_modules/jquery'))
+app.use('/fonts', addStaticPath('/node_modules/font-awesome/fonts'))
 
 // Oauth setup
 app.use(passport.initialize())

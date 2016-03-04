@@ -13,6 +13,9 @@
 `npm start`
 Allows access to data interface on port 3000
 
+`npm run build`
+Minify JS and CSS into `app/public` dir. Required after changes to JS or CSS.
+
 `npm run scraper`
 Runs scraper (takes a couple of minutes)
 
