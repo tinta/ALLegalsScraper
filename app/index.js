@@ -40,6 +40,7 @@ app.use(clientSessions({
   activeDuration: 1000 * 60 * 5
 }))
 
+app.use('/public', addStaticPath('/app/public'))
 app.use('/resources', addStaticPath('/app/resources'))
 app.use('/angular', addStaticPath('/node_modules/angular'))
 app.use('/angular-bootstrap-npm', addStaticPath('/node_modules/angular-bootstrap-npm'))

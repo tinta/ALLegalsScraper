@@ -35,3 +35,4 @@ node_modules
 
 .my.cnf
 npm-debug.log
+app/public/build.*

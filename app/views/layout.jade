@@ -19,24 +19,7 @@ html
         link(rel="stylesheet" type="text/css" href="/resources/css/pad.css")
 
         //- JS libs
-        script(type='text/javascript', src="/lodash/index.js")
-        script(type='text/javascript', src="/moment/moment.js")
-        script(type='text/javascript', src="/jquery/dist/jquery.min.js")
-        script(type='text/javascript', src="/angular/angular.js")
-        script(type='text/javascript', src="/angular-bootstrap-npm/dist/angular-bootstrap.js")
-        script(type='text/javascript', src="/angular-sanitize/angular-sanitize.js")
-        script(type='text/javascript', src="/ng-table/dist/ng-table.js")
-
-        //- JS custom
-        script(type='text/javascript', src="/resources/js/app.js")
-        script(type='text/javascript', src="/resources/js/controllers/listings.js")
-        script(type='text/javascript', src="/resources/js/controllers/user.js")
-        script(type='text/javascript', src="/resources/js/classes/Model.js")
-        script(type='text/javascript', src="/resources/js/models/FieldModel.js")
-        script(type='text/javascript', src="/resources/js/models/RowModel.js")
-        script(type='text/javascript', src="/resources/js/Util.js")
-        script(type='text/javascript', src="/resources/js/Highlight.js")
-
+        script(type='text/javascript', src="/public/build.js")
         script(type='text/javascript').
             window.user = !{ user ? JSON.stringify(user) : JSON.stringify({}) };
 
