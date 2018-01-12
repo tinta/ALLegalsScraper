@@ -70,52 +70,15 @@ function scrapeCounty (index) {
     console.log('Scraping county #' + county)
     page.goto(scrapeUrl)
     .wait()
-    .select('#ctl00_ContentPlaceHolder1_QuickSearchForm1_ddlPopularSearches', '3')
+    .select('#ctl00_ContentPlaceHolder1_QuickSearchForm1_ddlPopularSearches', '3') // Foreclosures
     .wait('#ctl00_ContentPlaceHolder1_WSExtendedGridNP1_GridView1')
     .evaluate(() =>
       document.querySelector("#ctl00_ContentPlaceHolder1_WSExtendedGridNP1_GridView1 > tbody > tr:nth-child(3) > td > table")[0])
-/*
-        function defineForeclosure (res) {
-            var foreclosure = {};
-            var body = res.DATA.BODY
-                .join(' || ');
-            foreclosure.body = body;
-            foreclosure.caseId = res.DATA.REC_NUM[0];
-            foreclosure.heading = res.DATA.HEADING[0];
-            foreclosure.county = res.DATA.COUNTYNAME[0];
-            foreclosure.pubDate = res.DATA.SDATE[0];
-            foreclosure.source = res.DATA.NPNAME[0];
-
-            return foreclosure;
-        }
-
-        $rows.each(function(i, row) {
-            var $row = $(row);
-            var id = $row.attr('id');
-            // AL Legals expects the `id` field
-            postOptions.data.id = id;
-            $.ajax(postOptions);
-        });
-
-        return foreclosures;
-    }, function(results) {
-        scrapedForeclosures = results;
-    })
-*/
     .end()
     .then((foo) => console.log('foo: ' + foo))
     .catch((error) => {
         console.error('boo:' + error)
     })
-/*
-        writeToDB(scrapedForeclosures).then(function() {
-            if (counties[index + 1]) {
-                scrapeCounty(index + 1);
-            } else {
-                db.end();
-            }
-        })
-*/
 }
 
 function writeToDB (listings) {
