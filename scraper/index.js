@@ -1,4 +1,5 @@
 // Libs
+var Xvfb = require('xvfb');
 var Nightmare = require('nightmare');
 var _ = require('lodash');
 var moment = require('moment');
@@ -16,7 +17,9 @@ var parseAttorneys= require('./scrapers/scrapeAttorneys.js');
 var parseBank= require('./scrapers/scrapeBank.js');
 
 // Initializations
-const page = new Nightmare();
+const page = new Nightmare({
+  show: false,
+});
 
 var table = "foreclosures";
 var startDate = moment().add(-1, 'day').format('MM-DD-YYYY');
@@ -65,20 +68,21 @@ var counties = [
 scrapeCounty(0);
 
 function scrapeCounty (index) {
-    var county = counties[index];
-    var scrapedForeclosures;
-    console.log('Scraping county #' + county)
-    page.goto(scrapeUrl)
-    .wait()
-    .select('#ctl00_ContentPlaceHolder1_QuickSearchForm1_ddlPopularSearches', '3') // Foreclosures
-    .wait('#ctl00_ContentPlaceHolder1_WSExtendedGridNP1_GridView1')
-    .evaluate(() =>
-      document.querySelector("#ctl00_ContentPlaceHolder1_WSExtendedGridNP1_GridView1 > tbody > tr:nth-child(3) > td > table")[0])
-    .end()
-    .then((foo) => console.log('foo: ' + foo))
-    .catch((error) => {
-        console.error('boo:' + error)
-    })
+    var xvfb = new Xvfb({
+      silent: true
+    });
+    xvfb.startSync();
+    console.log("Scraping county 1")
+    page
+        .goto(scrapeUrl)
+        .evaluate(function() {
+            return document.title;
+        })
+        .end()
+        .then(function(title) {
+          console.log(title);
+          xvfb.stopSync();
+        });
 }
 
 function writeToDB (listings) {
