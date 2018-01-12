@@ -16,12 +16,12 @@ var parseAttorneys= require('./scrapers/scrapeAttorneys.js');
 var parseBank= require('./scrapers/scrapeBank.js');
 
 // Initializations
-var page = new Nightmare();
+const page = new Nightmare();
 
 var table = "foreclosures";
 var startDate = moment().add(-1, 'day').format('MM-DD-YYYY');
 var endDate = moment().add(0, 'day').format('MM-DD-YYYY');
-var scrapeUrl = 'http://www.alabamalegals.com/index.cfm?fuseaction=home';
+var scrapeUrl = "https://www.alabamapublicnotices.com/";
 var counties = [
     // Northeast
     65, // deKalb
@@ -70,38 +70,11 @@ function scrapeCounty (index) {
     console.log('Scraping county #' + county)
     page.goto(scrapeUrl)
     .wait()
-    .evaluate(function(county, startDate, endDate) {
-        $('#selCounty').val(county);
-        $('#from').val(startDate);
-        $('#to').val(endDate);
-    }, function () {}, county, startDate, endDate)
-    .click('[onclick="newSearch()"]')
-    .wait()
-    // client side envaluation
-    .evaluate(function() {
-        var foreclosures = {};
-        var $rows = $('.jqgrow');
-
-        var postOptions = {};
-        postOptions.url = 'components/LegalsGatewayJ.cfc?method=getLegalDetails&returnformat=json&queryformat=column';
-        postOptions.method = 'POST';
-        postOptions.dataType = 'json';
-        postOptions.data = {};
-        postOptions.async = false;
-        postOptions.success = function (res) {
-            var body, isForeclosure, foreclosure;
-            if (res.DATA) {
-                body = res.DATA.BODY[0];
-                isForeclosure = body.toLowerCase().indexOf('foreclosure') > -1;
-                if (isForeclosure) {
-                    foreclosure = defineForeclosure(res);
-                    if (foreclosure) {
-                        foreclosures[postOptions.data.id] = foreclosure;
-                    }
-                }
-            }
-        };
-
+    .select('#ctl00_ContentPlaceHolder1_QuickSearchForm1_ddlPopularSearches', '3')
+    .wait('#ctl00_ContentPlaceHolder1_WSExtendedGridNP1_GridView1')
+    .evaluate(() =>
+      document.querySelector("#ctl00_ContentPlaceHolder1_WSExtendedGridNP1_GridView1 > tbody > tr:nth-child(3) > td > table")[0])
+/*
         function defineForeclosure (res) {
             var foreclosure = {};
             var body = res.DATA.BODY
@@ -128,9 +101,13 @@ function scrapeCounty (index) {
     }, function(results) {
         scrapedForeclosures = results;
     })
-    .run(function(err) {
-        if (err) throw err;
-
+*/
+    .end()
+    .then((foo) => console.log('foo: ' + foo))
+    .catch((error) => {
+        console.error('boo:' + error)
+    })
+/*
         writeToDB(scrapedForeclosures).then(function() {
             if (counties[index + 1]) {
                 scrapeCounty(index + 1);
@@ -138,7 +115,7 @@ function scrapeCounty (index) {
                 db.end();
             }
         })
-    });
+*/
 }
 
 function writeToDB (listings) {
