@@ -37,3 +37,7 @@ If node is throwing weird errors, check the version and ensure the correct one i
 node --version
 nvm use
 ```
+
+## About
+
+This is basically a project for my mom, and likely not useful to anyone else on the internet, expect as a case study in writing frontend scrapers for shitty websites.
