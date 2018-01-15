@@ -29,6 +29,7 @@ const foreclosureSearchText = "real+estate  foreclosure  foreclosed  foreclose  
 const countySelectorIdPrefix = "#ctl00_ContentPlaceHolder1_as1_lstCounty_";
 const searchBoxInputId = "#ctl00_ContentPlaceHolder1_as1_txtSearch";
 const searchButtonId = "#ctl00_ContentPlaceHolder1_as1_btnGo";
+const countyFilterId= "#ctl00_ContentPlaceHolder1_as1_divCounty";
 var counties = [
     // Northeast
     24, // deKalb
@@ -76,13 +77,19 @@ function scrapeCounty (index) {
       silent: true
     });
     xvfb.startSync();
-    console.log("Scraping county " + index)
+    console.log("Scraping county: " + counties[index])
     page
         .goto(scrapeUrl)
         .type(searchBoxInputId, foreclosureSearchText)
-        //.check(countySelectorIdPrefix + index)
+        .click(countyFilterId)
+        .click(countySelectorIdPrefix + counties[index])
+        .wait(1000)
         .click(searchButtonId)
-        .wait(10000) // change this to be a selector present on the search result page but not the home page
+        /* a better solution waits for elem to load,
+           but the html source doesn't change much after the page load :(
+           just the css changes (e.g. hidden: true)
+        */
+        .wait(6000)
         .evaluate(function() {
             return document.querySelector(".criteria").innerText;
         })
