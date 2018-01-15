@@ -25,44 +25,48 @@ var table = "foreclosures";
 var startDate = moment().add(-1, 'day').format('MM-DD-YYYY');
 var endDate = moment().add(0, 'day').format('MM-DD-YYYY');
 var scrapeUrl = "https://www.alabamapublicnotices.com/";
+const foreclosureSearchText = "real+estate  foreclosure  foreclosed  foreclose  judicial+sale  judgment  notice+of+sale  forfeiture  forfeit";
+const countySelectorIdPrefix = "#ctl00_ContentPlaceHolder1_as1_lstCounty_";
+const searchBoxInputId = "#ctl00_ContentPlaceHolder1_as1_txtSearch";
+const searchButtonId = "#ctl00_ContentPlaceHolder1_as1_btnGo";
 var counties = [
     // Northeast
-    65, // deKalb
-    66, // jackson
-    67, // limestone
-    5,  // madison
-    63, // marshall
-    62, // morgan
+    24, // deKalb
+    35, // jackson
+    41, // limestone
+    44,  // madison
+    47, // marshall
+    51, // morgan
 
     // Northwest
-    59, // franklin
-    60, // colbert
-    4,  // lauderdale
-    61, // lawrence
+    29, // franklin
+    16, // colbert
+    38,  // lauderdale
+    39, // lawrence
 
     // Mid
-    56, // blount
-    57, // cullman
-    1,  // jefferson
-    36, // Shelby
+    4, // blount
+    21, // cullman
+    36,  // jefferson
+    57, // Shelby
 
     // Midwest
-    23, // Tuscaloosa
-    20, // Marion
-    6,  // Lamar
-    21, // Fayette
-    58, // Winston
-    22, // Walker
-    19, // Pickens
+    63, // Tuscaloosa
+    46, // Marion
+    37,  // Lamar
+    28, // Fayette
+    67, // Winston
+    64, // Walker
+    53, // Pickens
 
     // Mideast
-    64, // Cherokee
-    55, // Etowah
-    38, // Talladega
-    54, // Calhoun
-    3,  // Clay
-    52, // Randolph
-    53 // Cleburne
+    9, // Cherokee
+    27, // Etowah
+    60, // Talladega
+    7, // Calhoun
+    13,  // Clay
+    55, // Randolph
+    14 // Cleburne
 ];
 
 scrapeCounty(0);
@@ -72,11 +76,15 @@ function scrapeCounty (index) {
       silent: true
     });
     xvfb.startSync();
-    console.log("Scraping county 1")
+    console.log("Scraping county " + index)
     page
         .goto(scrapeUrl)
+        .type(searchBoxInputId, foreclosureSearchText)
+        //.check(countySelectorIdPrefix + index)
+        .click(searchButtonId)
+        .wait(10000) // change this to be a selector present on the search result page but not the home page
         .evaluate(function() {
-            return document.title;
+            return document.querySelector(".criteria").innerText;
         })
         .end()
         .then(function(title) {
