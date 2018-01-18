@@ -29,7 +29,8 @@ const foreclosureSearchText = "real+estate  foreclosure  foreclosed  foreclose  
 const countySelectorIdPrefix = "#ctl00_ContentPlaceHolder1_as1_lstCounty_";
 const searchBoxInputId = "#ctl00_ContentPlaceHolder1_as1_txtSearch";
 const searchButtonId = "#ctl00_ContentPlaceHolder1_as1_btnGo";
-const countyFilterId= "#ctl00_ContentPlaceHolder1_as1_divCounty";
+const countyFilterId = "#ctl00_ContentPlaceHolder1_as1_divCounty";
+const searchTypeSelector = "#ctl00_ContentPlaceHolder1_as1_rdoType_1";
 var counties = [
     // Northeast
     24, // deKalb
@@ -77,10 +78,11 @@ function scrapeCounty (index) {
       silent: true
     });
     xvfb.startSync();
-    console.log("Scraping county: " + counties[index])
+    console.log("Scraping county: " + counties[index]);
     page
         .goto(scrapeUrl)
         .type(searchBoxInputId, foreclosureSearchText)
+        .click(searchTypeSelector)
         .click(countyFilterId)
         .click(countySelectorIdPrefix + counties[index])
         .wait(1000)
@@ -91,15 +93,18 @@ function scrapeCounty (index) {
         */
         .wait(6000)
         .evaluate(function() {
-            var foreclosure = {};
-            var $tables = $.("table.nested")
+            var foreclosures = {};
+            var $tables = $("table.nested");
             $tables.each(function(i, table) {
-                var forclosure = {};
-                var link = (tables.row[0].cells[0].children[0].onclick + '')
+                var foreclosure = {};
+                var link = (table.rows[0].cells[0].children[0].onclick + '')
                             .split("href='")[1]
                             .split("';return")[0];
+                foreclosure.source = link;
+                foreclosure.county = "deKalb";
+                foreclosures[i] = foreclosure;
             });
-            return document.querySelector(".criteria").innerText;
+            return foreclosures;
         })
         .end()
         .then(function(title) {
