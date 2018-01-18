@@ -37,7 +37,6 @@
     "moment": "^2.20.1",
     "mysql": "^2.6.2",
     "ng-table": "^3.0.1",
-    "ngtable": "^0.5.1",
     "nightmare": "^2.10.0",
     "orm-timestamps": "^0.5.2",
     "passport": "^0.4.0",
