@@ -91,6 +91,14 @@ function scrapeCounty (index) {
         */
         .wait(6000)
         .evaluate(function() {
+            var foreclosure = {};
+            var $tables = $.("table.nested")
+            $tables.each(function(i, table) {
+                var forclosure = {};
+                var link = (tables.row[0].cells[0].children[0].onclick + '')
+                            .split("href='")[1]
+                            .split("';return")[0];
+            });
             return document.querySelector(".criteria").innerText;
         })
         .end()

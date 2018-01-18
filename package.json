@@ -13,6 +13,7 @@
     "lint": "./node_modules/.bin/standard app/resources/js/*"
   },
   "dependencies": {
+    "@angular/platform-browser": "^4.4.6",
     "angular": "^1.3.15",
     "angular-bootstrap": "^0.12.2",
     "angular-sanitize": "^1.3.15",
@@ -27,6 +28,7 @@
     "font-awesome": "^4.3.0",
     "foundation": "^4.2.1",
     "googleapis": "^24.0.0",
+    "jade": "^1.11.0",
     "jasmine-node": "^1.14.5",
     "jquery": "^3.2.1",
     "jslint": "^0.11.0",
@@ -35,6 +37,7 @@
     "moment": "^2.20.1",
     "mysql": "^2.6.2",
     "ng-table": "^3.0.1",
+    "ngtable": "^0.5.1",
     "nightmare": "^2.10.0",
     "orm-timestamps": "^0.5.2",
     "passport": "^0.4.0",
@@ -42,6 +45,7 @@
     "passport-oauth": "^1.0.0",
     "pug": "^2.0.0-rc.4",
     "q": "^1.3.0",
+    "rxjs": "^5.5.6",
     "squel": "^5.12.0",
     "xvfb": "^0.2.3"
   },
