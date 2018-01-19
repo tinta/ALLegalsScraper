@@ -19,6 +19,7 @@ var parseBank= require('./scrapers/scrapeBank.js');
 // Initializations
 const page = new Nightmare({
   show: false,
+  executionTimeout: 60*5*1000
 });
 
 var table = "foreclosures";
@@ -92,6 +93,8 @@ function scrapeCounty (index) {
            just the css changes (e.g. hidden: true)
         */
         .wait(6000)
+        .select(".select-page", "50")
+        .wait(1000)
         .evaluate(function() {
             /*
              * There is a need for this function because the search functionality on the site is super shitty
