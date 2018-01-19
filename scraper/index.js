@@ -101,7 +101,7 @@ function scrapeCounty (index) {
              * Sometimes it returns juvie court records, etc.
              */
             function isReallyForeclosure(table) {
-                var beginning = table.rows[1].innerText.slice(0, 50).toLowerCase();
+                var beginning = table.rows[1].innerText.slice(0, 100).toLowerCase();
                 var keywords = ["mortgage", "foreclosure", "sale"];
                 for (k of keywords) {
                     if (beginning.includes(k)) return true;
