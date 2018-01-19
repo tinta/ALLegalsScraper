@@ -26,7 +26,7 @@ var table = "foreclosures";
 var startDate = moment().add(-1, 'day').format('MM-DD-YYYY');
 var endDate = moment().add(0, 'day').format('MM-DD-YYYY');
 const scrapeUrl = "https://www.alabamapublicnotices.com/";
-const foreclosureSearchText = "real+estate  foreclosure  foreclosed  foreclose  judicial+sale  judgment  notice+of+sale  forfeiture  forfeit";
+const foreclosureSearchText = "real+estate  foreclosure  foreclosed  foreclose  judicial+sale  notice+of+sale  forfeiture  forfeit";
 const countySelectorIdPrefix = "#ctl00_ContentPlaceHolder1_as1_lstCounty_";
 const searchBoxInputId = "#ctl00_ContentPlaceHolder1_as1_txtSearch";
 const searchButtonId = "#ctl00_ContentPlaceHolder1_as1_btnGo";
@@ -96,25 +96,10 @@ function scrapeCounty (index) {
         .select(".select-page", "50")
         .wait(1000)
         .evaluate(function() {
-            /*
-             * There is a need for this function because the search functionality on the site is super shitty
-             * Sometimes it returns juvie court records, etc.
-             */
-            function isReallyForeclosure(table) {
-                var beginning = table.rows[1].innerText.slice(0, 100).toLowerCase();
-                var keywords = ["mortgage", "foreclosure", "sale"];
-                for (k of keywords) {
-                    if (beginning.includes(k)) return true;
-                }
-                return false;
-            };
             var foreclosures = {};
             var $tables = $("table.nested");
             $tables.each(function(i, table) {
                 var foreclosure = {};
-                if (!isReallyForeclosure(table)) {
-                    return true; // can't use continue here for some reason....fuck you javascript
-                }
                 var text = table.innerText.split("\n");
                 foreclosure.link = (table.rows[0].cells[0].children[0].onclick + '')
                             .split("href='")[1]
