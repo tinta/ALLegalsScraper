@@ -93,16 +93,31 @@ function scrapeCounty (index) {
         */
         .wait(6000)
         .evaluate(function() {
+            /*
+             * There is a need for this function because the search functionality on the site is super shitty
+             * Sometimes it returns juvie court records, etc.
+             */
+            function isReallyForeclosure(table) {
+                var beginning = table.rows[1].innerText.slice(0, 50).toLowerCase();
+                var keywords = ["mortgage", "foreclosure", "sale"];
+                for (k of keywords) {
+                    if (beginning.includes(k)) return true;
+                }
+                return false;
+            };
             var foreclosures = {};
             var $tables = $("table.nested");
             $tables.each(function(i, table) {
                 var foreclosure = {};
+                if (!isReallyForeclosure(table)) {
+                    return true; // can't use continue here for some reason....fuck you javascript
+                }
                 var text = table.innerText.split("\n");
                 foreclosure.link = (table.rows[0].cells[0].children[0].onclick + '')
                             .split("href='")[1]
                             .split("';return")[0];
-                foreclosure.county = text[2].match(": (.*)")[1]; // County: Jefferson
-                foreclosure.pubDate = text[1].match(", (.*)City")[1]; // Wednesday, January 17, 2018City: Birmingham
+                foreclosure.county = text[2].match(": (.*)")[1].trim(); // County: Jefferson
+                foreclosure.pubDate = text[1].match(", (.*)City")[1].trim(); // Wednesday, January 17, 2018City: Birmingham
                 foreclosure.source = text[0].trim(); //    Alabama Messenger
                 // can't call scrapeUrl because it's out of scope :(
                 $.ajax({
@@ -114,7 +129,7 @@ function scrapeCounty (index) {
                     complete: function(data, code){
                     foreclosure.body = $(data.responseText)
                         .find("#ctl00_ContentPlaceHolder1_PublicNoticeDetailsBody1_lblContentText")
-                        .text();
+                        .text().trim();
                     }
                 });
                 foreclosures[i] = foreclosure;
