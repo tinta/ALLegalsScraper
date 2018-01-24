@@ -19,13 +19,14 @@ var parseBank= require('./scrapers/scrapeBank.js');
 // Initializations
 const page = new Nightmare({
   show: false,
+  executionTimeout: 60*5*1000
 });
 
 var table = "foreclosures";
 var startDate = moment().add(-1, 'day').format('MM-DD-YYYY');
 var endDate = moment().add(0, 'day').format('MM-DD-YYYY');
-var scrapeUrl = "https://www.alabamapublicnotices.com/";
-const foreclosureSearchText = "real+estate  foreclosure  foreclosed  foreclose  judicial+sale  judgment  notice+of+sale  forfeiture  forfeit";
+const scrapeUrl = "https://www.alabamapublicnotices.com/";
+const foreclosureSearchText = "real+estate  foreclosure  foreclosed  foreclose  judicial+sale  notice+of+sale  forfeiture  forfeit";
 const countySelectorIdPrefix = "#ctl00_ContentPlaceHolder1_as1_lstCounty_";
 const searchBoxInputId = "#ctl00_ContentPlaceHolder1_as1_txtSearch";
 const searchButtonId = "#ctl00_ContentPlaceHolder1_as1_btnGo";
@@ -92,16 +93,33 @@ function scrapeCounty (index) {
            just the css changes (e.g. hidden: true)
         */
         .wait(6000)
+        .select(".select-page", "50")
+        .wait(1000)
         .evaluate(function() {
             var foreclosures = {};
             var $tables = $("table.nested");
             $tables.each(function(i, table) {
                 var foreclosure = {};
-                var link = (table.rows[0].cells[0].children[0].onclick + '')
+                var text = table.innerText.split("\n");
+                foreclosure.link = (table.rows[0].cells[0].children[0].onclick + '')
                             .split("href='")[1]
                             .split("';return")[0];
-                foreclosure.source = link;
-                foreclosure.county = "deKalb";
+                foreclosure.county = text[2].match(": (.*)")[1].trim(); // County: Jefferson
+                foreclosure.pubDate = text[1].match(", (.*)City")[1].trim(); // Wednesday, January 17, 2018City: Birmingham
+                foreclosure.source = text[0].trim(); //    Alabama Messenger
+                // can't call scrapeUrl because it's out of scope :(
+                $.ajax({
+                    url: "https://www.alabamapublicnotices.com/" + foreclosure.link ,
+                    type: 'GET',
+                    async: false,
+                    cache: false,
+                    timeout: 30000,
+                    complete: function(data, code){
+                    foreclosure.body = $(data.responseText)
+                        .find("#ctl00_ContentPlaceHolder1_PublicNoticeDetailsBody1_lblContentText")
+                        .text().trim();
+                    }
+                });
                 foreclosures[i] = foreclosure;
             });
             return foreclosures;
