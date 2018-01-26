@@ -11,15 +11,15 @@ var db = require('./../common/db-connect.js')();
 var util = require('./../common/util.js');
 var sql = require('./../common/sql.js');
 var parseSaleDate = require('./scrapers/scrapeSaleDate.js');
-var parseAddress= require('./scrapers/scrapeAddress.js');
-var parseOwners= require('./scrapers/scrapeOwners.js');
-var parseAttorneys= require('./scrapers/scrapeAttorneys.js');
-var parseBank= require('./scrapers/scrapeBank.js');
+var parseAddress = require('./scrapers/scrapeAddress.js');
+var parseOwners = require('./scrapers/scrapeOwners.js');
+var parseAttorneys = require('./scrapers/scrapeAttorneys.js');
+var parseBank = require('./scrapers/scrapeBank.js');
 
 // Initializations
 const page = new Nightmare({
-  show: false,
-  executionTimeout: 60*5*1000
+    show: false,
+    executionTimeout: 60 * 5 * 1000
 });
 
 var table = "foreclosures";
@@ -37,26 +37,26 @@ var counties = [
     24, // deKalb
     35, // jackson
     41, // limestone
-    44,  // madison
+    44, // madison
     47, // marshall
     51, // morgan
 
     // Northwest
     29, // franklin
     16, // colbert
-    38,  // lauderdale
+    38, // lauderdale
     39, // lawrence
 
     // Mid
     4, // blount
     21, // cullman
-    36,  // jefferson
+    36, // jefferson
     57, // Shelby
 
     // Midwest
     63, // Tuscaloosa
     46, // Marion
-    37,  // Lamar
+    37, // Lamar
     28, // Fayette
     67, // Winston
     64, // Walker
@@ -67,16 +67,16 @@ var counties = [
     27, // Etowah
     60, // Talladega
     7, // Calhoun
-    13,  // Clay
+    13, // Clay
     55, // Randolph
     14 // Cleburne
 ];
 
 scrapeCounty(0);
 
-function scrapeCounty (index) {
+function scrapeCounty(index) {
     var xvfb = new Xvfb({
-      silent: true
+        silent: true
     });
     xvfb.startSync();
     console.log("Scraping county: " + counties[index]);
@@ -93,7 +93,7 @@ function scrapeCounty (index) {
            just the css changes (e.g. hidden: true)
         */
         .wait(6000)
-        .select(".select-page", "50")
+        .select(".select-page", "50") // change this to 5 for debugging
         .wait(1000)
         .evaluate(function() {
             var foreclosures = {};
@@ -101,37 +101,39 @@ function scrapeCounty (index) {
             $tables.each(function(i, table) {
                 var foreclosure = {};
                 var text = table.innerText.split("\n");
+                // javascript:location.href='Details.aspx?SID=dw44xhammmz1uuoskx0odpgv&ID=1830441';return false;
                 foreclosure.link = (table.rows[0].cells[0].children[0].onclick + '')
-                            .split("href='")[1]
-                            .split("';return")[0];
+                    .split("href='")[1]
+                    .split("';return")[0];
+                foreclosure.caseId = foreclosure.link.split("&ID=")[1];
                 foreclosure.county = text[2].match(": (.*)")[1].trim(); // County: Jefferson
                 foreclosure.pubDate = text[1].match(", (.*)City")[1].trim(); // Wednesday, January 17, 2018City: Birmingham
                 foreclosure.source = text[0].trim(); //    Alabama Messenger
                 // can't call scrapeUrl because it's out of scope :(
                 $.ajax({
-                    url: "https://www.alabamapublicnotices.com/" + foreclosure.link ,
+                    url: "https://www.alabamapublicnotices.com/" + foreclosure.link,
                     type: 'GET',
                     async: false,
                     cache: false,
                     timeout: 30000,
-                    complete: function(data, code){
-                    foreclosure.body = $(data.responseText)
-                        .find("#ctl00_ContentPlaceHolder1_PublicNoticeDetailsBody1_lblContentText")
-                        .text().trim();
+                    complete: function(data, code) {
+                        foreclosure.body = $(data.responseText)
+                            .find("#ctl00_ContentPlaceHolder1_PublicNoticeDetailsBody1_lblContentText")
+                            .text().trim();
                     }
                 });
-                foreclosures[i] = foreclosure;
+                foreclosures[foreclosure.caseId] = foreclosure;
             });
             return foreclosures;
         })
         .end()
-        .then(function(title) {
-          console.log(title);
-          xvfb.stopSync();
+        .then(function(foreclosures) {
+            writeToDB(foreclosures);
+            xvfb.stopSync();
         });
 }
 
-function writeToDB (listings) {
+function writeToDB(listings) {
     var writeToDBDeferred = Q.defer();
     var uids = {};
     uids.scraped = _.keys(listings);
@@ -145,7 +147,7 @@ function writeToDB (listings) {
     var count = {};
     count.inserts = 0;
     count.duplicates = 0;
-    count.print = function () {
+    count.print = function() {
         console.log('Scraped Listings: ' + uids.scraped.length);
         console.log('Inserted Rows: ' + count.inserts);
         console.log('Duplicates Found: ' + count.duplicates);
@@ -188,7 +190,7 @@ function writeToDB (listings) {
         var deferred = Q.defer();
         var loop = 0;
 
-        if (uids.absent.length ==  0) {
+        if (uids.absent.length == 0) {
             console.log('No new results were scraped');
             deferred.resolve(true);
         } else {
@@ -211,7 +213,7 @@ function writeToDB (listings) {
 
                 // elminate double spaces
                 var body = absentForeclosure.body;
-                var body_parts  = body.trim().split(/\s+/);
+                var body_parts = body.trim().split(/\s+/);
                 body = body_parts.join(" ");
 
                 var insertMap = {};
@@ -220,41 +222,45 @@ function writeToDB (listings) {
                 // ensure that this foreclosures doesn't already exist
                 // in the database, and if it does, return
                 var sqlFindDuplicates = squel
-                    .select({replaceSingleQuotes: true})
+                    .select({
+                        replaceSingleQuotes: true
+                    })
                     .from(table)
                     .where("body LIKE ?", insertMap["body"])
                     .toString();
 
                 sql.promise(sqlFindDuplicates).then(function(duplicates) {
-                    if (!util.isPresent(duplicates[0])) {
-                        insertMap["case_id"] = parseInt(absentForeclosure.caseId);
-                        insertMap["county"] = absentForeclosure.county;
-                        insertMap["source"] = absentForeclosure.source;
-                        insertMap["pub_date"] = moment(
+                        if (!util.isPresent(duplicates[0])) {
+                            insertMap["case_id"] = parseInt(absentForeclosure.caseId);
+                            insertMap["county"] = absentForeclosure.county;
+                            insertMap["source"] = absentForeclosure.source;
+                            insertMap["pub_date"] = moment(
                                 absentForeclosure.pubDate, 'MM-DD-YYYY'
-                                ).format('YYYY-MM-DD');
+                            ).format('YYYY-MM-DD');
 
-                        insertMap = _.merge(insertMap, parseAddress(body),
+                            insertMap = _.merge(insertMap, parseAddress(body),
                                 parseOwners(body), parseAttorneys(body),
                                 parseSaleDate(body), parseBank(body));
 
-                        var sqlInsertListing = squel
-                            .insert({replaceSingleQuotes: true})
-                            .into(table)
-                            .setFields(insertMap)
-                            .toString();
+                            var sqlInsertListing = squel
+                                .insert({
+                                    replaceSingleQuotes: true
+                                })
+                                .into(table)
+                                .setFields(insertMap)
+                                .toString();
 
-                        return sql.promise(sqlInsertListing);
-                    }
+                            return sql.promise(sqlInsertListing);
+                        }
 
-                    count.duplicates += 1;
-                    return Q(false);
-                })
-                .then(function(insertObj) {
-                    if (insertObj) count.inserts++;
-                    loop++;
-                    if (loop == uids.absent.length) deferred.resolve(true);
-                });
+                        count.duplicates += 1;
+                        return Q(false);
+                    })
+                    .then(function(insertObj) {
+                        if (insertObj) count.inserts++;
+                        loop++;
+                        if (loop == uids.absent.length) deferred.resolve(true);
+                    });
             });
         }
 
