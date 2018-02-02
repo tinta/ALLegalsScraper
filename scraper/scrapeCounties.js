@@ -30,6 +30,11 @@ const searchTypeSelector = '#ctl00_ContentPlaceHolder1_as1_rdoType_1'
 
 const oneSecondInMS = 1000
 const oneMinuteInMS = 60 * oneSecondInMS
+
+// Any foreclosures that were published before "this many days ago" will not be scraped. S
+// This speeds up scraping time significantly
+const DAYS_OFFSET = 5
+
 // Initializations
 const page = new Nightmare({
     show: false,
@@ -79,7 +84,7 @@ const scrapeCounty = (countyID) =>
                 var text = table.innerText.split('\n')
                 foreclosure.pubDate = text[1].match(', (.*)City')[1].trim() // Wednesday, January 17, 2018City: Birmingham
                 var oneWeekAgo = new Date()
-                oneWeekAgo.setDate(oneWeekAgo.getDate() - 2)
+                oneWeekAgo.setDate(oneWeekAgo.getDate() - DAYS_OFFSET)
                 if (new Date(foreclosure.pubDate) < oneWeekAgo) return null
                 // javascript:location.href='Details.aspx?SID=dw44xhammmz1uuoskx0odpgv&ID=1830441';return false;
                 foreclosure.link = (table.rows[0].cells[0].children[0].onclick + '')
