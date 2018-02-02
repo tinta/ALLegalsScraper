@@ -15,6 +15,7 @@ var parseAddress = require('./scrapers/scrapeAddress.js');
 var parseOwners = require('./scrapers/scrapeOwners.js');
 var parseAttorneys = require('./scrapers/scrapeAttorneys.js');
 var parseBank = require('./scrapers/scrapeBank.js');
+var countyIDs = require('./constants/countyIDs.js')
 
 // Initializations
 const page = new Nightmare({
@@ -32,60 +33,35 @@ const searchBoxInputId = "#ctl00_ContentPlaceHolder1_as1_txtSearch";
 const searchButtonId = "#ctl00_ContentPlaceHolder1_as1_btnGo";
 const countyFilterId = "#ctl00_ContentPlaceHolder1_as1_divCounty";
 const searchTypeSelector = "#ctl00_ContentPlaceHolder1_as1_rdoType_1";
-var counties = [
-    // Northeast
-    24, // deKalb
-    35, // jackson
-    41, // limestone
-    44, // madison
-    47, // marshall
-    51, // morgan
 
-    // Northwest
-    29, // franklin
-    16, // colbert
-    38, // lauderdale
-    39, // lawrence
+const foo = [24, 35]
+const scrapeCounties = (counties) => {
+    const scrapedCounties = counties.reduce(
+        (fn, countyID) => fn.then(() => {
+            scrapeCounty(countyID)
+        }), Q()
+    )
+    scrapedCounties.then(() => {
+        console.log("Finished scraping.")
+        db.end()
+    })
+}
 
-    // Mid
-    4, // blount
-    21, // cullman
-    36, // jefferson
-    57, // Shelby
+scrapeCounties(foo)
+// scrapeCounty(0);
 
-    // Midwest
-    63, // Tuscaloosa
-    46, // Marion
-    37, // Lamar
-    28, // Fayette
-    67, // Winston
-    64, // Walker
-    53, // Pickens
-
-    // Mideast
-    9, // Cherokee
-    27, // Etowah
-    60, // Talladega
-    7, // Calhoun
-    13, // Clay
-    55, // Randolph
-    14 // Cleburne
-];
-
-scrapeCounty(0);
-
-function scrapeCounty(index) {
-    var xvfb = new Xvfb({
+function scrapeCounty(countyID) {
+    const xvfb = new Xvfb({
         silent: true
     });
     xvfb.startSync();
-    console.log("Scraping county: " + counties[index]);
-    page
+    console.log("Scraping county: " + countyID);
+    return page
         .goto(scrapeUrl)
         .type(searchBoxInputId, foreclosureSearchText)
         .click(searchTypeSelector)
         .click(countyFilterId)
-        .click(countySelectorIdPrefix + counties[index])
+        .click(countySelectorIdPrefix + countyID)
         .wait(1000)
         .click(searchButtonId)
         /* a better solution waits for elem to load,
@@ -95,7 +71,7 @@ function scrapeCounty(index) {
         .wait(6000)
         .select(".select-page", "50") // change this to 5 for debugging
         .wait(1000)
-        .evaluate(function() {
+        .evaluate(function(SCRAPE_URL) {
             var foreclosures = {};
             var $tables = $("table.nested");
             $tables.each(function(i, table) {
@@ -111,32 +87,30 @@ function scrapeCounty(index) {
                 foreclosure.source = text[0].trim(); //    Alabama Messenger
                 // can't call scrapeUrl because it's out of scope :(
                 $.ajax({
-                    url: "https://www.alabamapublicnotices.com/" + foreclosure.link,
+                    url: SCRAPE_URL + foreclosure.link,
                     type: 'GET',
                     async: false,
                     cache: false,
                     timeout: 30000,
-                    complete: function(data, code) {
-                        foreclosure.body = $(data.responseText)
-                            .find("#ctl00_ContentPlaceHolder1_PublicNoticeDetailsBody1_lblContentText")
-                            .text().trim();
-                    }
-                });
-                foreclosures[foreclosure.caseId] = foreclosure;
+                }).then(function(data, code) {
+                    foreclosure.body = $(data.responseText)
+                        .find("#ctl00_ContentPlaceHolder1_PublicNoticeDetailsBody1_lblContentText")
+                        .text().trim();
+
+                    foreclosures[foreclosure.caseId] = foreclosure;
+                }, function() {
+                    foreclosures[foreclosure.caseId] = null
+                })
             });
             return foreclosures;
-        })
+        }, scrapeURL)
         .end()
-        .then(function(foreclosures) {
-            writeToDB(foreclosures);
-            xvfb.stopSync();
-        });
 }
 
 function writeToDB(listings) {
     var writeToDBDeferred = Q.defer();
     var uids = {};
-    uids.scraped = _.keys(listings);
+    uids.scraped = _.keys(listings.filter((listing) => listing));
     uids.present = [];
     uids.absent = [];
     uids.sql = [];
@@ -196,13 +170,15 @@ function writeToDB(listings) {
         } else {
             console.log('Fetched all results!');
             console.log(uids.scraped.length + ' listings were scraped.');
-            console.log('Commencing DB inserts for following listings, which were not found in our DB.');
+            console.log('Commencing DB inserts for following ' + uids.absent.length + ' listings, which were not found in our DB.');
             console.log(uids.absent.join(', '));
 
-            uids.absent.forEach(function(absentUid) {
-                var absentForeclosure = listings[absentUid];
+            uids.absent.forEach(function(absentID) {
+                console.log("Commencing insertion for Foreclosure #" + absentID);
+                var absentForeclosure = listings[absentID];
 
                 if (!absentForeclosure) {
+                    console.log("Missing - Foreclosure #" + absentID + ' ' + loop);
                     loop++;
                     if (loop == uids.absent.length) {
                         loop++;
@@ -219,8 +195,8 @@ function writeToDB(listings) {
                 var insertMap = {};
                 insertMap["body"] = body;
 
-                // ensure that this foreclosures doesn't already exist
-                // in the database, and if it does, return
+                // ensure that this foreclosure doesn't already exist
+                //  in the database, and if it does, return the found entries
                 var sqlFindDuplicates = squel
                     .select({
                         replaceSingleQuotes: true
@@ -231,6 +207,8 @@ function writeToDB(listings) {
 
                 sql.promise(sqlFindDuplicates).then(function(duplicates) {
                         if (!util.isPresent(duplicates[0])) {
+                            console.log("No Duplicates Found - Foreclosure #" + absentID + ' ' + loop);
+
                             insertMap["case_id"] = parseInt(absentForeclosure.caseId);
                             insertMap["county"] = absentForeclosure.county;
                             insertMap["source"] = absentForeclosure.source;
@@ -253,11 +231,15 @@ function writeToDB(listings) {
                             return sql.promise(sqlInsertListing);
                         }
 
+                        console.log("Duplicate Found - Foreclosure #" + absentID + ' ' + loop);
                         count.duplicates += 1;
                         return Q(false);
                     })
                     .then(function(insertObj) {
-                        if (insertObj) count.inserts++;
+                        if (insertObj) {
+                            console.log("Finished inserting Foreclosure #" + absentID)
+                            count.inserts++;
+                        }
                         loop++;
                         if (loop == uids.absent.length) deferred.resolve(true);
                     });
