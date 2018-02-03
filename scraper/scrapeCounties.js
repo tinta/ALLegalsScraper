@@ -84,7 +84,7 @@ const scrapeCounty = (countyID) =>
                 var text = table.innerText.split('\n')
                 foreclosure.pubDate = text[1].match(', (.*)City')[1].trim() // Wednesday, January 17, 2018City: Birmingham
                 var oneWeekAgo = new Date()
-                oneWeekAgo.setDate(oneWeekAgo.getDate() - DAYS_OFFSET)
+                oneWeekAgo.setDate(oneWeekAgo.getDate() - 5) //DAYS_OFFSET
                 if (new Date(foreclosure.pubDate) < oneWeekAgo) return null
                 // javascript:location.href='Details.aspx?SID=dw44xhammmz1uuoskx0odpgv&ID=1830441';return false;
                 foreclosure.link = (table.rows[0].cells[0].children[0].onclick + '')
@@ -217,7 +217,7 @@ const writeToDB = (listings) => new Promise((resolve) => {
                         insertMap['county'] = absentForeclosure.county
                         insertMap['source'] = absentForeclosure.source
                         insertMap['pub_date'] = moment(
-                            absentForeclosure.pubDate, 'MM-DD-YYYY'
+                            absentForeclosure.pubDate, 'MMM DD, YYYY'
                         ).format('YYYY-MM-DD')
 
                         insertMap = _.merge(insertMap, parseAddress(body),
