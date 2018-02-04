@@ -1,5 +1,7 @@
 var _ = require('lodash');
 var regexes = [
+     // executed by Thomas Sobczynski and his wife, Angela J. Sobczynski, in favor of Mortgage Electronic Registration Systems, Inc.
+    /(?:executed by).?,? (.*?) (?:and his wife|and her husband),? (.*?),? (?:in favor of)/i,
     // executed on the 03/14/2008, by MARVIN HOLDEN, MARRIED MAN AND WIFE, DARLENE HOLDEN, as Mortgagor
     /(?: dated .*?,)?\s(?:executed|certain Mortgage)(?:on|made by)?.*? (?:by|from) (.*?),? (?:married man and wife),?\s(.*?),\s/i,
 
@@ -35,18 +37,15 @@ var regexes = [
 function parseOwner (text) {
     text = text.substring(0,350);
     var owners = {};
-    //console.log(text.substring(0,300));
     for (var i = 0; i < regexes.length; i++) {
         var matches = text.match(regexes[i]);
         if (matches !== null && matches.length >= 2) {
             owners["name1"] = matches[1];
             if (matches.length === 3) 
                 owners["name2"] = matches[2];
-            //owners["match"] = i;
-            break
+            return owners
         }
     }
-    return owners
 }
 
 module.exports = parseOwner;

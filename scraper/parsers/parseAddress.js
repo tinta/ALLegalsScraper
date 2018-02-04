@@ -1,10 +1,9 @@
 function parseAddress (body) {
-    var addrRe = /(?:for\sinformational\spurposes.*\:|is commonly known as)\s(.*?)\s?\,\s?(?:\(the \"Real Property\"\) situated in\s?)?(.*?)\s?\,\s*(?:Alabama|AL)\s?(3\d{4})?/ig;
+    var addrRe = /(?:for\sinformational\spurposes.?\:|is commonly known as)\s(.*?)\s?\,\s?(?:\(the \"Real Property\"\) situated in\s?)?(.*?)\s?\,\s*(?:Alabama|AL)\s?(3\d{4})?/ig;
     var addressMatch = addrRe.exec(body);
     var address = {};
 
     if ((addressMatch != null) && (addressMatch.length === 4)) {
-
         address["city"] = truncate(addressMatch[2], 63);
         address["street_addr"] = truncate(addressMatch[1], 63);
         address["zip"] = addressMatch[3];
