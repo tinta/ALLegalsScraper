@@ -31,35 +31,55 @@ const searchTypeSelector = '#ctl00_ContentPlaceHolder1_as1_rdoType_1'
 const oneSecondInMS = 1000
 const oneMinuteInMS = 60 * oneSecondInMS
 
-// Any foreclosures that were published before "this many days ago" will not be scraped. S
-// This speeds up scraping time significantly
-const DAYS_OFFSET = 5
-
 // Initializations
-const page = new Nightmare({
-    show: false,
-    executionTimeout: oneMinuteInMS * 10
-})
+let xvfb
+let page
+
+const tearDownScraper = (countyID) => {
+    console.log('tearing down scraper for county #' + countyID)
+    page.end()
+    xvfb.stopSync()
+}
 
 const scrapeCounties = (counties) => {
-    const xvfb = new Xvfb({ silent: true })
-    xvfb.startSync()
+    const scrapedCounties = counties.reduce((acc, countyID) => {                
+        return acc
+            .then(() => {
+                // Initialize scraper
+                console.log('preparing to scrape county #' + countyID)
+                xvfb = new Xvfb({ silent: true })
+                xvfb.startSync()
+                
+                page = new Nightmare({
+                    show: false,
+                    executionTimeout: oneMinuteInMS * 10
+                })
 
-    const scrapedCounties = counties.reduce((acc, countyID) => (
-        acc.then(() =>
-            scrapeCounty(countyID).then((foreclosures) => writeToDB(foreclosures))
-        )
-    ), Promise.resolve())
+                // 
+                return scrapeCounty(countyID)
+            })
+            .then((foreclosures) => {                     
+                console.log(foreclosures)                                       
+                return writeToDB(foreclosures)                                  
+            })
+            .then(
+                () => tearDownScraper(countyID),
+                () => {
+                    console.log('scraper failed for county #' + countyID)
+                    tearDownScraper(countyID)
+                    return false
+                })
+    }, Promise.resolve())
+
 
     return scrapedCounties.then(() => {
         console.log('Finished scraping.')
         db.end()
-        page.end()
-        xvfb.stopSync()
     })
 }
 
-const scrapeCounty = (countyID) =>
+const scrapeCounty = (countyID) => new Promise((resolve, reject) => {
+    console.log('scraping county #' + countyID)
     page.on('console', (log, msg) => console.log(msg))
         .goto(SCRAPE_URL)
         .type(searchBoxInputId, foreclosureSearchText)
@@ -83,8 +103,12 @@ const scrapeCounty = (countyID) =>
                 var foreclosure = {}
                 var text = table.innerText.split('\n')
                 foreclosure.pubDate = text[1].match(', (.*)City')[1].trim() // Wednesday, January 17, 2018City: Birmingham
+
+                // Any foreclosures that were published before "today - daysOffset" will not be scraped.
+                // This speeds up scraping time significantly
+                var daysOffset = 5
                 var oneWeekAgo = new Date()
-                oneWeekAgo.setDate(oneWeekAgo.getDate() - 5) //DAYS_OFFSET
+                oneWeekAgo.setDate(oneWeekAgo.getDate() - daysOffset)
                 if (new Date(foreclosure.pubDate) < oneWeekAgo) return null
                 // javascript:location.href='Details.aspx?SID=dw44xhammmz1uuoskx0odpgv&ID=1830441';return false;
                 foreclosure.link = (table.rows[0].cells[0].children[0].onclick + '')
@@ -111,13 +135,16 @@ const scrapeCounty = (countyID) =>
         })
         .then((foreclosures) => {
             console.log('Scraping from target site complete.')
-            console.log(JSON.stringify(foreclosures))
-            return Promise.resolve(foreclosures)              
+            // console.log(JSON.stringify(foreclosures))
+            return resolve(foreclosures)              
         }, (error) => {
             console.log('Scraping error:')
             console.log(error)
-            return Promise.reject()
+            return reject()
         })
+
+})
+
 
 
 const writeToDB = (listings) => new Promise((resolve) => {
