@@ -1,6 +1,6 @@
 {
   "name": "allegalsscraper",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "[![Build Status](https://travis-ci.org/tinta/ALLegalsScraper.svg?branch=master)](https://travis-ci.org/tinta/ALLegalsScraper)",
   "engines": {
     "node": ">=9.4.0"
