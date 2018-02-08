@@ -1,5 +1,6 @@
 function parseAddress (body) {
-    var addrRe = /(?:for\sinformational\spurposes.?\:|is commonly known as)\s(.*?)\s?\,\s?(?:\(the \"Real Property\"\) situated in\s?)?(.*?)\s?\,\s*(?:Alabama|AL)\s?(3\d{4})?/ig;
+        //Property Street Address for Informational Purposes: 1105 Clark Ave NE, Fort Payne, AL 35967
+    var addrRe = /(?:for\sinformational\spurposes.?\:| commonly known as)\s(.*?)\s?\,\s?(?:\(the \"Real Property\"\) situated in\s?)?(.*?)\s?\,\s*(?:Alabama|AL)\s?(3\d{4})?/ig;
     var addressMatch = addrRe.exec(body);
     var address = {};
 

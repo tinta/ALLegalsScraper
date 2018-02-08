@@ -20,12 +20,12 @@ var parseBank = require('./parsers/parseBank.js')
 
 const DB_TABLE = 'foreclosures'
 const SCRAPE_URL = 'https://www.alabamapublicnotices.com/'
-const foreclosureSearchText = 'real+estate  foreclosure  foreclosed  foreclose  judicial+sale  notice+of+sale  forfeiture  forfeit'
+const foreclosureSearchText = 'mortgage foreclosure'
 const countySelectorIdPrefix = '#ctl00_ContentPlaceHolder1_as1_lstCounty_'
 const searchBoxInputId = '#ctl00_ContentPlaceHolder1_as1_txtSearch'
 const searchButtonId = '#ctl00_ContentPlaceHolder1_as1_btnGo'
 const countyFilterId = '#ctl00_ContentPlaceHolder1_as1_divCounty'
-const searchTypeSelector = '#ctl00_ContentPlaceHolder1_as1_rdoType_1'
+const searchTypeSelector = '#ctl00_ContentPlaceHolder1_as1_rdoType_0' // All Words
 
 
 const oneSecondInMS = 1000
@@ -59,7 +59,6 @@ const scrapeCounties = (counties) => {
                 return scrapeCounty(countyID)
             })
             .then((foreclosures) => {                     
-                console.log(foreclosures)                                       
                 return writeToDB(foreclosures)                                  
             })
             .then(
@@ -75,6 +74,7 @@ const scrapeCounties = (counties) => {
     return scrapedCounties.then(() => {
         console.log('Finished scraping.')
         db.end()
+        process.exit(0)
     })
 }
 
@@ -114,6 +114,7 @@ const scrapeCounty = (countyID) => new Promise((resolve, reject) => {
                 foreclosure.link = (table.rows[0].cells[0].children[0].onclick + '')
                     .split('href=\'')[1]
                     .split('\';return')[0]
+                console.log(foreclosure.link)
                 foreclosure.caseId = foreclosure.link.split('&ID=')[1]
                 foreclosure.county = text[2].match(': (.*)')[1].trim() // County: Jefferson
                 foreclosure.source = text[0].trim() //    Alabama Messenger
@@ -126,7 +127,9 @@ const scrapeCounty = (countyID) => new Promise((resolve, reject) => {
                     complete: function(data) {
                         foreclosure.body = $(data.responseText)
                             .find('#ctl00_ContentPlaceHolder1_PublicNoticeDetailsBody1_lblContentText')
-                            .text().trim()
+                            .text()
+                            .trim()
+                            .replace(/[^\x00-\x7F]/g, "")  // remove non-ascii chars
                         foreclosures[foreclosure.caseId] = foreclosure
                     }
                 })
@@ -135,12 +138,11 @@ const scrapeCounty = (countyID) => new Promise((resolve, reject) => {
         })
         .then((foreclosures) => {
             console.log('Scraping from target site complete.')
-            // console.log(JSON.stringify(foreclosures))
             return resolve(foreclosures)              
         }, (error) => {
             console.log('Scraping error:')
             console.log(error)
-            return reject()
+            return reject(new Error('fail'))
         })
 
 })
@@ -266,11 +268,11 @@ const writeToDB = (listings) => new Promise((resolve) => {
                             console.log('Finished inserting Foreclosure #' + absentID)
                             count.inserts++
                         }
-                        return Promise.resolve()
+                        return Promise.resolve(true)
                     }, (error) => {
                         console.log(error)
                         console.log(absentForeclosure)
-                        return Promise.reject()
+                        return Promise.reject(new Error('fail'))
                     })
             }), Promise.resolve(true))
         }
@@ -280,6 +282,7 @@ const writeToDB = (listings) => new Promise((resolve) => {
             resolve(true)
         }, (err) => {
             throw err
+            reject(error)
         })
     })
 })
