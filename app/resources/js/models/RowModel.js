@@ -236,7 +236,7 @@ angular
             editableFields.forEach(function (field) {
               unchangedList.push(This.editForm[field].isUnchanged)
             })
-            unchangedList = _.unique(unchangedList)
+            unchangedList = _.uniq(unchangedList)
 
             return (unchangedList.length === 1 && unchangedList[0] === true)
           },

@@ -25,12 +25,12 @@ angular.module('Controller:Listings', [
     // Timeframes
     $scope.timeframes = {}
     $scope.timeframes.all = window.timeframes
-    $scope.timeframes.current = _.findWhere(window.timeframes, {isCurrent: true})
+    $scope.timeframes.current = _.find(window.timeframes, {isCurrent: true})
 
     // Regions
     $scope.regions = {}
     $scope.regions.all = window.regions
-    $scope.regions.current = _.findWhere(window.regions, {isCurrent: true})
+    $scope.regions.current = _.find(window.regions, {isCurrent: true})
 
     // Listings
     $scope.listings = setAll($window.listings)
@@ -148,7 +148,7 @@ angular.module('Controller:Listings', [
             url: '/update',
             data: postBody,
             success: function (data) {
-              var oldRow = _.findWhere($scope.listings, {case_id: data.case_id})
+              var oldRow = _.find($scope.listings, {case_id: data.case_id})
               var newRow = _.merge(oldRow, createRow(data, oldRow.index))
               $scope.listings[oldRow.index] = newRow
               This.open(newRow.index)
@@ -177,7 +177,7 @@ angular.module('Controller:Listings', [
           url: '/delete',
           data: postBody,
           success: function (data) {
-            var oldRow = _.findWhere($scope.listings, {uid: uid})
+            var oldRow = _.find($scope.listings, {uid: uid})
             $scope.listings.splice(oldRow.index, 1)
             $scope.tableParams.reload()
             modal.close()

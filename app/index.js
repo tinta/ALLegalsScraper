@@ -72,8 +72,7 @@ app.get('/', function (req, res) {
   var scope = {}
   scope.regions = regions
   scope.user = false
-
-  if (!req.user) {
+  if (Object.keys(req.user).length === 0) {
     res.render('index', scope)
     return
   }
