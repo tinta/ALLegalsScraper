@@ -17,9 +17,11 @@ $ bin/setup_db.sh
 $ mysql -u scraper alabamalegals -p < bin/create_tables.sql
 ```
 
-4) Set up client secret
+4) Set environment variables
 ```
 export AL_GOOGLE_CLIENT_SECRET=supersecretclientsecret
+export NODE_ENV=dev
+export SCRAPERPASS=thedbpassword
 ```
 
 5) Start the app with `npm start`
