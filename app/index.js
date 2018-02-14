@@ -25,6 +25,9 @@ var oauth = require('./server/oauth')
 var app = express()
 var port = 3000
 
+// maximum security lol
+app.disable('x-powered-by');
+
 function addStaticPath (path) { return express.static(process.cwd() + path) }
 
 app.set('views', './app/views')
