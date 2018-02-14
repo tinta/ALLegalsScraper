@@ -1,0 +1,38 @@
+CREATE TABLE `foreclosures` (
+      `uid` int(11) NOT NULL AUTO_INCREMENT,
+      `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      `case_id` varchar(31) NOT NULL,
+      `county` varchar(31) NOT NULL,
+      `body` mediumtext NOT NULL,
+      `source` varchar(31) NOT NULL,
+      `pub_date` date NOT NULL,
+      `street_addr` varchar(100) DEFAULT NULL,
+      `city` varchar(63) DEFAULT NULL,
+      `sale_location` varchar(50) DEFAULT NULL,
+      `sale_date` date DEFAULT NULL,
+      `zip` int(11) DEFAULT NULL,
+      `appraisal_price` double DEFAULT NULL,
+      `last_sold_price` double DEFAULT NULL,
+      `last_sold_year` int(11) DEFAULT NULL,
+      `buy_price` double DEFAULT NULL,
+      `name1` varchar(50) DEFAULT NULL,
+      `name2` varchar(50) DEFAULT NULL,
+      `bed` double DEFAULT NULL,
+      `bath` double DEFAULT NULL,
+      `lot_area` double DEFAULT NULL,
+      `indoor_area` double DEFAULT NULL,
+      `build_year` int(11) DEFAULT NULL,
+      `notes` mediumtext,
+      `attorney` varchar(50) DEFAULT NULL,
+      `bank` varchar(50) DEFAULT NULL,
+      PRIMARY KEY (`uid`)
+);
+CREATE TABLE `users` (
+      `uid` int(11) NOT NULL AUTO_INCREMENT,
+      `accountIsActive` tinyint(1) NOT NULL,
+      `googleId` varchar(22) DEFAULT NULL,
+      `googleImageUrl` varchar(120) DEFAULT NULL,
+      `googleEmail` varchar(30) DEFAULT NULL,
+      `name` varchar(40) DEFAULT NULL,
+      PRIMARY KEY (`uid`)
+);

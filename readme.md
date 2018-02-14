@@ -11,6 +11,12 @@ apt-get install -y libgtk2.0-0 libgconf-2-4 \
 ```
 2) Run `npm install`
 
+3) Setup the database
+```
+$ bin/setup_db.sh
+$ mysql -u scraper alabamalegals -p < bin/create_tables.sql
+```
+
 ## Usage
 
 Allow access to data interface on port 3000
