@@ -82,7 +82,7 @@ google.completeStrategy = function () {
         ) ? profile.emails[0].value : null
 
       var insertMap = {}
-      insertMap.accountIsActive = false
+      insertMap.accountIsActive = (process.env.NODE_ENV === 'production') ? false : true
       insertMap.googleId = profile.id
       insertMap.googleImageUrl = image
       insertMap.googleEmail = email

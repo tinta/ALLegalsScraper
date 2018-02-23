@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/tinta/ALLegalsScraper.svg?branch=master)](https://travis-ci.org/tinta/ALLegalsScraper)
 
-## Install
+## Setup
 
 1) Install [electron](https://electronjs.org/) system requirements (required for [nightmare.js](https://github.com/segmentio/nightmare))
 ```
@@ -10,6 +10,21 @@ apt-get install -y libgtk2.0-0 libgconf-2-4 \
     libasound2 libxtst6 libxss1 libnss3 xvfb
 ```
 2) Run `npm install`
+
+3) Setup the database
+```
+$ bin/setup_db.sh
+$ mysql -u scraper alabamalegals -p < bin/create_tables.sql
+```
+
+4) Set environment variables
+```
+export AL_GOOGLE_CLIENT_SECRET=supersecretclientsecret
+export NODE_ENV=dev
+export SCRAPERPASS=thedbpassword
+```
+
+5) Start the app with `npm start`
 
 ## Usage
 
