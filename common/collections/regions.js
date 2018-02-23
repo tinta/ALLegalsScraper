@@ -48,7 +48,8 @@ regions.set('mid', [
   'blount',
   'jefferson',
   'walker',
-  'shelby'
+  'shelby',
+  'st. clair'
 ])
 regions.set('midwest', [
   'marion',
