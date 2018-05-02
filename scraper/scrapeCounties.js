@@ -52,7 +52,7 @@ const scrapeCounties = (counties) => {
                 
                 page = new Nightmare({
                     show: false,
-                    executionTimeout: oneMinuteInMS * 10
+                    executionTimeout: oneMinuteInMS * 100
                 })
 
                 // 

@@ -7,7 +7,9 @@ function parseAddress (body) {
     if ((addressMatch != null) && (addressMatch.length === 4)) {
         address["city"] = truncate(addressMatch[2], 63);
         address["street_addr"] = truncate(addressMatch[1], 63);
-        address["zip"] = addressMatch[3];
+        if (addressMatch[3] !== undefined) {
+            address["zip"] = addressMatch[3]
+        }
     } else {
         (function() {
             var streetRe = /(?:the home and real estate known as )(.*)(?:\. This)/ig;
