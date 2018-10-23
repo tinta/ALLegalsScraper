@@ -102,7 +102,7 @@ const scrapeCounty = (countyID) => new Promise((resolve, reject) => {
             $tables.each(function(i, table) {
                 var foreclosure = {}
                 var text = table.innerText.split('\n')
-                foreclosure.pubDate = text[1].match(', (.*)City')[1].trim() // Wednesday, January 17, 2018City: Birmingham
+                foreclosure.pubDate = text[1].match(', (.*)County')[1].trim() // Wednesday, January 17, 2018County: Birmingham
 
                 // Any foreclosures that were published before "today - daysOffset" will not be scraped.
                 // This speeds up scraping time significantly
@@ -116,7 +116,7 @@ const scrapeCounty = (countyID) => new Promise((resolve, reject) => {
                     .split('\';return')[0]
                 console.log(foreclosure.link)
                 foreclosure.caseId = foreclosure.link.split('&ID=')[1]
-                foreclosure.county = text[2].match(': (.*)')[1].trim() // County: Jefferson
+                foreclosure.county = text[1].match('County: (.*)')[1].trim() // County: Jefferson
                 foreclosure.source = text[0].trim() //    Alabama Messenger
                 $.ajax({
                     url: 'https://www.alabamapublicnotices.com/' + foreclosure.link,
