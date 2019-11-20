@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@angular/platform-browser": "^4.4.6",
-    "angular": "^1.6.9",
+    "angular": "^1.7.9",
     "angular-bootstrap-npm": "0.13.0",
     "angular-sanitize": "^1.6.9",
     "angular-ui-bootstrap": "^2.5.6",
